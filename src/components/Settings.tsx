@@ -18,7 +18,7 @@ interface SettingsProps {
   onBackupExport: () => void;
   onBackupImport: (jsonData: string) => boolean;
   onResetDatabase: () => void;
-  onClearAllData: () => void;
+  onResetCashDrawer: () => void;
 }
 
 export default function Settings({ 
@@ -26,7 +26,7 @@ export default function Settings({
   onBackupExport, 
   onBackupImport, 
   onResetDatabase,
-  onClearAllData
+  onResetCashDrawer
 }: SettingsProps) {
 
   const isRtl = lang === 'ar';
@@ -112,15 +112,15 @@ export default function Settings({
             <button
               onClick={() => {
                 const yes = window.confirm(isRtl
-                  ? '⚠️ تحذير خطير: سيؤدي هذا الإجراء إلى تصفير وحذف جميع الحسابات والمنتجات والمبيعات والأنشطة نهائياً. هل تريد الاستمرار؟'
-                  : '⚠️ Attention : Cela supprimera définitivement tous les comptes, produits, ventes et activités. Continuer ?'
+                  ? '⚠️ انتبه: سيقوم هذا الإجراء بتصفير أرصدة الصندوق وسجل السحوبات والتسويات بالكامل. لن يتم حذف المنتجات أو العملاء أو الفواتير أو الأنشطة. هل تريد الاستمرار؟'
+                  : '⚠️ Attention : Cela réinitialisera les soldes de caisse, l\'historique des retraits et des ajustements. Les produits, clients, factures et activités ne seront pas supprimés. Continuer ?'
                 );
-                if (yes) onClearAllData();
+                if (yes) onResetCashDrawer();
               }}
               className="py-3 px-4 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              <span>{isRtl ? 'تصفير شامل للبيانات' : 'Remise à zéro'}</span>
+              <span>{isRtl ? 'تصفير حسابات الصندوق' : 'Réinitialiser la Caisse'}</span>
             </button>
           </div>
 

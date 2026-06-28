@@ -551,39 +551,23 @@ export default function App() {
     setActiveTab('dashboard');
   };
 
-  // Reset all business data completely (tassfir)
-  const handleClearAllData = async () => {
-    try {
-      await api.system.clearAll();
-    } catch (err) {
-      console.error('❌ Failed to clear database on server:', err);
-      alert(lang === 'ar' 
-        ? 'حدث خطأ أثناء محاولة مسح البيانات من السيرفر. سيتم تصفير البيانات محلياً فقط.' 
-        : 'Erreur lors de la suppression des données du serveur. Réinitialisation locale uniquement.'
-      );
-    }
-
-    localStorage.clear();
-    
-    setProducts([]);
-    setClients([]);
-    setInvoices([]);
-    setStockMovements([]);
-    setActivities([]);
-    
+  // Reset cash drawer ledger completely (tassfir al-sunduq)
+  const handleResetCashDrawer = () => {
     localStorage.setItem('dolibarr_withdrawals', JSON.stringify([]));
     localStorage.setItem('dolibarr_adj_cash_income', '0');
     localStorage.setItem('dolibarr_adj_withdrawals', '0');
     localStorage.setItem('dolibarr_adj_drawer_balance', '0');
 
-    setUsers(initialUsers);
-    setCurrentUser(initialUsers[0]);
-    localStorage.setItem('dolibarr_users', JSON.stringify(initialUsers));
-    localStorage.setItem('dolibarr_current_user', JSON.stringify(initialUsers[0]));
+    logActivity(
+      'withdraw_delete',
+      'تصفير حساب الصندوق: تم تصفير جميع أرصدة الصندوق وسجل السحوبات والتسويات بالكامل',
+      'Réinitialisation de la caisse : Tous les soldes de caisse, retraits et ajustements ont été réinitialisés',
+      'cash-drawer-reset'
+    );
 
     alert(lang === 'ar'
-      ? 'تم تصفير وحذف جميع الحسابات والمنتجات والمبيعات والنشاطات بنجاح!'
-      : 'Tous les comptes, produits, ventes et activités ont été vidés avec succès !'
+      ? 'تم تصفير حسابات الصندوق والعمليات النقدية بنجاح! لم تتأثر السلع أو العملاء أو الفواتير.'
+      : 'Les comptes de caisse et les opérations en espèces ont été réinitialisés avec succès ! Les produits, clients et factures n\'ont pas été affectés.'
     );
     
     setActiveTab('dashboard');
@@ -699,7 +683,7 @@ export default function App() {
             onBackupExport={handleBackupExport}
             onBackupImport={handleBackupImport}
             onResetDatabase={handleResetDatabase}
-            onClearAllData={handleClearAllData}
+            onResetCashDrawer={handleResetCashDrawer}
           />
         );
       default:
