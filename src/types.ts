@@ -164,7 +164,7 @@ export interface AppTranslation {
 
 export interface SystemActivity {
   id: string;
-  type: 'sale' | 'product_add' | 'product_edit' | 'product_delete' | 'client_add' | 'client_edit' | 'client_delete' | 'stock_edit' | 'withdraw_add' | 'invoice_edit' | 'invoice_delete';
+  type: 'sale' | 'product_add' | 'product_edit' | 'product_delete' | 'client_add' | 'client_edit' | 'client_delete' | 'stock_edit' | 'withdraw_add' | 'withdraw_edit' | 'withdraw_delete' | 'invoice_edit' | 'invoice_delete';
   date: string;
   operator: string;
   descriptionAr: string;

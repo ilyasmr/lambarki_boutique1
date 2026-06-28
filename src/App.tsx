@@ -118,7 +118,7 @@ export default function App() {
   }, []);
 
   const logActivity = (
-    type: 'sale' | 'product_add' | 'product_edit' | 'product_delete' | 'client_add' | 'client_edit' | 'client_delete' | 'stock_edit' | 'withdraw_add' | 'invoice_edit' | 'invoice_delete',
+    type: 'sale' | 'product_add' | 'product_edit' | 'product_delete' | 'client_add' | 'client_edit' | 'client_delete' | 'stock_edit' | 'withdraw_add' | 'withdraw_edit' | 'withdraw_delete' | 'invoice_edit' | 'invoice_delete',
     descriptionAr: string,
     descriptionFr: string,
     targetId: string
@@ -551,6 +551,44 @@ export default function App() {
     setActiveTab('dashboard');
   };
 
+  // Reset all business data completely (tassfir)
+  const handleClearAllData = async () => {
+    try {
+      await api.system.clearAll();
+    } catch (err) {
+      console.error('❌ Failed to clear database on server:', err);
+      alert(lang === 'ar' 
+        ? 'حدث خطأ أثناء محاولة مسح البيانات من السيرفر. سيتم تصفير البيانات محلياً فقط.' 
+        : 'Erreur lors de la suppression des données du serveur. Réinitialisation locale uniquement.'
+      );
+    }
+
+    localStorage.clear();
+    
+    setProducts([]);
+    setClients([]);
+    setInvoices([]);
+    setStockMovements([]);
+    setActivities([]);
+    
+    localStorage.setItem('dolibarr_withdrawals', JSON.stringify([]));
+    localStorage.setItem('dolibarr_adj_cash_income', '0');
+    localStorage.setItem('dolibarr_adj_withdrawals', '0');
+    localStorage.setItem('dolibarr_adj_drawer_balance', '0');
+
+    setUsers(initialUsers);
+    setCurrentUser(initialUsers[0]);
+    localStorage.setItem('dolibarr_users', JSON.stringify(initialUsers));
+    localStorage.setItem('dolibarr_current_user', JSON.stringify(initialUsers[0]));
+
+    alert(lang === 'ar'
+      ? 'تم تصفير وحذف جميع الحسابات والمنتجات والمبيعات والنشاطات بنجاح!'
+      : 'Tous les comptes, produits, ventes et activités ont été vidés avec succès !'
+    );
+    
+    setActiveTab('dashboard');
+  };
+
   // Rendering screen routing based on actual Operator Privileges
   const renderTabContent = () => {
     if (!currentUser) return null;
@@ -661,6 +699,7 @@ export default function App() {
             onBackupExport={handleBackupExport}
             onBackupImport={handleBackupImport}
             onResetDatabase={handleResetDatabase}
+            onClearAllData={handleClearAllData}
           />
         );
       default:

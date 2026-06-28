@@ -9,7 +9,8 @@ import {
   CloudLightning, 
   ShieldCheck, 
   RefreshCw,
-  HelpCircle
+  HelpCircle,
+  Trash2
 } from 'lucide-react';
 
 interface SettingsProps {
@@ -17,13 +18,15 @@ interface SettingsProps {
   onBackupExport: () => void;
   onBackupImport: (jsonData: string) => boolean;
   onResetDatabase: () => void;
+  onClearAllData: () => void;
 }
 
 export default function Settings({ 
   lang, 
   onBackupExport, 
   onBackupImport, 
-  onResetDatabase 
+  onResetDatabase,
+  onClearAllData
 }: SettingsProps) {
 
   const isRtl = lang === 'ar';
@@ -104,6 +107,20 @@ export default function Settings({
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>{isRtl ? 'إعادة ضبط المصنع' : 'Réinitialiser Données'}</span>
+            </button>
+
+            <button
+              onClick={() => {
+                const yes = window.confirm(isRtl
+                  ? '⚠️ تحذير خطير: سيؤدي هذا الإجراء إلى تصفير وحذف جميع الحسابات والمنتجات والمبيعات والأنشطة نهائياً. هل تريد الاستمرار؟'
+                  : '⚠️ Attention : Cela supprimera définitivement tous les comptes, produits, ventes et activités. Continuer ?'
+                );
+                if (yes) onClearAllData();
+              }}
+              className="py-3 px-4 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>{isRtl ? 'تصفير شامل للبيانات' : 'Remise à zéro'}</span>
             </button>
           </div>
 

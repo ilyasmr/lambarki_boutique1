@@ -56,6 +56,21 @@ app.delete('/api/movements/:id', deleteMovement);
 app.get('/api/activities', getActivities);
 app.post('/api/activities', createActivity);
 
+// ── System Management ─────────────────────────────────
+app.post('/api/system/clear', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM stock_movements');
+    await pool.query('DELETE FROM activities');
+    await pool.query('DELETE FROM invoices');
+    await pool.query('DELETE FROM products');
+    await pool.query('DELETE FROM clients');
+    await pool.query("DELETE FROM users WHERE username NOT IN ('admin', 'caissier', 'rachida')");
+    res.json({ status: 'success', message: 'All business data cleared' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ── Health Check ──────────────────────────────────────
 app.get('/api/health', async (req, res) => {
   try {

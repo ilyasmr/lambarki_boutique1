@@ -497,6 +497,10 @@ export default function Dashboard({
                         return { icon: RefreshCw, bgColor: 'bg-orange-50 text-orange-600 border-orange-100', labelAr: 'تغيير مخزون', labelFr: 'Stock' };
                       case 'withdraw_add':
                         return { icon: Coins, bgColor: 'bg-pink-50 text-pink-600 border-pink-100', labelAr: 'سحب نقدي', labelFr: 'Retrait' };
+                      case 'withdraw_edit':
+                        return { icon: Edit2, bgColor: 'bg-amber-50 text-amber-600 border-amber-100', labelAr: 'تعديل سحب', labelFr: 'Modif retrait' };
+                      case 'withdraw_delete':
+                        return { icon: Trash2, bgColor: 'bg-rose-50 text-rose-600 border-rose-100', labelAr: 'حذف سحب', labelFr: 'Suppr retrait' };
                       default:
                         return { icon: Activity, bgColor: 'bg-slate-50 text-slate-600 border-slate-100', labelAr: 'عملية عامة', labelFr: 'Système' };
                     }

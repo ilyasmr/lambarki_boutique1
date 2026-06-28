@@ -25,7 +25,8 @@ import {
   Filter,
   Eye,
   ClipboardList,
-  Edit3
+  Edit3,
+  Trash2
 } from 'lucide-react';
 
 interface AccountProps {
@@ -37,7 +38,7 @@ interface AccountProps {
   currentUser: User;
   onUpdateStocksBulk: (updates: { productId: string; newQty: number; movement: StockMovement }[]) => void;
   onLogActivity?: (
-    type: 'sale' | 'product_add' | 'product_edit' | 'product_delete' | 'client_add' | 'client_edit' | 'client_delete' | 'stock_edit' | 'withdraw_add',
+    type: 'sale' | 'product_add' | 'product_edit' | 'product_delete' | 'client_add' | 'client_edit' | 'client_delete' | 'stock_edit' | 'withdraw_add' | 'withdraw_edit' | 'withdraw_delete',
     descriptionAr: string,
     descriptionFr: string,
     targetId: string
@@ -123,6 +124,13 @@ export default function Account({
   const [withdrawNotes, setWithdrawNotes] = React.useState('');
   const [withdrawalSuccess, setWithdrawalSuccess] = React.useState(false);
 
+  // Edit withdrawal states
+  const [editingWithdrawal, setEditingWithdrawal] = React.useState<Withdrawal | null>(null);
+  const [editAmount, setEditAmount] = React.useState('');
+  const [editPerson, setEditPerson] = React.useState('الياس المباركي');
+  const [editCustomPerson, setEditCustomPerson] = React.useState('');
+  const [editNotes, setEditNotes] = React.useState('');
+
   // Manual adjustments saved in local storage
   const [cashIncomeAdjustment, setCashIncomeAdjustment] = React.useState<number>(() => {
     const saved = localStorage.getItem('dolibarr_adj_cash_income');
@@ -174,6 +182,13 @@ export default function Account({
 
   const cumulativeDebtSum = React.useMemo(() => {
     return clients.reduce((sum, c) => sum + (c.outstandingDebt || 0), 0);
+  }, [clients]);
+
+  const cumulativeChecksSum = React.useMemo(() => {
+    return clients.reduce((sum, c) => {
+      const checks = c.postalChecks || [];
+      return sum + checks.reduce((chkSum, chk) => chkSum + (chk.amount || 0), 0);
+    }, 0);
   }, [clients]);
 
   const totalOverallSales = React.useMemo(() => {
@@ -251,6 +266,71 @@ export default function Account({
     setCustomPerson('');
     setWithdrawalSuccess(true);
     setTimeout(() => setWithdrawalSuccess(false), 4000);
+  };
+
+  const handleDeleteWithdrawal = (id: string) => {
+    const w = withdrawals.find(x => x.id === id);
+    if (!w) return;
+    if (confirm(isRtl ? 'هل أنت متأكد من حذف هذا السند؟' : 'Êtes-vous sûr de vouloir supprimer ce bon ?')) {
+      setWithdrawals(prev => prev.filter(x => x.id !== id));
+      if (onLogActivity) {
+        onLogActivity(
+          'withdraw_delete',
+          `حذف مستند صرف بقيمة ${w.amount.toFixed(2)} DH لفائدة "${w.person}"`,
+          `Suppression d'un retrait de ${w.amount.toFixed(2)} DH pour "${w.person}"`,
+          id
+        );
+      }
+    }
+  };
+
+  const handleEditWithdrawalClick = (w: Withdrawal) => {
+    setEditingWithdrawal(w);
+    setEditAmount(w.amount.toString());
+    setEditNotes(w.notes);
+    const presets = ['الياس المباركي', 'فؤاد المباركي', 'احمد المباركي'];
+    if (presets.includes(w.person)) {
+      setEditPerson(w.person);
+      setEditCustomPerson('');
+    } else {
+      setEditPerson('autre');
+      setEditCustomPerson(w.person);
+    }
+  };
+
+  const handleSaveEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingWithdrawal) return;
+    const amount = parseFloat(editAmount);
+    if (isNaN(amount) || amount <= 0) return;
+
+    const finalPerson = editPerson === 'autre' ? editCustomPerson.trim() : editPerson;
+
+    setWithdrawals(prev => prev.map(w => {
+      if (w.id === editingWithdrawal.id) {
+        return {
+          ...w,
+          amount,
+          person: finalPerson || (isRtl ? 'غير محدد' : 'Non spécifié'),
+          notes: editNotes.trim() || (isRtl ? 'سحب نقدي من الصندوق' : 'Prélèvement de caisse')
+        };
+      }
+      return w;
+    }));
+
+    if (onLogActivity) {
+      onLogActivity(
+        'withdraw_edit',
+        `تعديل مستند صرف (المرجع #${editingWithdrawal.id.substring(editingWithdrawal.id.length - 5)}) بقيمة ${amount.toFixed(2)} DH لفائدة "${finalPerson}"`,
+        `Modification du retrait #${editingWithdrawal.id.substring(editingWithdrawal.id.length - 5)} de ${amount.toFixed(2)} DH pour "${finalPerson}"`,
+        editingWithdrawal.id
+      );
+    }
+
+    setEditingWithdrawal(null);
+    setEditAmount('');
+    setEditNotes('');
+    setEditCustomPerson('');
   };
 
   const handleSaveAdjustment = (e: React.FormEvent) => {
@@ -994,7 +1074,7 @@ export default function Account({
                       <th className="py-2.5 px-2">{isRtl ? 'المستفيد' : 'Bénéficiaire'}</th>
                       <th className="py-2.5 px-2 text-right">{isRtl ? 'المبلغ' : 'Montant'}</th>
                       <th className="py-2.5 px-2 text-center">{isRtl ? 'المسؤول' : 'Saisi par'}</th>
-                      <th className="py-2.5 px-2 text-center">{isRtl ? 'مستند سحب' : 'Imprimer'}</th>
+                      <th className="py-2.5 px-2 text-center">{isRtl ? 'الإجراءات' : 'Actions'}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
@@ -1024,13 +1104,32 @@ export default function Account({
                             {resolveUserName(w.responsible, lang)}
                           </td>
                           <td className="py-3 px-2 text-center">
-                            <button
-                              onClick={() => setPrintWithdrawal(w)}
-                              className="p-1 px-2.5 bg-gray-50 hover:bg-gray-100 text-slate-600 border border-gray-200 rounded-lg text-[10px] font-black cursor-pointer inline-flex items-center gap-1 transition"
-                            >
-                              <Printer className="w-3 h-3 text-emerald-600" />
-                              <span>{isRtl ? 'طباعة' : 'Imprimer'}</span>
-                            </button>
+                            <div className="flex items-center justify-center gap-1.5">
+                              <button
+                                onClick={() => setPrintWithdrawal(w)}
+                                title={isRtl ? 'طباعة' : 'Imprimer'}
+                                className="p-1 px-2 bg-gray-50 hover:bg-gray-100 text-slate-600 border border-gray-200 rounded-lg text-[10px] font-black cursor-pointer inline-flex items-center gap-0.5 transition"
+                              >
+                                <Printer className="w-3.5 h-3.5 text-emerald-600" />
+                                <span className="hidden md:inline">{isRtl ? 'طباعة' : 'Imprimer'}</span>
+                              </button>
+                              <button
+                                onClick={() => handleEditWithdrawalClick(w)}
+                                title={isRtl ? 'تعديل' : 'Modifier'}
+                                className="p-1 px-2 bg-gray-50 hover:bg-gray-100 text-slate-600 border border-gray-200 rounded-lg text-[10px] font-black cursor-pointer inline-flex items-center gap-0.5 transition"
+                              >
+                                <Edit3 className="w-3.5 h-3.5 text-amber-500" />
+                                <span className="hidden md:inline">{isRtl ? 'تعديل' : 'Modifier'}</span>
+                              </button>
+                              <button
+                                onClick={() => handleDeleteWithdrawal(w.id)}
+                                title={isRtl ? 'حذف' : 'Supprimer'}
+                                className="p-1 px-2 bg-gray-50 hover:bg-gray-100 text-red-600 border border-gray-200 rounded-lg text-[10px] font-black cursor-pointer inline-flex items-center gap-0.5 transition"
+                              >
+                                <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                                <span className="hidden md:inline">{isRtl ? 'حذف' : 'Supprimer'}</span>
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))
@@ -1125,6 +1224,90 @@ export default function Account({
             </div>
           )}
 
+          {/* EDIT WITHDRAWAL MODAL */}
+          {editingWithdrawal && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 no-print animate-fade-in">
+              <div className="bg-white p-6 rounded-3xl max-w-md w-full space-y-4 shadow-2xl relative border border-gray-100">
+                <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                  <h3 className="text-sm font-black text-slate-800 uppercase tracking-wider">
+                    {isRtl ? 'تعديل مستند الصرف' : 'Modifier le Prélèvement'}
+                  </h3>
+                  <button 
+                    onClick={() => setEditingWithdrawal(null)}
+                    className="text-gray-400 hover:text-gray-600 cursor-pointer font-bold text-xs"
+                  >
+                    {isRtl ? 'إلغاء' : 'Annuler'}
+                  </button>
+                </div>
+
+                <form onSubmit={handleSaveEdit} className="space-y-4">
+                  {/* Amount */}
+                  <div className="space-y-1">
+                    <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'المبلغ المستهدف (DH)' : 'Montant Prélevé (DH)'}</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      required
+                      value={editAmount}
+                      onChange={(e) => setEditAmount(e.target.value)}
+                      placeholder="0.00"
+                      className="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition"
+                    />
+                  </div>
+
+                  {/* Beneficiary */}
+                  <div className="space-y-1">
+                    <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'المستفيد' : 'Bénéficiaire'}</label>
+                    <select
+                      value={editPerson}
+                      onChange={(e) => setEditPerson(e.target.value)}
+                      className="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition cursor-pointer"
+                    >
+                      <option value="الياس المباركي">{isRtl ? 'الياس المباركي' : 'Ilyas El Moubarki'}</option>
+                      <option value="فؤاد المباركي">{isRtl ? 'فؤاد المباركي' : 'Fouad El Moubarki'}</option>
+                      <option value="احمد المباركي">{isRtl ? 'احمد المباركي' : 'Ahmed El Moubarki'}</option>
+                      <option value="autre">{isRtl ? 'شخص آخر (كتابة الاسم بالأسفل)' : 'Autre personne (saisir ci-dessous)'}</option>
+                    </select>
+                  </div>
+
+                  {/* Custom Beneficiary */}
+                  {editPerson === 'autre' && (
+                    <div className="space-y-1">
+                      <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'اسم الشخص المستفيد المستهدف' : 'Nom du bénéficiaire'}</label>
+                      <input
+                        type="text"
+                        required
+                        value={editCustomPerson}
+                        onChange={(e) => setEditCustomPerson(e.target.value)}
+                        placeholder={isRtl ? 'أدخل الاسم هنا...' : 'Entrez le nom...'}
+                        className="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition"
+                      />
+                    </div>
+                  )}
+
+                  {/* Notes */}
+                  <div className="space-y-1">
+                    <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'السبب أو تدوين الملاحظة' : 'Motif / Description'}</label>
+                    <textarea
+                      rows={2}
+                      value={editNotes}
+                      onChange={(e) => setEditNotes(e.target.value)}
+                      placeholder={isRtl ? 'مثلاً: مقتطعات المالك، أداء فواتير، نقل السلع، إلخ...' : 'Dépenses personnelles, achats logistiques...'}
+                      className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition"
+                    ></textarea>
+                  </div>
+
+                  {/* Save button */}
+                  <button
+                    type="submit"
+                    className="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer mt-2"
+                  >
+                    <span>{isRtl ? 'حفظ التعديلات' : 'Enregistrer les modifications'}</span>
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -1847,6 +2030,15 @@ export default function Account({
                     </span>
                     <span className="font-mono text-sm font-extrabold text-rose-600">
                       {cumulativeDebtSum.toLocaleString(undefined, { minimumFractionDigits: 2 })} DH
+                    </span>
+                  </div>
+                  {/* Client checks (postal checks as guarantee) */}
+                  <div className="flex justify-between items-center border-b border-slate-50 pb-2.5 px-1">
+                    <span className="text-xs font-semibold text-indigo-700 flex items-center gap-1">
+                      <span>📩</span> {isRtl ? 'شيكات الضمان (المستلمة) :' : 'Chèques de garantie / Effets :'}
+                    </span>
+                    <span className="font-mono text-sm font-extrabold text-indigo-600">
+                      {cumulativeChecksSum.toLocaleString(undefined, { minimumFractionDigits: 2 })} DH
                     </span>
                   </div>
                 </div>

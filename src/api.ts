@@ -53,4 +53,8 @@ export const api = {
     getAll: () => request<any[]>('/activities'),
     create: (data: any) => request('/activities', { method: 'POST', body: JSON.stringify(data) }),
   },
+
+  system: {
+    clearAll: () => request<{ status: string; message: string }>('/system/clear', { method: 'POST' }),
+  },
 };
