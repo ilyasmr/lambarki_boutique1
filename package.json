@@ -1,5 +1,7 @@
 {
   "name": "react-example",
+  "description": "Lambarki Boutique ERP Caisse System",
+  "author": "Ilyas Lambarki",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -60,7 +62,7 @@
       "package.json"
     ],
     "win": {
-      "target": "portable"
+      "target": "dir"
     }
   }
 }
