@@ -104,11 +104,6 @@ export default function App() {
             setCurrentUser(resolvedUser);
             setActiveTab(resolvedUser.role === 'cashier' ? 'pos' : 'dashboard');
           } catch(e) { console.error(e); }
-        } else if (loadedUsers.length > 0) {
-          const defaultUser = loadedUsers[0];
-          setCurrentUser(defaultUser);
-          localStorage.setItem('dolibarr_current_user', JSON.stringify(defaultUser));
-          setActiveTab(defaultUser.role === 'cashier' ? 'pos' : 'dashboard');
         }
       } catch (err) {
         console.error('❌ Failed to load data from API:', err);
