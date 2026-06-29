@@ -81,7 +81,11 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ API Server running on http://localhost:${PORT}`);
-  console.log(`🗄️  Connected to Neon PostgreSQL`);
-});
+export default app;
+
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`✅ API Server running on http://localhost:${PORT}`);
+    console.log(`🗄️  Connected to Neon PostgreSQL`);
+  });
+}
