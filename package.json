@@ -10,7 +10,8 @@
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
     "server": "node --env-file=.env server/index.js",
-    "setup-db": "node --env-file=.env server/setup-db.js"
+    "setup-db": "node --env-file=.env server/setup-db.js",
+    "backup": "powershell -ExecutionPolicy Bypass -File ./backup.ps1"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

@@ -65,6 +65,13 @@ export default function Dashboard({
   const t = translations[lang];
   const tLabel = arabicDashboardLabels[lang];
 
+  const [filterDate, setFilterDate] = React.useState('');
+
+  const filteredActivities = React.useMemo(() => {
+    if (!filterDate) return activities;
+    return activities.filter(act => act.date && act.date.startsWith(filterDate));
+  }, [activities, filterDate]);
+
   // Calculations for KPI Cards
   const paidInvoices = invoices.filter(inv => inv.status === 'paid');
   const revenueTotal = paidInvoices.reduce((sum, inv) => sum + inv.total, 0);
@@ -452,7 +459,7 @@ export default function Dashboard({
         {/* Recent Activity Log (سجل آخر المستجدات) */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
               <div>
                 <h3 className="text-md font-bold text-gray-900 flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
@@ -464,15 +471,31 @@ export default function Dashboard({
                     : 'Suivi instantané des ventes, ajouts, modifications, suppressions et stocks.'}
                 </p>
               </div>
+              <div className="flex items-center gap-1.5 shrink-0 self-start sm:self-center">
+                <input
+                  type="date"
+                  value={filterDate}
+                  onChange={(e) => setFilterDate(e.target.value)}
+                  className="py-1 px-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xxs font-bold text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white transition cursor-pointer"
+                />
+                {filterDate && (
+                  <button
+                    onClick={() => setFilterDate('')}
+                    className="text-xxs font-extrabold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100/75 border border-rose-100 px-2.5 py-1 rounded-lg cursor-pointer transition"
+                  >
+                    {isRtl ? 'مسح' : 'Effacer'}
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="space-y-4 max-h-[320px] overflow-y-auto pr-1">
-              {activities.length === 0 ? (
+              {filteredActivities.length === 0 ? (
                 <div className="py-12 text-center text-gray-400 text-xs font-semibold">
-                  {isRtl ? 'لا توجد أنشطة مسجلة بعد.' : 'Aucune activité enregistrée pour le moment.'}
+                  {isRtl ? 'لا توجد أنشطة مسجلة.' : 'Aucune activité enregistrée.'}
                 </div>
               ) : (
-                activities.slice(0, 7).map((act) => {
+                filteredActivities.slice(0, filterDate ? 50 : 7).map((act) => {
                   const getMeta = (typeOfAct: string) => {
                     switch (typeOfAct) {
                       case 'sale':
