@@ -32,7 +32,7 @@ import PrintInvoiceModal from './components/PrintInvoiceModal';
 import Account from './components/Account';
 import InvoicesList from './components/InvoicesList';
 
-import { Key, Building, Sparkles, Search, Package, Users, FileText, X, Menu } from 'lucide-react';
+import { Key, Building, Sparkles, Search, Package, Users, FileText, X, Menu, Eye, EyeOff } from 'lucide-react';
 
 export default function App() {
   // Locale state: Defaulting to Arabic as requested in the prompt
@@ -51,6 +51,7 @@ export default function App() {
   // Core CRM Tables database state
   const [users, setUsers] = React.useState<User[]>([]);
   const [currentUser, setCurrentUser] = React.useState<User | null>(null);
+  const [showPassword, setShowPassword] = React.useState(false);
   const [clients, setClients] = React.useState<Client[]>([]);
   const [products, setProducts] = React.useState<Product[]>([]);
   const [invoices, setInvoices] = React.useState<Invoice[]>([]);
@@ -691,32 +692,45 @@ export default function App() {
     const tLabelLogin = arabicDashboardLabels[lang];
     return (
       <div 
-        className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden font-sans"
+        className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden font-sans"
         dir={isRtl ? 'rtl' : 'ltr'}
       >
-        <div className="absolute top-0 right-0 transform translate-x-12 -translate-y-12 w-[500px] h-[500px] bg-blue-650/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 transform -translate-x-12 translate-y-12 w-[500px] h-[500px] bg-indigo-650/10 rounded-full blur-3xl pointer-events-none"></div>
+        {/* Decorative Floating Blobs */}
+        <div className="absolute top-0 right-0 transform translate-x-12 -translate-y-12 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 transform -translate-x-12 translate-y-12 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
 
-        <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl space-y-8 z-10">
+        {/* Top Right Language Switcher */}
+        <div className="absolute top-6 right-6 z-25">
+          <button
+            type="button"
+            onClick={() => setLang(lang === 'ar' ? 'fr' : 'ar')}
+            className="bg-slate-900/80 backdrop-blur border border-slate-800 text-slate-300 hover:text-white px-3.5 py-1.5 rounded-xl text-xxs font-extrabold cursor-pointer transition flex items-center gap-1.5 shadow-sm"
+          >
+            <span>🌐</span>
+            <span>{lang === 'ar' ? 'Français' : 'العربية'}</span>
+          </button>
+        </div>
+
+        <div className="max-w-md w-full bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-8 shadow-[0_0_50px_-12px_rgba(59,130,246,0.12)] space-y-8 z-10">
           
-          <div className="text-center space-y-3">
-            <div className="w-16 h-16 bg-blue-650 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-blue-500/20">
+          <div className="text-center space-y-4">
+            <div className="w-16 h-16 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-blue-500/20">
               <Building className="w-8 h-8 text-white animate-pulse" />
             </div>
             <div>
               <h2 className="text-xl font-extrabold text-white tracking-tight">{tLabelLogin.loginTitle}</h2>
-              <p className="text-xs text-slate-400 mt-1">{tLabelLogin.loginSubtitle}</p>
+              <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">{tLabelLogin.loginSubtitle}</p>
             </div>
           </div>
 
-          <form onSubmit={handleLoginSubmit} className="space-y-4">
+          <form onSubmit={handleLoginSubmit} className="space-y-5">
             
-            <div className="space-y-1">
-              <label className="text-xxs text-slate-400 font-bold uppercase tracking-wider">
-                {isRtl ? 'اسم الولوج أو البريد الإلكتروني الخاص بالموظف *' : 'Nom d\'utilisateur ou Email Professionnel *'}
+            <div className="space-y-1.5">
+              <label className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider block">
+                {isRtl ? 'اسم الولوج أو البريد الإلكتروني الخاص بالموظف *' : "Nom d'utilisateur ou Email Professionnel *"}
               </label>
               <div className="relative">
-                <span className={`absolute inset-y-0 flex items-center px-3.5 text-slate-500 ${isRtl ? 'left-0' : 'right-0'}`}>
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-500">
                   <Users className="w-4 h-4" />
                 </span>
                 <input
@@ -727,22 +741,22 @@ export default function App() {
                     setLoginUsername(e.target.value);
                     setLoginError('');
                   }}
-                  placeholder={isRtl ? 'أدخل اسم الحساب أو البريد الإلكتروني (مثال: lamb.ilyas@gmail.com)' : 'Identifiant ou Email (ex: lamb.ilyas@gmail.com)'}
-                  className="w-full bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-xl px-4 py-3 text-xs font-mono text-white outline-none transition-all placeholder-slate-650 font-bold"
+                  placeholder={isRtl ? 'أدخل اسم الحساب أو البريد الإلكتروني' : 'Identifiant ou Email'}
+                  className="w-full bg-slate-950/80 border border-slate-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 rounded-xl pl-10 pr-4 py-3 text-xs font-mono text-white outline-none transition-all placeholder-slate-650 font-bold"
                 />
               </div>
             </div>
 
-            <div className="space-y-1">
-              <label className="text-xxs text-slate-400 font-bold uppercase tracking-wider">
+            <div className="space-y-1.5">
+              <label className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider block">
                 {isRtl ? 'كلمة السر الخاصة بالحساب *' : 'Mot de passe sécurisé *'}
               </label>
               <div className="relative">
-                <span className={`absolute inset-y-0 flex items-center px-3.5 text-slate-500 ${isRtl ? 'left-0' : 'right-0'}`}>
-                  <Key className="w-4 h-4 text-slate-500" />
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-500">
+                  <Key className="w-4 h-4" />
                 </span>
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   value={loginPassword}
                   onChange={(e) => {
@@ -750,86 +764,38 @@ export default function App() {
                     setLoginError('');
                   }}
                   placeholder={isRtl ? 'أدخل كلمة مرور الحساب' : 'Saisir le mot de passe'}
-                  className="w-full bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-xl px-4 py-3 text-xs font-mono text-white outline-none transition-all placeholder-slate-650"
+                  className="w-full bg-slate-950/80 border border-slate-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 rounded-xl pl-10 pr-10 py-3 text-xs font-mono text-white outline-none transition-all placeholder-slate-650"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500 hover:text-slate-300 transition cursor-pointer"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
             </div>
 
             {loginError && (
-              <p className="text-xxs text-rose-450 font-semibold bg-rose-950/20 p-2.5 rounded-lg border border-rose-950/40 leading-normal">
+              <p className="text-xxs text-rose-400 font-semibold bg-rose-950/20 p-3 rounded-xl border border-rose-950/40 leading-normal">
                 {loginError}
               </p>
             )}
 
             <button
               type="submit"
-              className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-blue-500/10 flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold transition-all duration-200 shadow-lg shadow-blue-500/15 flex items-center justify-center gap-2 transform active:scale-[0.98] cursor-pointer"
             >
               <span>{isRtl ? 'تحقق وولوج للوحة المراقبة' : 'Entrée Sécurisée'}</span>
             </button>
 
           </form>
-
-          {/* Tips block for test ease */}
-          <div className="bg-slate-950/50 rounded-2xl p-4.5 border border-slate-800 text-xxs text-slate-400 space-y-2.5 font-mono">
-            <p className="font-extrabold text-slate-200 border-b border-slate-800/80 pb-1 flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-              <span>{isRtl ? 'حسابات تجريبية سريعة المفعول (الحساب والسر)' : 'Comptes de Test Rapides :'}</span>
-            </p>
-            <div className="grid grid-cols-3 gap-1.5 text-center text-slate-300 font-bold uppercase">
-              <button 
-                type="button" 
-                onClick={() => {
-                  setLoginUsername('lamb.ilyas@gmail.com');
-                  setLoginPassword('ilyas_mr3');
-                }}
-                className="bg-slate-900 border border-slate-840 hover:border-blue-650 p-1.5 rounded-md transition text-[10px]"
-              >
-                {isRtl ? 'إلياس' : 'Ilias'}
-              </button>
-              <button 
-                type="button" 
-                onClick={() => {
-                  setLoginUsername('caissier');
-                  setLoginPassword('yassine123');
-                }}
-                className="bg-slate-900 border border-slate-840 hover:border-blue-650 p-1.5 rounded-md transition text-[10px]"
-              >
-                {isRtl ? 'ياسين' : 'Yassine'}
-              </button>
-              <button 
-                type="button" 
-                onClick={() => {
-                  setLoginUsername('rachida');
-                  setLoginPassword('fouad123');
-                }}
-                className="bg-slate-900 border border-slate-840 hover:border-blue-650 p-1.5 rounded-md transition text-[10px]"
-              >
-                {isRtl ? 'فؤاد' : 'Fouad'}
-              </button>
-            </div>
-          </div>
-
-          {/* Quick Lang Switch */}
-          <div className="flex gap-2 justify-center pt-2">
-            <button
-              onClick={() => setLang('fr')}
-              className={`px-3 py-1 rounded text-xxs font-bold uppercase ${lang === 'fr' ? 'bg-blue-650 text-white' : 'text-slate-400 hover:text-slate-200'}`}
-            >
-              FR
-            </button>
-            <button
-              onClick={() => setLang('ar')}
-              className={`px-3 py-1 rounded text-xxs font-bold uppercase font-arabic ${lang === 'ar' ? 'bg-blue-650 text-white' : 'text-slate-400 hover:text-slate-200'}`}
-            >
-              عربي
-            </button>
-          </div>
-
         </div>
       </div>
     );
   }
+
+
 
   // STANDARD LOGGED VIEW IN THE MAIN WORKSPACE
   const getInitials = (name: string) => {
