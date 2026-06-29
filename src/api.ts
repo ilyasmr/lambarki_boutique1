@@ -1,5 +1,24 @@
 // Central API client — all data goes through /api/* (Express → Neon PostgreSQL)
-const BASE = '/api';
+const getApiBase = () => {
+  const custom = localStorage.getItem('API_URL');
+  if (custom) return custom;
+  
+  const protocol = window.location.protocol;
+  const isStandalone = protocol === 'file:' || protocol.startsWith('capacitor') || window.location.hostname === 'localhost';
+  
+  // If running in local dev mode (Vite port 3000), keep using local api proxy "/api"
+  if (window.location.port === '3000') {
+    return '/api';
+  }
+  
+  if (isStandalone) {
+    return 'https://lambarki-boutique1.vercel.app/api';
+  }
+  
+  return '/api';
+};
+
+const BASE = getApiBase();
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {

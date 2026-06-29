@@ -1,0 +1,6 @@
+{
+  "appId": "lambarki.boutique.erp",
+  "appName": "Lambarki Boutique",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}

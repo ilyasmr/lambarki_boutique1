@@ -36,6 +36,22 @@ export default function Settings({
   const [importText, setImportText] = React.useState('');
   const [importSuccess, setImportSuccess] = React.useState<boolean | null>(null);
 
+  const [apiUrl, setApiUrl] = React.useState(localStorage.getItem('API_URL') || 'https://lambarki-boutique1.vercel.app/api');
+
+  const handleSaveApiUrl = () => {
+    if (!apiUrl.trim()) return;
+    localStorage.setItem('API_URL', apiUrl.trim());
+    alert(isRtl ? 'تم حفظ رابط الخادم بنجاح. سيتم إعادة تشغيل التطبيق لتطبيق التغييرات.' : 'URL API enregistrée. L\'application va redémarrer.');
+    window.location.reload();
+  };
+
+  const handleResetApiUrl = () => {
+    localStorage.removeItem('API_URL');
+    setApiUrl('https://lambarki-boutique1.vercel.app/api');
+    alert(isRtl ? 'تمت إعادة تعيين الرابط الافتراضي بنجاح. سيتم إعادة تشغيل التطبيق.' : 'URL réinitialisée. L\'application va redémarrer.');
+    window.location.reload();
+  };
+
   const handleImport = (e: React.FormEvent) => {
     e.preventDefault();
     if (!importText.trim()) return;
@@ -199,6 +215,54 @@ export default function Settings({
                   : 'Astuce : L\'application s\'exécute entièrement côté client (SPA), elle est ultra rapide et sécurisée car vos données ne transitent pas par un serveur tiers vulnérable.'
                 }
               </p>
+            </div>
+          </div>
+        </div>
+
+        {/* SECTION 3: API URL CONFIGURATION (FULL WIDTH CARD) */}
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
+          <div className="flex items-center gap-2 pb-2 border-b border-gray-50">
+            <Globe2 className="text-blue-600 w-5 h-5" />
+            <h3 className="text-sm font-black text-gray-900">
+              {isRtl ? 'إعدادات خادم البيانات والـ API' : 'Configuration du Serveur API Backend'}
+            </h3>
+          </div>
+          <p className="text-xs text-gray-650 leading-relaxed">
+            {isRtl 
+              ? 'إذا كنت تستخدم نسخة الهاتف (APK) أو برنامج سطح المكتب (EXE)، يرجى إدخال عنوان رابط خادم Vercel الخاص بك لمزامنة المبيعات والمخزن مع قاعدة البيانات الموحدة.'
+              : 'Si vous utilisez l\'application mobile (APK) ou l\'application de bureau (EXE), veuillez renseigner l\'URL de votre serveur API Vercel pour synchroniser vos ventes et stocks.'
+            }
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 items-end">
+            <div className="flex-1 space-y-1">
+              <label className="text-xxs text-gray-400 uppercase tracking-wider block font-bold">
+                {isRtl ? 'رابط خادم الـ API *' : 'URL du Serveur API *'}
+              </label>
+              <input
+                type="text"
+                value={apiUrl}
+                onChange={(e) => setApiUrl(e.target.value)}
+                placeholder="https://lambarki-boutique1.vercel.app/api"
+                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-xs font-bold"
+              />
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleSaveApiUrl}
+                className="py-2.5 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-black shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 shrink-0 h-[38px] cursor-pointer"
+              >
+                <span>{isRtl ? 'حفظ وإعادة التشغيل' : 'Enregistrer & Recharger'}</span>
+              </button>
+              {localStorage.getItem('API_URL') && (
+                <button
+                  type="button"
+                  onClick={handleResetApiUrl}
+                  className="py-2.5 px-4 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1 shrink-0 h-[38px] cursor-pointer border border-rose-100"
+                >
+                  <span>{isRtl ? 'إعادة ضبط الافتراضي' : 'Réinitialiser'}</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
