@@ -119,14 +119,7 @@ export default function UsersManager({
           </div>
         </div>
 
-        {/* Quick action build user button */}
-        <button
-          onClick={() => setIsOpenForm(true)}
-          className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-black shadow-lg shadow-blue-500/10 flex items-center justify-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          <span>{isRtl ? 'تسجيل مستخدم وصلاحية جديدة' : 'Créer un Nouvel Opérateur'}</span>
-        </button>
+
 
       </div>
 
@@ -146,7 +139,6 @@ export default function UsersManager({
                   <th className="py-3 px-3">{tLabel.username}</th>
                   <th className="py-3 px-3">{isRtl ? 'الدور والصلاحية' : 'Rôle ERP'}</th>
                   <th className="py-3 px-3">{tLabel.emailAddress}</th>
-                  <th className="py-3 px-3 text-center">{isRtl ? 'الحالة' : 'Connexion'}</th>
                   <th className="py-3 px-3 text-center">{isRtl ? 'حماية الحساب' : 'Sécurité Compte'}</th>
                 </tr>
               </thead>
@@ -155,9 +147,6 @@ export default function UsersManager({
                   // Principal Admin (Ilyas) first
                   if (a.username === 'admin') return -1;
                   if (b.username === 'admin') return 1;
-                  // Admin 2 (Rachida) second
-                  if (a.username === 'rachida') return -1;
-                  if (b.username === 'rachida') return 1;
                   // Rest alphabetic
                   return a.name.localeCompare(b.name);
                 }).map((u) => {
@@ -187,28 +176,9 @@ export default function UsersManager({
                       </td>
                       <td className="py-4 px-3 text-gray-500 font-mono text-xxs truncate max-w-[140px]">{u.email}</td>
                       <td className="py-4 px-3 text-center">
-                        <button
-                          onClick={() => {
-                            onSwitchUser(u);
-                            alert(isRtl 
-                              ? `تم تقمص شخصية: ${resolveUserName(u.name, lang)} بنجاح. لقد تغيرت الصلاحيات.` 
-                              : `Session simulée avec succès pour: ${resolveUserName(u.name, lang)}`
-                            );
-                          }}
-                          className={`px-3 py-1 text-xxs font-bold rounded-lg flex items-center gap-1 mx-auto transition-all ${
-                            isSelf 
-                              ? 'bg-emerald-100 text-emerald-800 cursor-default' 
-                              : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
-                          }`}
-                        >
-                          <RefreshCcw className="w-3 h-3" />
-                          <span>{isSelf ? (isRtl ? 'المستخدم النشط' : 'Session active') : (isRtl ? 'تسجيل دخول' : 'Permuter')}</span>
-                        </button>
-                      </td>
-                      <td className="py-4 px-3 text-center">
-                        <span className="inline-flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-lg text-xxs font-mono font-bold text-slate-700 border border-slate-200">
-                          <Lock className="w-3.5 h-3.5 text-blue-500" />
-                          <span>{u.password || (isRtl ? 'بـدون كـلمـة سـر' : 'Aucun')}</span>
+                        <span className="inline-flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-lg text-xxs font-mono font-bold text-slate-500 border border-slate-200">
+                          <Lock className="w-3.5 h-3.5 text-slate-400" />
+                          <span>••••••</span>
                         </span>
                       </td>
                     </tr>
@@ -220,109 +190,6 @@ export default function UsersManager({
         </div>
 
       </div>
-
-      {/* MODAL FORM: CREATE NEW OPERATOR */}
-      {isOpenForm && (
-        <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full">
-            
-            <div className="flex items-center justify-between px-6 py-4.5 border-b border-gray-100 bg-gray-50 rounded-t-2xl">
-              <h3 className="text-sm font-black text-gray-900">
-                {isRtl ? 'إضافة بطاقة مستخدم جديدة' : 'Créer un Dossier Personnel'}
-              </h3>
-              <button onClick={() => setIsOpenForm(false)} className="p-1 hover:bg-gray-200 rounded-lg transition">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs font-semibold">
-              
-              {/* Full Name */}
-              <div className="space-y-1">
-                <label className="text-xxs text-gray-400 uppercase tracking-wider">{isRtl ? 'الاسم الكامل الموثق *' : 'Nom Complet *'}</label>
-                <input
-                  type="text"
-                  required
-                  value={formName}
-                  onChange={(e) => setFormName(e.target.value)}
-                  placeholder="Ex: Youssef Chahine"
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold"
-                />
-              </div>
-
-              {/* Username */}
-              <div className="space-y-1">
-                <label className="text-xxs text-gray-400 uppercase tracking-wider">{isRtl ? 'اسم الولوج (المعرّف) *' : 'Identifiant / Nom en Caisse *'}</label>
-                <input
-                  type="text"
-                  required
-                  value={formUsername}
-                  onChange={(e) => setFormUsername(e.target.value)}
-                  placeholder="Ex: youssefc"
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-xs"
-                />
-              </div>
-
-              {/* Email */}
-              <div className="space-y-1">
-                <label className="text-xxs text-gray-400 uppercase tracking-wider">{isRtl ? 'البريد الإلكتروني المخصص' : 'Email Professionnel'}</label>
-                <input
-                  type="email"
-                  value={formEmail}
-                  onChange={(e) => setFormEmail(e.target.value)}
-                  placeholder="youssef@lambarki.ma"
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
-                />
-              </div>
-
-              {/* Password */}
-              <div className="space-y-1">
-                <label className="text-xxs text-gray-400 uppercase tracking-wider">{isRtl ? 'كلمة السر المخصصة لتسجيل الدخول *' : 'Mot de passe de Connexion *'}</label>
-                <input
-                  type="text"
-                  required
-                  value={formPassword}
-                  onChange={(e) => setFormPassword(e.target.value)}
-                  placeholder={isRtl ? 'أدخل كلمة مرور (مثال: isam_s2)' : 'Ex: password123'}
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono font-bold text-xs text-blue-600 focus:ring-blue-550"
-                />
-              </div>
-
-              {/* Role */}
-              <div className="space-y-1.5">
-                <label className="text-xxs text-gray-400 uppercase tracking-wider">{isRtl ? 'تعيين الصلاحية الوظيفية *' : 'Niveau de Permissions Droits *'}</label>
-                <select
-                  value={formRole}
-                  onChange={(e) => setFormRole(e.target.value as UserRole)}
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="cashier">{getRoleLabel('cashier')}</option>
-                  <option value="admin">{getRoleLabel('admin')}</option>
-                </select>
-              </div>
-
-              {/* Actions */}
-              <div className="pt-4 border-t border-gray-100 flex gap-3 text-sm">
-                <button
-                  type="submit"
-                  className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold font-sans shadow-md"
-                >
-                  {t.save}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsOpenForm(false)}
-                  className="px-5 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-semibold"
-                >
-                  {t.cancel}
-                </button>
-              </div>
-
-            </form>
-
-          </div>
-        </div>
-      )}
 
     </div>
   );
