@@ -276,11 +276,48 @@ export default function PosCaisse({
     setAmountPaidUpfront(0);
   };
 
+  const [mobileTab, setMobileTab] = React.useState<'catalog' | 'cart'>('catalog');
+  const cartItemsCount = cart.reduce((sum, item) => sum + item.qty, 0);
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8" dir={isRtl ? 'rtl' : 'ltr'}>
-      
-      {/* LEFT COLUMN: Catalog and search filters (8 cols in desktop) */}
-      <div className="lg:col-span-7 flex flex-col gap-6">
+    <div className="flex flex-col gap-6" dir={isRtl ? 'rtl' : 'ltr'}>
+      {/* Mobile Tab Switcher */}
+      <div className="lg:hidden p-1.5 bg-slate-100/90 rounded-xl flex gap-1 border border-slate-200/60 w-full shrink-0">
+        <button
+          type="button"
+          onClick={() => setMobileTab('catalog')}
+          className={`flex-1 py-3 text-xs font-black rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            mobileTab === 'catalog'
+              ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/10'
+              : 'text-slate-650 hover:text-slate-900 hover:bg-slate-200/50'
+          }`}
+        >
+          <ShoppingBag className="w-4 h-4" />
+          <span>{isRtl ? 'كتالوج السلع' : 'Rayon Catalogue'}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setMobileTab('cart')}
+          className={`flex-1 py-3 text-xs font-black rounded-lg transition-all flex items-center justify-center gap-1.5 relative cursor-pointer ${
+            mobileTab === 'cart'
+              ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/10'
+              : 'text-slate-650 hover:text-slate-900 hover:bg-slate-200/50'
+          }`}
+        >
+          <ShoppingCart className="w-4 h-4" />
+          <span>{isRtl ? 'سلة المبيعات' : 'Panier & Caisse'}</span>
+          {cartItemsCount > 0 && (
+            <span className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-rose-600 text-white font-extrabold text-[9px] flex items-center justify-center ring-2 ring-white">
+              {cartItemsCount}
+            </span>
+          )}
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* LEFT COLUMN: Catalog and search filters (8 cols in desktop) */}
+        <div className={`lg:col-span-7 flex-col gap-6 ${mobileTab === 'catalog' ? 'flex' : 'hidden lg:flex'}`}>
         
         {/* Search header & categories */}
         <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4">
@@ -403,7 +440,7 @@ export default function PosCaisse({
       </div>
 
       {/* RIGHT COLUMN: Interactive Cart checkout, Billing form (5 cols in desktop) */}
-      <div className="lg:col-span-5 flex flex-col gap-6">
+      <div className={`lg:col-span-5 flex-col gap-6 ${mobileTab === 'cart' ? 'flex' : 'hidden lg:flex'}`}>
         
         {/* Success dialog for the previous transaction, ready to trigger print action */}
         {lastCompletedInvoice && (
@@ -665,6 +702,7 @@ export default function PosCaisse({
 
       </div>
 
+    </div>
     </div>
   );
 }

@@ -25,7 +25,8 @@ import {
   RefreshCw, 
   Receipt,
   Clock,
-  Activity
+  Activity,
+  X
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -48,6 +49,8 @@ interface DashboardProps {
   onViewInvoice: (invoice: Invoice) => void;
   setActiveTab: (tab: string) => void;
   setShowLowStockOnly?: (val: boolean) => void;
+  onDeleteActivity?: (id: string) => void;
+  onEditActivity?: (id: string, descriptionAr: string, descriptionFr: string) => void;
 }
 
 export default function Dashboard({ 
@@ -58,7 +61,9 @@ export default function Dashboard({
   lang, 
   onViewInvoice,
   setActiveTab,
-  setShowLowStockOnly
+  setShowLowStockOnly,
+  onDeleteActivity,
+  onEditActivity
 }: DashboardProps) {
   
   const isRtl = lang === 'ar';
@@ -66,6 +71,10 @@ export default function Dashboard({
   const tLabel = arabicDashboardLabels[lang];
 
   const [filterDate, setFilterDate] = React.useState('');
+
+  const [editingActivity, setEditingActivity] = React.useState<any | null>(null);
+  const [editDescAr, setEditDescAr] = React.useState('');
+  const [editDescFr, setEditDescFr] = React.useState('');
 
   const filteredActivities = React.useMemo(() => {
     if (!filterDate) return activities;
@@ -540,7 +549,7 @@ export default function Dashboard({
                   })();
 
                   return (
-                    <div key={act.id} className="flex gap-3 text-xs items-start p-2 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition">
+                    <div key={act.id} className="group flex gap-3 text-xs items-start p-2 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition">
                       <div className={`p-2 rounded-lg border flex-shrink-0 ${meta.bgColor}`}>
                         <IconComp className="w-3.5 h-3.5" />
                       </div>
@@ -557,16 +566,46 @@ export default function Dashboard({
                         <p className="text-gray-900 font-bold leading-relaxed mt-0.5 text-[11px] ltr:text-left rtl:text-right">
                           {isRtl ? act.descriptionAr : act.descriptionFr}
                         </p>
-                        <div className="flex items-center gap-1.5 text-[9px] text-gray-400 mt-0.5 ltr:text-left rtl:text-right">
-                          <span>{isRtl ? `بواسطة: ${act.operator}` : `Par: ${act.operator}`}</span>
-                          {act.targetId && act.targetId !== 'bulk' && (
-                            <>
-                              <span>•</span>
-                              <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-blue-600 font-bold">
-                                {act.targetId}
-                              </span>
-                            </>
-                          )}
+                        <div className="flex items-center justify-between gap-2 mt-0.5">
+                          <div className="flex items-center gap-1.5 text-[9px] text-gray-400 ltr:text-left rtl:text-right">
+                            <span>{isRtl ? `بواسطة: ${act.operator}` : `Par: ${act.operator}`}</span>
+                            {act.targetId && act.targetId !== 'bulk' && (
+                              <>
+                                <span>•</span>
+                                <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-blue-600 font-bold">
+                                  {act.targetId}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                          
+                          {/* Edit / Delete actions */}
+                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setEditingActivity(act);
+                                setEditDescAr(act.descriptionAr || '');
+                                setEditDescFr(act.descriptionFr || '');
+                              }}
+                              className="p-0.5 text-blue-650 hover:text-blue-800 rounded transition cursor-pointer"
+                              title={isRtl ? 'تعديل' : 'Modifier'}
+                            >
+                              <Edit2 className="w-3 h-3" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (window.confirm(isRtl ? 'هل أنت متأكد من حذف هذا النشاط؟' : 'Confirmer la suppression de cette activité ?')) {
+                                  onDeleteActivity?.(act.id);
+                                }
+                              }}
+                              className="p-0.5 text-rose-600 hover:text-rose-800 rounded transition cursor-pointer"
+                              title={isRtl ? 'حذف' : 'Supprimer'}
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -579,6 +618,59 @@ export default function Dashboard({
 
       </div>
 
+      {/* Edit Activity Modal */}
+      {editingActivity && (
+        <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full">
+            <div className="flex items-center justify-between px-6 py-4.5 border-b border-gray-100 bg-gray-50 rounded-t-2xl">
+              <h3 className="text-sm font-black text-gray-900">
+                {isRtl ? 'تعديل وصف النشاط' : "Modifier la description de l'activité"}
+              </h3>
+              <button onClick={() => setEditingActivity(null)} className="p-1 hover:bg-gray-200 rounded-lg transition cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                onEditActivity?.(editingActivity.id, editDescAr, editDescFr);
+                setEditingActivity(null);
+              }}
+              className="p-6 space-y-4 text-xs font-semibold text-left"
+              dir={isRtl ? 'rtl' : 'ltr'}
+            >
+              <div className="space-y-1">
+                <label className="text-xxs text-gray-400 uppercase tracking-wider block text-start">{isRtl ? 'الوصف بالعربية *' : 'Description en Arabe *'}</label>
+                <input
+                  type="text"
+                  required
+                  value={editDescAr}
+                  onChange={(e) => setEditDescAr(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xxs text-gray-400 uppercase tracking-wider block text-start">{isRtl ? 'الوصف بالفرنسية *' : 'Description en Français *'}</label>
+                <input
+                  type="text"
+                  required
+                  value={editDescFr}
+                  onChange={(e) => setEditDescFr(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div className="pt-4 border-t border-gray-100 flex gap-3 text-sm">
+                <button type="submit" className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold cursor-pointer transition">
+                  {isRtl ? 'حفظ التعديلات' : 'Enregistrer'}
+                </button>
+                <button type="button" onClick={() => setEditingActivity(null)} className="px-5 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-semibold cursor-pointer">
+                  {t.cancel}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

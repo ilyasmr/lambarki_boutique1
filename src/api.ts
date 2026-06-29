@@ -46,12 +46,15 @@ export const api = {
   movements: {
     getAll: () => request<any[]>('/movements'),
     create: (data: any) => request('/movements', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id: string, data: any) => request(`/movements/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     delete: (id: string) => request(`/movements/${id}`, { method: 'DELETE' }),
   },
 
   activities: {
     getAll: () => request<any[]>('/activities'),
     create: (data: any) => request('/activities', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id: string, data: any) => request(`/activities/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    delete: (id: string) => request(`/activities/${id}`, { method: 'DELETE' }),
   },
 
   system: {

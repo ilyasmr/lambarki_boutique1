@@ -7,8 +7,8 @@ import { getProducts, createProduct, updateProduct, deleteProduct } from './rout
 import { getClients, createClient, updateClient, deleteClient } from './routes/clients.js';
 import { getInvoices, createInvoice, updateInvoice, deleteInvoice } from './routes/invoices.js';
 import { getUsers, createUser, updateUser, deleteUser } from './routes/users.js';
-import { getMovements, createMovement, deleteMovement } from './routes/movements.js';
-import { getActivities, createActivity } from './routes/activities.js';
+import { getMovements, createMovement, deleteMovement, updateMovement } from './routes/movements.js';
+import { getActivities, createActivity, deleteActivity, updateActivity } from './routes/activities.js';
 
 dotenv.config();
 
@@ -50,11 +50,14 @@ app.delete('/api/users/:id', deleteUser);
 // ── Stock Movements ───────────────────────────────────
 app.get('/api/movements', getMovements);
 app.post('/api/movements', createMovement);
+app.put('/api/movements/:id', updateMovement);
 app.delete('/api/movements/:id', deleteMovement);
 
 // ── Activities ────────────────────────────────────────
 app.get('/api/activities', getActivities);
 app.post('/api/activities', createActivity);
+app.put('/api/activities/:id', updateActivity);
+app.delete('/api/activities/:id', deleteActivity);
 
 // ── System Management ─────────────────────────────────
 app.post('/api/system/clear', async (req, res) => {

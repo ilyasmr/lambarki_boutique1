@@ -13,7 +13,9 @@ import {
   History,
   CheckCircle,
   ShieldAlert,
-  Trash2
+  Trash2,
+  Edit2,
+  X
 } from 'lucide-react';
 
 interface StocksManagerProps {
@@ -23,6 +25,8 @@ interface StocksManagerProps {
   currentUser: { name: string };
   onUpdateStock: (productId: string, newQty: number, movement: StockMovement) => void;
   onUpdateStocksBulk?: (updates: { productId: string; newQty: number; movement: StockMovement }[]) => void;
+  onDeleteMovement?: (id: string) => void;
+  onEditMovement?: (id: string, qty: number, reason: string) => void;
 }
 
 interface BulkItem {
@@ -37,7 +41,9 @@ export default function StocksManager({
   lang, 
   currentUser,
   onUpdateStock,
-  onUpdateStocksBulk
+  onUpdateStocksBulk,
+  onDeleteMovement,
+  onEditMovement
 }: StocksManagerProps) {
 
   const isRtl = lang === 'ar';
@@ -59,6 +65,11 @@ export default function StocksManager({
     { id: 'bulk-1', productId: '', qty: 10 }
   ]);
   const [bulkReason, setBulkReason] = React.useState('');
+
+  // Editing movement states
+  const [editingMovement, setEditingMovement] = React.useState<StockMovement | null>(null);
+  const [editQty, setEditQty] = React.useState(0);
+  const [editReason, setEditReason] = React.useState('');
 
   // Filter state for stock history list (All, In/Entrée, Out/Sortie)
   const [filterType, setFilterType] = React.useState<'all' | 'in' | 'out'>('all');
@@ -592,6 +603,7 @@ export default function StocksManager({
                   <th className="py-3 px-3 text-right">{isRtl ? 'القدر' : 'Qté'}</th>
                   <th className="py-3 px-3">{isRtl ? 'التفاصيل / السبب' : 'Détail / Motif'}</th>
                   <th className="py-3 px-3">{isRtl ? 'تاريخ / منفذ' : 'Date / Opérateur'}</th>
+                  <th className="py-3 px-3 text-center">{isRtl ? 'الإجراءات' : 'Actions'}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
@@ -608,7 +620,7 @@ export default function StocksManager({
                       <React.Fragment key={m.id}>
                         {isFirstInBatch && (
                           <tr className="bg-blue-50/25 border-y border-blue-100/50">
-                            <td colSpan={5} className="py-2 px-3 text-[10px] font-black text-blue-700 tracking-wider">
+                            <td colSpan={6} className="py-2 px-3 text-[10px] font-black text-blue-700 tracking-wider">
                               <span className="flex items-center gap-1.5 justify-start">
                                 <span className="w-1.5 h-1.5 rounded-full bg-blue-650 animate-pulse"></span>
                                 {isRtl ? 'عملية موحدة (عدة سلع دفعة واحدة)' : 'Opération groupée (Multi-articles)'}
@@ -648,6 +660,32 @@ export default function StocksManager({
                               })}
                             </p>
                           </td>
+                          <td className="py-3 px-3 text-center">
+                            <div className="flex items-center justify-center gap-1">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setEditingMovement(m);
+                                  setEditQty(m.qty);
+                                  setEditReason(m.reason);
+                                }}
+                                className="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg cursor-pointer transition"
+                              >
+                                <Edit2 className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (window.confirm(isRtl ? 'هل أنت متأكد من مسح حركة المخزون هذه؟ سيتم تعديل مخزون المنتج تلقائياً.' : 'Confirmer la suppression ? Le stock du produit sera ajusté.')) {
+                                    onDeleteMovement?.(m.id);
+                                  }
+                                }}
+                                className="p-1.5 text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded-lg cursor-pointer transition"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </td>
                         </tr>
                       </React.Fragment>
                     );
@@ -655,7 +693,7 @@ export default function StocksManager({
                 })()}
                 {filteredMovements.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="py-12 text-center text-gray-450 font-semibold">
+                    <td colSpan={6} className="py-12 text-center text-gray-450 font-semibold">
                       {isRtl ? 'لم يثبت أي حركة مطابقة للتصفية المحددة.' : 'Aucun mouvement correspondant au filtre sélectionné.'}
                     </td>
                   </tr>
@@ -666,6 +704,61 @@ export default function StocksManager({
         </div>
 
       </div>
+
+      {/* Edit Movement Modal */}
+      {editingMovement && (
+        <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full">
+            <div className="flex items-center justify-between px-6 py-4.5 border-b border-gray-100 bg-gray-50 rounded-t-2xl">
+              <h3 className="text-sm font-black text-gray-900">
+                {isRtl ? 'تعديل حركة المخزون' : 'Modifier le mouvement'}
+              </h3>
+              <button onClick={() => setEditingMovement(null)} className="p-1 hover:bg-gray-200 rounded-lg transition cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                onEditMovement?.(editingMovement.id, editQty, editReason);
+                setEditingMovement(null);
+              }}
+              className="p-6 space-y-4 text-xs font-semibold text-left"
+              dir={isRtl ? 'rtl' : 'ltr'}
+            >
+              <div className="space-y-1">
+                <label className="text-xxs text-gray-400 uppercase tracking-wider block text-start">{isRtl ? 'الكمية *' : 'Quantité *'}</label>
+                <input
+                  type="number"
+                  required
+                  min={1}
+                  value={editQty}
+                  onChange={(e) => setEditQty(parseInt(e.target.value) || 0)}
+                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xxs text-gray-400 uppercase tracking-wider block text-start">{isRtl ? 'السبب / الملاحظة *' : 'Raison / Motif *'}</label>
+                <input
+                  type="text"
+                  required
+                  value={editReason}
+                  onChange={(e) => setEditReason(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div className="pt-4 border-t border-gray-100 flex gap-3 text-sm">
+                <button type="submit" className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold cursor-pointer transition">
+                  {isRtl ? 'حفظ التعديلات' : 'Enregistrer'}
+                </button>
+                <button type="button" onClick={() => setEditingMovement(null)} className="px-5 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-semibold cursor-pointer">
+                  {t.cancel}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
     </div>
   );

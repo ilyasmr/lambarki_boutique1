@@ -260,6 +260,81 @@ export default function App() {
     );
   };
 
+  // Delete a stock movement and refresh products & movements
+  const handleDeleteMovement = async (id: string) => {
+    try {
+      const targetMov = stockMovements.find(m => m.id === id);
+      await api.movements.delete(id);
+      
+      // Update local movements list
+      setStockMovements(prev => prev.filter(m => m.id !== id));
+      
+      // Refresh products from database to ensure stock levels are in sync
+      const refreshedProducts = await api.products.getAll();
+      setProducts(refreshedProducts);
+
+      if (targetMov) {
+        logActivity(
+          'product_delete',
+          `حذف حركة مخزون للمنتج "${targetMov.productName}" بقيمة ${targetMov.qty} (تاريخ الحركة: ${new Date(targetMov.date).toLocaleDateString()})`,
+          `Suppression d'un mouvement de stock pour "${targetMov.productName}" de ${targetMov.qty} (Date: ${new Date(targetMov.date).toLocaleDateString()})`,
+          targetMov.productId
+        );
+      }
+    } catch (err) {
+      console.error('Failed to delete movement:', err);
+      alert(lang === 'ar' ? 'فشل حذف حركة المخزون' : 'Échec de la suppression du mouvement');
+    }
+  };
+
+  // Edit a stock movement and refresh products & movements
+  const handleEditMovement = async (id: string, qty: number, reason: string) => {
+    try {
+      const targetMov = stockMovements.find(m => m.id === id);
+      await api.movements.update(id, { qty, reason });
+      
+      // Refresh products and movements to keep everything fully synced
+      const [refreshedProducts, refreshedMovements] = await Promise.all([
+        api.products.getAll(),
+        api.movements.getAll()
+      ]);
+      setProducts(refreshedProducts);
+      setStockMovements(refreshedMovements);
+
+      if (targetMov) {
+        logActivity(
+          'product_edit',
+          `تعديل كمية حركة مخزون للمنتج "${targetMov.productName}" من ${targetMov.qty} إلى ${qty}`,
+          `Modification de la quantité du mouvement pour "${targetMov.productName}" de ${targetMov.qty} à ${qty}`,
+          targetMov.productId
+        );
+      }
+    } catch (err) {
+      console.error('Failed to edit movement:', err);
+      alert(lang === 'ar' ? 'فشل تعديل حركة المخزون' : 'Échec de la modification du mouvement');
+    }
+  };
+
+  // Delete an activity log
+  const handleDeleteActivity = async (id: string) => {
+    try {
+      await api.activities.delete(id);
+      setActivities(prev => prev.filter(a => a.id !== id));
+    } catch (err) {
+      console.error('Failed to delete activity:', err);
+    }
+  };
+
+  // Edit an activity log
+  const handleEditActivity = async (id: string, descriptionAr: string, descriptionFr: string) => {
+    try {
+      await api.activities.update(id, { descriptionAr, descriptionFr });
+      setActivities(prev => prev.map(a => a.id === id ? { ...a, descriptionAr, descriptionFr } : a));
+    } catch (err) {
+      console.error('Failed to edit activity:', err);
+    }
+  };
+
   // Products CRUD actions
   const handleAddProduct = (p: Product) => {
     api.products.create(p).catch(console.error);
@@ -585,6 +660,8 @@ export default function App() {
             onViewInvoice={(inv) => setPreviewedInvoice(inv)}
             setActiveTab={setActiveTab}
             setShowLowStockOnly={setShowLowStockOnly}
+            onDeleteActivity={handleDeleteActivity}
+            onEditActivity={handleEditActivity}
           />
         );
       case 'pos':
@@ -635,6 +712,8 @@ export default function App() {
             currentUser={currentUser}
             onUpdateStock={handleUpdateStock}
             onUpdateStocksBulk={handleUpdateStocksBulk}
+            onDeleteMovement={handleDeleteMovement}
+            onEditMovement={handleEditMovement}
           />
         );
       case 'sales':
@@ -1071,7 +1150,7 @@ export default function App() {
 
         {/* Scrollable Main Content Router */}
         <main 
-          className="flex-1 p-8 overflow-y-auto max-w-full bg-slate-50"
+          className="flex-1 p-4 sm:p-8 overflow-y-auto max-w-full bg-slate-50"
           dir={isRtl ? 'rtl' : 'ltr'}
         >
           {renderTabContent()}
