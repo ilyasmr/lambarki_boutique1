@@ -181,6 +181,35 @@ export default function App() {
     localStorage.removeItem('dolibarr_current_user');
   };
 
+  // Inactivity timeout (10 minutes)
+  React.useEffect(() => {
+    if (!currentUser) return;
+
+    let timeoutId: any;
+
+    const resetTimer = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        handleLogout();
+      }, 10 * 60 * 1000); // 10 minutes
+    };
+
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+    
+    resetTimer();
+
+    events.forEach(event => {
+      window.addEventListener(event, resetTimer);
+    });
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      events.forEach(event => {
+        window.removeEventListener(event, resetTimer);
+      });
+    };
+  }, [currentUser]);
+
   // CRM Action: New checkout processed
   const handleNewSale = (newInvoice: Invoice, updatedProds: Product[], updatedClis: Client[]) => {
     // 1. Save invoice to DB
