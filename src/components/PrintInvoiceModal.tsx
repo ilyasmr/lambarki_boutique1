@@ -37,8 +37,8 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
     // Prepare message contents
     let msg = `*LAMBARKI - FACTURE ${invoice.invoiceNumber}*\n\n`;
     msg += `👤 *Client :* ${invoice.clientName}\n`;
-    msg += `🗓️ *Date d'émission :* ${new Date(invoice.date).toLocaleDateString(lang === 'ar' ? 'ar-MA' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}\n`;
-    msg += `💵 *Montant TTC :* ${invoice.total.toFixed(2)} DH\n`;
+    msg += `📅 *Date d'émission :* ${new Date(invoice.date).toLocaleString(lang === 'ar' ? 'ar-MA' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}\n`;
+    msg += `💰 *Montant TTC :* ${invoice.total.toFixed(2)} DH\n`;
     
     if (invoice.paymentStatus && invoice.paymentStatus !== 'paid') {
       msg += `💳 *Statut paiement :* ${invoice.paymentStatus === 'unpaid' ? 'À Crédit (Non payée)' : 'Paiement Partiel (Avance)'}\n`;
@@ -68,7 +68,7 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
     }
   };
 
-  const formattedDate = new Date(invoice.date).toLocaleDateString(
+  const formattedDate = new Date(invoice.date).toLocaleString(
     lang === 'ar' ? 'ar-MA' : 'fr-FR', 
     { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }
   );

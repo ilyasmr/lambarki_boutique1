@@ -430,7 +430,7 @@ export default function InvoicesList({
                     <td className="py-3.5 px-3 font-mono text-indigo-600 font-bold">{invoice.invoiceNumber}</td>
                     <td className="py-3.5 px-3 text-gray-900 font-bold">{invoice.clientName}</td>
                     <td className="py-3.5 px-3 text-gray-500 font-medium">
-                      {new Date(invoice.date).toLocaleDateString(lang === 'ar' ? 'ar-MA' : 'fr', {
+                      {new Date(invoice.date).toLocaleString(lang === 'ar' ? 'ar-MA' : 'fr', {
                         day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
                       })}
                     </td>

@@ -1055,7 +1055,7 @@ export default function ClientsList({
                              </div>
                              <div>
                                <p className="text-[10px] text-emerald-900 font-bold uppercase tracking-wider">{isRtl ? 'تسديد دين / استخلاص' : 'Règlement de dette'}</p>
-                               <p className="text-[9px] text-emerald-700/80 font-medium">{pay.date.split('T')[0]} - {pay.notes}</p>
+                               <p className="text-[9px] text-emerald-700/80 font-medium">{new Date(pay.date).toLocaleString(isRtl ? 'ar-MA' : 'fr', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })} - {pay.notes}</p>
                              </div>
                           </div>
                           <div className="text-right">
@@ -1104,7 +1104,7 @@ export default function ClientsList({
                                   </span>
                                 )}
                               </p>
-                              <p className="text-[10px] text-gray-450 font-medium">{p.date.split('T')[0]}</p>
+                              <p className="text-[10px] text-gray-450 font-medium">{new Date(p.date).toLocaleString(isRtl ? 'ar-MA' : 'fr', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
                             </div>
                           </div>
 
