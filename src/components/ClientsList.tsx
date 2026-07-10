@@ -16,7 +16,9 @@ import {
   ShoppingBag,
   ShieldAlert,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Maximize2,
+  Minimize2
 } from 'lucide-react';
 
 interface ClientsListProps {
@@ -128,6 +130,8 @@ export default function ClientsList({
   // Period filters for purchase calculation
   const [purchaseDateFrom, setPurchaseDateFrom] = React.useState('');
   const [purchaseDateTo, setPurchaseDateTo] = React.useState('');
+  const [showOnlyDebtInvoices, setShowOnlyDebtInvoices] = React.useState(false);
+  const [isMaximized, setIsMaximized] = React.useState(false);
 
   // Confirmation modal state for client deletion
   const [clientToDelete, setClientToDelete] = React.useState<Client | null>(null);
@@ -365,9 +369,13 @@ export default function ClientsList({
       const pDate = p.date.split('T')[0]; 
       if (purchaseDateFrom && pDate < purchaseDateFrom) return false;
       if (purchaseDateTo && pDate > purchaseDateTo) return false;
+      if (showOnlyDebtInvoices) {
+        const invoice = invoices.find(inv => inv.id === p.invoiceId || inv.invoiceNumber === p.invoiceId);
+        if (!invoice || !invoice.amountDue || invoice.amountDue <= 0) return false;
+      }
       return true;
     });
-  }, [selectedClient, purchaseDateFrom, purchaseDateTo]);
+  }, [selectedClient, purchaseDateFrom, purchaseDateTo, showOnlyDebtInvoices, invoices]);
 
   const clientTotalSpentInPeriod = React.useMemo(() => {
     return clientPurchasesInPeriod.reduce((sum, p) => sum + p.total, 0);
@@ -760,7 +768,11 @@ export default function ClientsList({
 
       {/* RIGHT COLUMN: Profile details inspections panel (5 cols) */}
       {selectedClient && (
-        <div className="lg:col-span-5 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col justify-between max-h-[85vh] sticky top-6 animate-fade-in">
+        <div className={
+          isMaximized 
+            ? "fixed inset-0 z-50 w-full h-full bg-white rounded-none m-0 overflow-hidden flex flex-col justify-between animate-fade-in shadow-2xl" 
+            : "lg:col-span-5 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col justify-between max-h-[85vh] sticky top-6 animate-fade-in"
+        }>
           
           {/* Header */}
           <div className="px-5 py-4.5 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
@@ -768,12 +780,24 @@ export default function ClientsList({
               <History className="w-4 h-4 text-blue-600" />
               <span>{isRtl ? 'ملف وفواتير الزبون' : 'Historique & Fiches Client'}</span>
             </h3>
-            <button 
-              onClick={() => setSelectedClient(null)} 
-              className="p-1 hover:bg-gray-200 text-gray-400 hover:text-gray-700 rounded-lg transition"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-1.5">
+              <button 
+                onClick={() => setIsMaximized(!isMaximized)} 
+                className="p-1 hover:bg-gray-200 text-gray-400 hover:text-gray-700 rounded-lg transition"
+                title={isRtl ? 'تكبير / تصغير' : 'Agrandir / Réduire'}
+              >
+                {isMaximized ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
+              </button>
+              <button 
+                onClick={() => {
+                  setSelectedClient(null);
+                  setIsMaximized(false);
+                }} 
+                className="p-1 hover:bg-gray-200 text-gray-400 hover:text-gray-700 rounded-lg transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* Profile particulars */}
@@ -961,21 +985,36 @@ export default function ClientsList({
                   </span>
                 </div>
 
-                {(purchaseDateFrom || purchaseDateTo) && (
+                {/* Filter Debt Checkbox */}
+                <div className="pt-2 border-t border-slate-200/60 flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="showOnlyDebtInvoices"
+                    checked={showOnlyDebtInvoices}
+                    onChange={(e) => setShowOnlyDebtInvoices(e.target.checked)}
+                    className="w-3.5 h-3.5 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
+                  />
+                  <label htmlFor="showOnlyDebtInvoices" className="text-[10px] font-extrabold text-slate-700 cursor-pointer">
+                    {isRtl ? 'عرض فواتير الديون فقط' : 'Afficher uniquement les factures impayées'}
+                  </label>
+                </div>
+
+                {(purchaseDateFrom || purchaseDateTo || showOnlyDebtInvoices) && (
                   <button
                     type="button"
                     onClick={() => {
                       setPurchaseDateFrom('');
                       setPurchaseDateTo('');
+                      setShowOnlyDebtInvoices(false);
                     }}
-                    className="w-full text-center text-[9px] font-black text-rose-600 hover:text-rose-700 hover:underline pt-1 block"
+                    className="w-full text-center text-[10px] font-black text-rose-600 hover:text-rose-700 hover:underline pt-2 border-t border-slate-200/60 block transition-colors"
                   >
-                    {isRtl ? '🗑️ إعادة تعيين الفلتر' : '🗑️ Réinitialiser le filtre'}
+                    {isRtl ? '🔄 العودة للأرشيف (عرض جميع المشتريات)' : '🔄 Retour aux archives (tout afficher)'}
                   </button>
                 )}
               </div>
 
-              <div className="space-y-2 max-h-[160px] overflow-y-auto pr-0.5">
+              <div className={`space-y-2 overflow-y-auto pr-0.5 ${isMaximized ? 'flex-1 min-h-[300px]' : 'max-h-[160px]'}`}>
                 {clientPurchasesInPeriod.length === 0 ? (
                   <div className="p-8 text-center text-gray-400 border border-dashed border-gray-200 rounded-xl bg-gray-50/50">
                     <ShoppingBag className="w-8 h-8 mx-auto stroke-1 text-gray-300 mb-1.5" />
