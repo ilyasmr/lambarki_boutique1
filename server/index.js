@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import pool from './db.js';
 
-import { getProducts, createProduct, updateProduct, deleteProduct } from './routes/products.js';
+import { getProducts, createProduct, updateProduct, deleteProduct, adjustStock } from './routes/products.js';
 import { getClients, createClient, updateClient, deleteClient } from './routes/clients.js';
 import { getInvoices, createInvoice, updateInvoice, deleteInvoice } from './routes/invoices.js';
 import { getUsers, createUser, updateUser, deleteUser } from './routes/users.js';
@@ -27,6 +27,7 @@ app.use((req, res, next) => {
 app.get('/api/products', getProducts);
 app.post('/api/products', createProduct);
 app.put('/api/products/:id', updateProduct);
+app.put('/api/products/:id/adjust_stock', adjustStock);
 app.delete('/api/products/:id', deleteProduct);
 
 // ── Clients ───────────────────────────────────────────

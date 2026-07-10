@@ -38,6 +38,7 @@ export const api = {
     getAll: () => request<any[]>('/products'),
     create: (data: any) => request('/products', { method: 'POST', body: JSON.stringify(data) }),
     update: (id: string, data: any) => request(`/products/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    adjustStock: (id: string, data: { diff: number }) => request(`/products/${id}/adjust_stock`, { method: 'PUT', body: JSON.stringify(data) }),
     delete: (id: string) => request(`/products/${id}`, { method: 'DELETE' }),
   },
 

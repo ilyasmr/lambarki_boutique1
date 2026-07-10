@@ -14,7 +14,8 @@ export async function getProducts(req, res) {
       stock: parseInt(r.stock || 0),
       minStockAlert: parseInt(r.min_stock_alert || 0),
       description: r.description || '',
-      image: r.image || ''
+      image: r.image || '',
+      version: parseInt(r.version || 1)
     }));
     res.json(products);
   } catch (err) {
@@ -42,7 +43,8 @@ export async function createProduct(req, res) {
       stock: parseInt(r.stock || 0),
       minStockAlert: parseInt(r.min_stock_alert || 0),
       description: r.description || '',
-      image: r.image || ''
+      image: r.image || '',
+      version: parseInt(r.version || 1)
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -52,13 +54,17 @@ export async function createProduct(req, res) {
 // PUT update product
 export async function updateProduct(req, res) {
   const { id } = req.params;
-  const { name, sku, buyPrice, sellPrice, category, stock, minStockAlert, description, image } = req.body;
+  const { name, sku, buyPrice, sellPrice, category, stock, minStockAlert, description, image, version } = req.body;
   try {
+    const v = version || 1;
     const result = await pool.query(
       `UPDATE products SET name=$1, sku=$2, buy_price=$3, sell_price=$4, category=$5, stock=$6,
-       min_stock_alert=$7, description=$8, image=$9 WHERE id=$10 RETURNING *`,
-      [name, sku, buyPrice, sellPrice, category, stock, minStockAlert, description, image || '', id]
+       min_stock_alert=$7, description=$8, image=$9, version=version+1 WHERE id=$10 AND version=$11 RETURNING *`,
+      [name, sku, buyPrice, sellPrice, category, stock, minStockAlert, description, image || '', id, v]
     );
+    if (result.rowCount === 0) {
+      return res.status(409).json({ error: 'Conflict: Product was updated by another user.' });
+    }
     const r = result.rows[0];
     res.json({
       id: r.id,
@@ -70,7 +76,8 @@ export async function updateProduct(req, res) {
       stock: parseInt(r.stock || 0),
       minStockAlert: parseInt(r.min_stock_alert || 0),
       description: r.description || '',
-      image: r.image || ''
+      image: r.image || '',
+      version: parseInt(r.version || 1)
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -83,6 +90,37 @@ export async function deleteProduct(req, res) {
   try {
     await pool.query('DELETE FROM products WHERE id=$1', [id]);
     res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+// PUT adjust stock
+export async function adjustStock(req, res) {
+  const { id } = req.params;
+  const { diff } = req.body;
+  try {
+    const result = await pool.query(
+      `UPDATE products SET stock = stock + $1 WHERE id = $2 RETURNING *`,
+      [diff, id]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    const r = result.rows[0];
+    res.json({
+      id: r.id,
+      name: r.name,
+      sku: r.sku,
+      buyPrice: parseFloat(r.buy_price || 0),
+      sellPrice: parseFloat(r.sell_price || 0),
+      category: r.category,
+      stock: parseInt(r.stock || 0),
+      minStockAlert: parseInt(r.min_stock_alert || 0),
+      description: r.description || '',
+      image: r.image || '',
+      version: parseInt(r.version || 1)
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -51,7 +51,8 @@ async function setupDatabase() {
         stock INTEGER DEFAULT 0,
         min_stock_alert INTEGER DEFAULT 5,
         description TEXT,
-        image TEXT DEFAULT ''
+        image TEXT DEFAULT '',
+        version INTEGER DEFAULT 1
       );
 
       CREATE TABLE IF NOT EXISTS invoices (

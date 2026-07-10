@@ -1,5 +1,5 @@
 import React from 'react';
-import { Client, User, PostalCheck } from '../types';
+import { Client, User, PostalCheck, Invoice } from '../types';
 import { translations, arabicDashboardLabels } from '../translations';
 import { 
   Plus, 
@@ -14,11 +14,14 @@ import {
   X,
   Sparkles,
   ShoppingBag,
-  ShieldAlert
+  ShieldAlert,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 
 interface ClientsListProps {
   clients: Client[];
+  invoices?: Invoice[];
   lang: 'fr' | 'ar';
   onAddClient: (client: Client) => void;
   onEditClient: (client: Client) => void;
@@ -29,6 +32,7 @@ interface ClientsListProps {
 
 export default function ClientsList({ 
   clients, 
+  invoices = [],
   lang, 
   onAddClient, 
   onEditClient, 
@@ -44,6 +48,7 @@ export default function ClientsList({
   // States
   const [searchTerm, setSearchTerm] = React.useState(prefilledSearch);
   const [selectedClient, setSelectedClient] = React.useState<Client | null>(null);
+  const [expandedInvoiceId, setExpandedInvoiceId] = React.useState<string | null>(null);
   const [sortBy, setSortBy] = React.useState<'default' | 'debt_desc' | 'debt_asc' | 'debt_date_desc' | 'debt_date_asc' | 'debt_duedate_asc' | 'spent_desc' | 'check_expiry' | 'check_amount_desc'>('default');
 
   // Helper to obtain a unique chronological index for each customer
@@ -977,17 +982,77 @@ export default function ClientsList({
                     <p className="text-[10px] font-semibold">{isRtl ? 'لا توجد عمليات شراء تطابق الفترة الحالية.' : 'Quasi aucun achat durant cette période.'}</p>
                   </div>
                 ) : (
-                  clientPurchasesInPeriod.slice().reverse().map((p, idx) => (
-                    <div key={idx} className="p-3 bg-gray-50 hover:bg-gray-100 rounded-xl border border-gray-100 flex items-center justify-between font-mono">
-                      <div>
-                        <p className="font-bold text-gray-900 text-xxs">{p.invoiceId}</p>
-                        <p className="text-[10px] text-gray-450 font-medium">{p.date.split('T')[0]}</p>
+                  clientPurchasesInPeriod.slice().reverse().map((p, idx) => {
+                    const invoice = invoices.find(inv => inv.id === p.invoiceId || inv.invoiceNumber === p.invoiceId);
+                    const hasDebt = invoice && invoice.amountDue && invoice.amountDue > 0;
+                    const isExpanded = expandedInvoiceId === p.invoiceId;
+
+                    return (
+                      <div key={idx} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm transition-all duration-200">
+                        {/* Header Row */}
+                        <div 
+                          className={`p-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors ${isExpanded ? 'bg-gray-50' : ''}`}
+                          onClick={() => setExpandedInvoiceId(isExpanded ? null : p.invoiceId)}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="flex-1">
+                              <p className="font-bold text-gray-900 text-xxs flex items-center gap-2">
+                                {p.invoiceId}
+                                {hasDebt && (
+                                  <span className="px-1.5 py-0.5 rounded text-[8px] font-black bg-rose-100 text-rose-700 uppercase tracking-widest border border-rose-200">
+                                    {isRtl ? 'بها دين' : 'Crédit'}
+                                  </span>
+                                )}
+                              </p>
+                              <p className="text-[10px] text-gray-450 font-medium">{p.date.split('T')[0]}</p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-4 text-right">
+                            <div>
+                              <span className="block font-extrabold text-blue-900 text-[13px] leading-tight">
+                                {p.total.toFixed(2)} DH
+                              </span>
+                              {hasDebt && (
+                                <span className="block text-[10px] font-bold text-rose-600 mt-0.5">
+                                  {isRtl ? 'الباقي:' : 'Reste:'} {invoice.amountDue?.toFixed(2)} DH
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-gray-400">
+                              {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Expanded Items Details */}
+                        {isExpanded && invoice && invoice.items && invoice.items.length > 0 && (
+                          <div className="border-t border-gray-100 bg-gray-50/50 p-3">
+                            <table className="w-full text-left border-collapse">
+                              <thead>
+                                <tr className="border-b border-gray-200 text-[9px] font-bold text-gray-400 uppercase tracking-wider">
+                                  <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'السلعة' : 'Produit'}</th>
+                                  <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'الكمية' : 'Qté'}</th>
+                                  <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'السعر' : 'Prix'}</th>
+                                  <th className={`pb-2 text-right font-medium`}>{isRtl ? 'المجموع' : 'Total'}</th>
+                                </tr>
+                              </thead>
+                              <tbody className="text-[10px] font-mono">
+                                {invoice.items.map((item, i) => (
+                                  <tr key={i} className="border-b border-gray-100/50 last:border-0 hover:bg-gray-100/50 transition-colors">
+                                    <td className={`py-1.5 ${isRtl ? 'text-right' : 'text-left'} text-gray-700 font-medium`}>{item.name}</td>
+                                    <td className={`py-1.5 ${isRtl ? 'text-right' : 'text-left'} text-gray-600`}>{item.qty}</td>
+                                    <td className={`py-1.5 ${isRtl ? 'text-right' : 'text-left'} text-gray-600`}>{item.sellPrice.toFixed(2)}</td>
+                                    <td className="py-1.5 text-right font-bold text-gray-800">{(item.qty * item.sellPrice).toFixed(2)}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
                       </div>
-                      <span className="font-extrabold text-blue-900 text-[13px]">
-                        {p.total.toFixed(2)} DH
-                      </span>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>

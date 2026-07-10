@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 
 interface PosCaisseProps {
+  invoices?: Invoice[];
   products: Product[];
   clients: Client[];
   lang: 'fr' | 'ar';
@@ -28,6 +29,7 @@ interface PosCaisseProps {
 }
 
 export default function PosCaisse({ 
+  invoices = [],
   products, 
   clients, 
   lang, 
@@ -209,8 +211,18 @@ export default function PosCaisse({
       buyPrice: item.product.buyPrice
     }));
 
-    // Random compliance serial
-    const serial = `INV-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    // Generate sequential invoice number: 000001
+    let maxInvoiceNum = 0;
+    for (const inv of invoices) {
+      const numMatch = inv.invoiceNumber.match(/\d+$/);
+      if (numMatch) {
+        const num = parseInt(numMatch[0], 10);
+        if (!isNaN(num) && num > maxInvoiceNum) {
+          maxInvoiceNum = num;
+        }
+      }
+    }
+    const serial = String(maxInvoiceNum + 1).padStart(6, '0');
 
     const newInvoice: Invoice = {
       id: `inv-${Date.now()}`,

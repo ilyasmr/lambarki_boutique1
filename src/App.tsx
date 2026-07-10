@@ -9,6 +9,8 @@ import {
   SystemActivity
 } from './types';
 import { api } from './api';
+import { Capacitor } from '@capacitor/core';
+import { CapacitorUpdater } from '@capgo/capacitor-updater';
 import { 
   initialUsers, 
   initialClients, 
@@ -33,6 +35,14 @@ import Account from './components/Account';
 import InvoicesList from './components/InvoicesList';
 
 import { Key, Building, Sparkles, Search, Package, Users, FileText, X, Menu, Eye, EyeOff } from 'lucide-react';
+
+interface SyncItem {
+  id: string;
+  entity: 'products' | 'clients' | 'invoices' | 'movements' | 'activities' | 'users';
+  action: 'create' | 'update' | 'delete' | 'adjust_stock';
+  payload: any;
+  timestamp: number;
+}
 
 export default function App() {
   // Locale state: Defaulting to Arabic as requested in the prompt
@@ -59,7 +69,7 @@ export default function App() {
   const [activities, setActivities] = React.useState<SystemActivity[]>([]);
 
   // Simulation Login screen helper states
-  const [loginUsername, setLoginUsername] = React.useState('');
+  const [loginUsername, setLoginUsername] = React.useState(() => localStorage.getItem('saved_login_email') || '');
   const [loginPassword, setLoginPassword] = React.useState('');
   const [loginError, setLoginError] = React.useState('');
 
@@ -75,7 +85,163 @@ export default function App() {
   const [prefilledProductSearch, setPrefilledProductSearch] = React.useState('');
   const [prefilledClientSearch, setPrefilledClientSearch] = React.useState('');
 
-  // Load all data from Neon PostgreSQL via Express API
+  // Online status state
+  const [isOnline, setIsOnline] = React.useState(navigator.onLine);
+  
+  // Sync queue state
+  const [syncQueue, setSyncQueue] = React.useState<SyncItem[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('sync_queue') || '[]');
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const [isSyncing, setIsSyncing] = React.useState(false);
+
+  // Sync execution helper
+  const executeSyncItem = async (item: SyncItem) => {
+    const { entity, action, payload } = item;
+    switch (action) {
+      case 'create':
+        await api[entity].create(payload);
+        break;
+      case 'update':
+        if (payload.id && payload.data) {
+          await api[entity].update(payload.id, payload.data);
+        } else if (payload.id) {
+          await api[entity].update(payload.id, payload);
+        } else {
+          throw new Error('Update payload requires an ID');
+        }
+        break;
+      case 'adjust_stock':
+        if (payload.id && payload.diff !== undefined) {
+          await (api[entity] as any).adjustStock(payload.id, { diff: payload.diff });
+        }
+        break;
+      case 'delete':
+        await api[entity].delete(payload);
+        break;
+    }
+  };
+
+  // Sync queue runner
+  const processSyncQueue = async (currentQueue?: SyncItem[]) => {
+    const queueToProcess = currentQueue || syncQueue;
+    if (queueToProcess.length === 0 || isSyncing || !navigator.onLine) return;
+
+    setIsSyncing(true);
+    const updatedQueue = [...queueToProcess];
+
+    try {
+      while (updatedQueue.length > 0) {
+        const item = updatedQueue[0];
+        try {
+          await executeSyncItem(item);
+          // Successfully synced, remove from queue
+          updatedQueue.shift();
+          setSyncQueue([...updatedQueue]);
+          localStorage.setItem('sync_queue', JSON.stringify(updatedQueue));
+        } catch (err: any) {
+          console.error(`Failed to sync item ${item.id}:`, err);
+          if (err.message && err.message.includes('Conflict')) {
+             alert('تم تعديل هذا المنتج من قبل شخص آخر. يرجى تحديث الصفحة للحصول على أحدث البيانات والمحاولة من جديد.');
+             updatedQueue.shift();
+             setSyncQueue([...updatedQueue]);
+             continue;
+          }
+          // If it's a network error, stop processing. If it's another error, skip it to avoid blocking the queue
+          const isNetworkError = !err.status || err.message?.includes('fetch') || err.message?.includes('Network');
+          if (isNetworkError) {
+            break;
+          } else {
+            updatedQueue.shift();
+            setSyncQueue([...updatedQueue]);
+            localStorage.setItem('sync_queue', JSON.stringify(updatedQueue));
+          }
+        }
+      }
+      
+      // Refresh all data from API after successful sync
+      if (updatedQueue.length === 0) {
+        const [loadedUsers, loadedClients, loadedProducts, loadedInvoices, loadedMovements, loadedActivities] = await Promise.all([
+          api.users.getAll(),
+          api.clients.getAll(),
+          api.products.getAll(),
+          api.invoices.getAll(),
+          api.movements.getAll(),
+          api.activities.getAll(),
+        ]);
+        setUsers(loadedUsers);
+        setClients(loadedClients);
+        setProducts(loadedProducts);
+        setInvoices(loadedInvoices);
+        setStockMovements(loadedMovements);
+        setActivities(loadedActivities);
+        
+        localStorage.setItem('cached_users', JSON.stringify(loadedUsers));
+        localStorage.setItem('cached_clients', JSON.stringify(loadedClients));
+        localStorage.setItem('cached_products', JSON.stringify(loadedProducts));
+        localStorage.setItem('cached_invoices', JSON.stringify(loadedInvoices));
+        localStorage.setItem('cached_movements', JSON.stringify(loadedMovements));
+        localStorage.setItem('cached_activities', JSON.stringify(loadedActivities));
+      }
+    } catch (e) {
+      console.error('Error during database sync:', e);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  // Enqueue a sync action
+  const enqueueSync = async (
+    entity: 'products' | 'clients' | 'invoices' | 'movements' | 'activities' | 'users',
+    action: 'create' | 'update' | 'delete' | 'adjust_stock',
+    payload: any
+  ) => {
+    const newItem: SyncItem = {
+      id: `sync-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+      entity,
+      action,
+      payload,
+      timestamp: Date.now()
+    };
+
+    const newQueue = [...syncQueue, newItem];
+    setSyncQueue(newQueue);
+    localStorage.setItem('sync_queue', JSON.stringify(newQueue));
+
+    // Try to process immediately if online
+    if (navigator.onLine && !isSyncing) {
+      processSyncQueue(newQueue);
+    }
+  };
+
+  // Watch network status and trigger sync
+  React.useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      processSyncQueue();
+    };
+    const handleOffline = () => {
+      setIsOnline(false);
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    if (navigator.onLine) {
+      processSyncQueue();
+    }
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [syncQueue, isSyncing]);
+
+  // Load all data with caching
   React.useEffect(() => {
     const loadAll = async () => {
       try {
@@ -95,7 +261,13 @@ export default function App() {
         setStockMovements(loadedMovements);
         setActivities(loadedActivities);
 
-        // Session: still uses localStorage for client-side login persistence
+        localStorage.setItem('cached_users', JSON.stringify(loadedUsers));
+        localStorage.setItem('cached_clients', JSON.stringify(loadedClients));
+        localStorage.setItem('cached_products', JSON.stringify(loadedProducts));
+        localStorage.setItem('cached_invoices', JSON.stringify(loadedInvoices));
+        localStorage.setItem('cached_movements', JSON.stringify(loadedMovements));
+        localStorage.setItem('cached_activities', JSON.stringify(loadedActivities));
+
         const savedUser = localStorage.getItem('dolibarr_current_user');
         if (savedUser) {
           try {
@@ -107,10 +279,38 @@ export default function App() {
           } catch(e) { console.error(e); }
         }
       } catch (err) {
-        console.error('❌ Failed to load data from API:', err);
+        console.error('❌ Failed to load data from API, loading local cache:', err);
+        const cachedUsers = JSON.parse(localStorage.getItem('cached_users') || '[]');
+        const cachedClients = JSON.parse(localStorage.getItem('cached_clients') || '[]');
+        const cachedProducts = JSON.parse(localStorage.getItem('cached_products') || '[]');
+        const cachedInvoices = JSON.parse(localStorage.getItem('cached_invoices') || '[]');
+        const cachedMovements = JSON.parse(localStorage.getItem('cached_movements') || '[]');
+        const cachedActivities = JSON.parse(localStorage.getItem('cached_activities') || '[]');
+
+        setUsers(cachedUsers);
+        setClients(cachedClients);
+        setProducts(cachedProducts);
+        setInvoices(cachedInvoices);
+        setStockMovements(cachedMovements);
+        setActivities(cachedActivities);
+
+        const savedUser = localStorage.getItem('dolibarr_current_user');
+        if (savedUser) {
+          try {
+            const parsedUser = JSON.parse(savedUser);
+            const matched = cachedUsers.find((u: User) => u.id === parsedUser.id);
+            const resolvedUser = matched || parsedUser;
+            setCurrentUser(resolvedUser);
+            setActiveTab(resolvedUser.role === 'cashier' ? 'pos' : 'dashboard');
+          } catch(e) { console.error(e); }
+        }
       }
     };
     loadAll();
+
+    if (Capacitor.isNativePlatform()) {
+      CapacitorUpdater.notifyAppReady().catch(console.error);
+    }
   }, []);
 
   const logActivity = (
@@ -128,7 +328,7 @@ export default function App() {
       descriptionFr,
       targetId
     };
-    api.activities.create(newAct).catch(console.error);
+    enqueueSync('activities', 'create', newAct);
     setActivities(prev => [newAct, ...prev].slice(0, 50));
   };
 
@@ -158,9 +358,9 @@ export default function App() {
       
       setCurrentUser(op);
       localStorage.setItem('dolibarr_current_user', JSON.stringify(op));
+      localStorage.setItem('saved_login_email', loginUsername);
       // Sync updated user from DB in case data changed
       api.users.getAll().then(u => setUsers(u)).catch(console.error);
-      setLoginUsername('');
       setLoginPassword('');
       if (op.role === 'cashier') {
         setActiveTab('pos');
@@ -213,15 +413,18 @@ export default function App() {
   // CRM Action: New checkout processed
   const handleNewSale = (newInvoice: Invoice, updatedProds: Product[], updatedClis: Client[]) => {
     // 1. Save invoice to DB
-    api.invoices.create(newInvoice).catch(console.error);
+    enqueueSync('invoices', 'create', newInvoice);
     setInvoices(prev => [...prev, newInvoice]);
 
-    // 2. Update products stock in DB
-    updatedProds.forEach(p => api.products.update(p.id, p).catch(console.error));
+    // 2. Update products stock in DB using relative adjustment
+    updatedProds.forEach(p => {
+      const soldItem = newInvoice.items.find(i => i.productId === p.id);
+      if (soldItem) enqueueSync('products', 'adjust_stock', { id: p.id, diff: -soldItem.qty });
+    });
     setProducts(updatedProds);
 
     // 3. Update clients in DB
-    updatedClis.forEach(c => api.clients.update(c.id, c).catch(console.error));
+    updatedClis.forEach(c => enqueueSync('clients', 'update', c));
     setClients(updatedClis);
 
     // 4. Record stock movements out
@@ -236,7 +439,7 @@ export default function App() {
       operator: currentUser?.name || 'Caisse',
       batchId: `sale-${newInvoice.id || Date.now()}`
     }));
-    extraMovements.forEach(m => api.movements.create(m).catch(console.error));
+    extraMovements.forEach(m => enqueueSync('movements', 'create', m));
     setStockMovements(prev => [...prev, ...extraMovements]);
 
     logActivity(
@@ -252,10 +455,13 @@ export default function App() {
     setProducts(prev => {
       const updated = prev.map(p => p.id === productId ? { ...p, stock: newQty } : p);
       const changed = updated.find(p => p.id === productId);
-      if (changed) api.products.update(productId, changed).catch(console.error);
+      if (changed) {
+        const diff = movement.type === 'in' ? movement.qty : -movement.qty;
+        enqueueSync('products', 'adjust_stock', { id: productId, diff });
+      }
       return updated;
     });
-    api.movements.create(movement).catch(console.error);
+    enqueueSync('movements', 'create', movement);
     setStockMovements(prev => [...prev, movement]);
 
     logActivity(
@@ -273,12 +479,12 @@ export default function App() {
         return match ? { ...p, stock: match.newQty } : p;
       });
       updates.forEach(u => {
-        const changed = updatedProducts.find(p => p.id === u.productId);
-        if (changed) api.products.update(u.productId, changed).catch(console.error);
+        const diff = u.movement.type === 'in' ? u.movement.qty : -u.movement.qty;
+        enqueueSync('products', 'adjust_stock', { id: u.productId, diff });
       });
       return updatedProducts;
     });
-    updates.forEach(u => api.movements.create(u.movement).catch(console.error));
+    updates.forEach(u => enqueueSync('movements', 'create', u.movement));
     setStockMovements(prev => [...prev, ...updates.map(u => u.movement)]);
 
     logActivity(
@@ -289,20 +495,21 @@ export default function App() {
     );
   };
 
-  // Delete a stock movement and refresh products & movements
-  const handleDeleteMovement = async (id: string) => {
+  // Delete a stock movement and update local state + enqueue sync
+  const handleDeleteMovement = (id: string) => {
     try {
       const targetMov = stockMovements.find(m => m.id === id);
-      await api.movements.delete(id);
+      enqueueSync('movements', 'delete', id);
       
       // Update local movements list
       setStockMovements(prev => prev.filter(m => m.id !== id));
       
-      // Refresh products from database to ensure stock levels are in sync
-      const refreshedProducts = await api.products.getAll();
-      setProducts(refreshedProducts);
-
+      // Adjust local product stock immediately
       if (targetMov) {
+        const diff = targetMov.type === 'in' ? -targetMov.qty : targetMov.qty;
+        setProducts(prev => prev.map(p => p.id === targetMov.productId ? { ...p, stock: p.stock + diff } : p));
+        enqueueSync('products', 'adjust_stock', { id: targetMov.productId, diff });
+        
         logActivity(
           'product_delete',
           `حذف حركة مخزون للمنتج "${targetMov.productName}" بقيمة ${targetMov.qty} (تاريخ الحركة: ${new Date(targetMov.date).toLocaleDateString()})`,
@@ -312,25 +519,28 @@ export default function App() {
       }
     } catch (err) {
       console.error('Failed to delete movement:', err);
-      alert(lang === 'ar' ? 'فشل حذف حركة المخزون' : 'Échec de la suppression du mouvement');
     }
   };
 
-  // Edit a stock movement and refresh products & movements
-  const handleEditMovement = async (id: string, qty: number, reason: string) => {
+  // Edit a stock movement and update local state + enqueue sync
+  const handleEditMovement = (id: string, qty: number, reason: string) => {
     try {
       const targetMov = stockMovements.find(m => m.id === id);
-      await api.movements.update(id, { qty, reason });
+      enqueueSync('movements', 'update', { id, data: { qty, reason } });
       
-      // Refresh products and movements to keep everything fully synced
-      const [refreshedProducts, refreshedMovements] = await Promise.all([
-        api.products.getAll(),
-        api.movements.getAll()
-      ]);
-      setProducts(refreshedProducts);
-      setStockMovements(refreshedMovements);
-
       if (targetMov) {
+        const oldQty = targetMov.qty;
+        const newQty = qty;
+        let diff = 0;
+        if (targetMov.type === 'in') {
+          diff = newQty - oldQty;
+        } else {
+          diff = oldQty - newQty;
+        }
+        setProducts(prev => prev.map(p => p.id === targetMov.productId ? { ...p, stock: p.stock + diff } : p));
+        setStockMovements(prev => prev.map(m => m.id === id ? { ...m, qty, reason } : m));
+        enqueueSync('products', 'adjust_stock', { id: targetMov.productId, diff });
+
         logActivity(
           'product_edit',
           `تعديل كمية حركة مخزون للمنتج "${targetMov.productName}" من ${targetMov.qty} إلى ${qty}`,
@@ -340,33 +550,24 @@ export default function App() {
       }
     } catch (err) {
       console.error('Failed to edit movement:', err);
-      alert(lang === 'ar' ? 'فشل تعديل حركة المخزون' : 'Échec de la modification du mouvement');
     }
   };
 
   // Delete an activity log
-  const handleDeleteActivity = async (id: string) => {
-    try {
-      await api.activities.delete(id);
-      setActivities(prev => prev.filter(a => a.id !== id));
-    } catch (err) {
-      console.error('Failed to delete activity:', err);
-    }
+  const handleDeleteActivity = (id: string) => {
+    enqueueSync('activities', 'delete', id);
+    setActivities(prev => prev.filter(a => a.id !== id));
   };
 
   // Edit an activity log
-  const handleEditActivity = async (id: string, descriptionAr: string, descriptionFr: string) => {
-    try {
-      await api.activities.update(id, { descriptionAr, descriptionFr });
-      setActivities(prev => prev.map(a => a.id === id ? { ...a, descriptionAr, descriptionFr } : a));
-    } catch (err) {
-      console.error('Failed to edit activity:', err);
-    }
+  const handleEditActivity = (id: string, descriptionAr: string, descriptionFr: string) => {
+    enqueueSync('activities', 'update', { id, data: { descriptionAr, descriptionFr } });
+    setActivities(prev => prev.map(a => a.id === id ? { ...a, descriptionAr, descriptionFr } : a));
   };
 
   // Products CRUD actions
   const handleAddProduct = (p: Product) => {
-    api.products.create(p).catch(console.error);
+    enqueueSync('products', 'create', p);
     setProducts(prev => [...prev, p]);
     logActivity(
       'product_add',
@@ -377,7 +578,7 @@ export default function App() {
   };
 
   const handleEditProduct = (p: Product) => {
-    api.products.update(p.id, p).catch(console.error);
+    enqueueSync('products', 'update', p);
     setProducts(prev => prev.map(item => item.id === p.id ? p : item));
     logActivity(
       'product_edit',
@@ -389,7 +590,7 @@ export default function App() {
 
   const handleDeleteProduct = (id: string) => {
     const deletedProd = products.find(p => p.id === id);
-    api.products.delete(id).catch(console.error);
+    enqueueSync('products', 'delete', id);
     setProducts(prev => prev.filter(p => p.id !== id));
     logActivity(
       'product_delete',
@@ -401,20 +602,20 @@ export default function App() {
 
   const handleRenameCategory = (oldName: string, newName: string) => {
     const updated = products.map(item => item.category === oldName ? { ...item, category: newName } : item);
-    updated.filter(p => p.category === newName).forEach(p => api.products.update(p.id, p).catch(console.error));
+    updated.filter(p => p.category === newName).forEach(p => enqueueSync('products', 'update', p));
     setProducts(updated);
   };
 
   const handleDeleteCategory = (categoryName: string) => {
     const defaultCat = lang === 'ar' ? 'عام' : 'Général';
     const updated = products.map(item => item.category === categoryName ? { ...item, category: defaultCat } : item);
-    updated.filter(p => p.category === defaultCat).forEach(p => api.products.update(p.id, p).catch(console.error));
+    updated.filter(p => p.category === defaultCat).forEach(p => enqueueSync('products', 'update', p));
     setProducts(updated);
   };
 
   // Clients CRUD actions
   const handleAddClient = (c: Client) => {
-    api.clients.create(c).catch(console.error);
+    enqueueSync('clients', 'create', c);
     setClients(prev => [...prev, c]);
     logActivity(
       'client_add',
@@ -425,7 +626,7 @@ export default function App() {
   };
 
   const handleEditClient = (c: Client) => {
-    api.clients.update(c.id, c).catch(console.error);
+    enqueueSync('clients', 'update', c);
     setClients(prev => prev.map(item => item.id === c.id ? c : item));
     logActivity(
       'client_edit',
@@ -437,7 +638,7 @@ export default function App() {
 
   const handleDeleteClient = (id: string) => {
     const deletedCli = clients.find(c => c.id === id);
-    api.clients.delete(id).catch(console.error);
+    enqueueSync('clients', 'delete', id);
     setClients(prev => prev.filter(c => c.id !== id));
     logActivity(
       'client_delete',
@@ -452,7 +653,7 @@ export default function App() {
     const deletedInv = invoices.find(inv => inv.id === id);
     if (!deletedInv) return;
 
-    api.invoices.delete(id).catch(console.error);
+    enqueueSync('invoices', 'delete', id);
     setInvoices(prev => prev.filter(inv => inv.id !== id));
 
     if (restoreStock && deletedInv.items && deletedInv.items.length > 0) {
@@ -460,7 +661,7 @@ export default function App() {
         const itemInSale = deletedInv.items.find(item => item.productId === p.id);
         return itemInSale ? { ...p, stock: p.stock + itemInSale.qty } : p;
       });
-      updatedProducts.forEach(p => api.products.update(p.id, p).catch(console.error));
+      updatedProducts.forEach(p => enqueueSync('products', 'update', p));
       setProducts(updatedProducts);
 
       const newMovements: StockMovement[] = deletedInv.items.map((item, idx) => ({
@@ -474,7 +675,7 @@ export default function App() {
         operator: currentUser?.name || 'Admin',
         batchId: `refund-${deletedInv.id}`
       }));
-      newMovements.forEach(m => api.movements.create(m).catch(console.error));
+      newMovements.forEach(m => enqueueSync('movements', 'create', m));
       setStockMovements(prev => [...prev, ...newMovements]);
     }
 
@@ -487,7 +688,7 @@ export default function App() {
   };
 
   const handleEditInvoice = (updatedInvoice: Invoice, previousInvoice: Invoice, shouldAdjustStock: boolean = true) => {
-    api.invoices.update(updatedInvoice.id, updatedInvoice).catch(console.error);
+    enqueueSync('invoices', 'update', updatedInvoice);
     setInvoices(prev => prev.map(inv => inv.id === updatedInvoice.id ? updatedInvoice : inv));
 
     if (shouldAdjustStock) {
@@ -523,8 +724,8 @@ export default function App() {
         return p;
       });
       if (newMovements.length > 0) {
-        updatedProducts.forEach(p => api.products.update(p.id, p).catch(console.error));
-        newMovements.forEach(m => api.movements.create(m).catch(console.error));
+        updatedProducts.forEach(p => enqueueSync('products', 'update', p));
+        newMovements.forEach(m => enqueueSync('movements', 'create', m));
         setProducts(updatedProducts);
         setStockMovements(prev => [...prev, ...newMovements]);
       }
@@ -545,7 +746,7 @@ export default function App() {
               outstandingDebt: Math.max(0, (c.outstandingDebt || 0) + debtDiff),
               purchases: updatedPurchases
             };
-            api.clients.update(c.id, updatedClient).catch(console.error);
+            enqueueSync('clients', 'update', updatedClient);
             return updatedClient;
           }
           return c;
@@ -564,7 +765,7 @@ export default function App() {
 
   // Users CRM actions
   const handleAddUser = (u: User) => {
-    api.users.create(u).catch(console.error);
+    enqueueSync('users', 'create', u);
     setUsers(prev => [...prev, u]);
   };
 
@@ -574,7 +775,7 @@ export default function App() {
   };
 
   const handleDeleteUser = (id: string) => {
-    api.users.delete(id).catch(console.error);
+    enqueueSync('users', 'delete', id);
     setUsers(prev => prev.filter(u => u.id !== id));
   };
 
@@ -696,6 +897,7 @@ export default function App() {
       case 'pos':
         return (
           <PosCaisse
+            invoices={invoices}
             products={products}
             clients={clients}
             lang={lang}
@@ -724,6 +926,7 @@ export default function App() {
         return (
           <ClientsList
             clients={clients}
+            invoices={invoices}
             lang={lang}
             onAddClient={handleAddClient}
             onEditClient={handleEditClient}
@@ -844,6 +1047,7 @@ export default function App() {
                 <input
                   type="text"
                   required
+                  autoComplete="username"
                   value={loginUsername}
                   onChange={(e) => {
                     setLoginUsername(e.target.value);
@@ -866,6 +1070,7 @@ export default function App() {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   required
+                  autoComplete="new-password"
                   value={loginPassword}
                   onChange={(e) => {
                     setLoginPassword(e.target.value);
@@ -1164,6 +1369,31 @@ export default function App() {
             </div>
           </div>
           <div className="flex items-center gap-4 sm:gap-6">
+            {/* Network Sync status badge */}
+            <div className="flex items-center">
+              {isSyncing ? (
+                <div className="flex items-center gap-1.5 text-[10px] sm:text-xs bg-amber-50 text-amber-800 border border-amber-200 rounded-full py-1 px-2.5 font-bold shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shrink-0"></span>
+                  <span>{isRtl ? 'جاري المزامنة...' : 'Synchronisation...'}</span>
+                </div>
+              ) : !isOnline ? (
+                <div className="flex items-center gap-1.5 text-[10px] sm:text-xs bg-red-50 text-red-800 border border-red-200 rounded-full py-1 px-2.5 font-bold shadow-sm animate-pulse">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>
+                  <span>{isRtl ? `غير متصل (${syncQueue.length} معلق)` : `Hors ligne (${syncQueue.length} en attente)`}</span>
+                </div>
+              ) : syncQueue.length > 0 ? (
+                <div className="flex items-center gap-1.5 text-[10px] sm:text-xs bg-amber-50 text-amber-800 border border-amber-200 rounded-full py-1 px-2.5 font-bold shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shrink-0"></span>
+                  <span>{isRtl ? `معلق (${syncQueue.length})` : `En attente (${syncQueue.length})`}</span>
+                </div>
+              ) : (
+                <div className="hidden md:flex items-center gap-1.5 text-[10px] sm:text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-full py-1 px-2.5 font-bold shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                  <span>{isRtl ? 'متصل' : 'En ligne'}</span>
+                </div>
+              )}
+            </div>
+
             {/* Profile Detail */}
             <div className="flex items-center gap-3">
               <div className={`${isRtl ? 'text-left' : 'text-right'}`}>

@@ -60,6 +60,7 @@ export interface Product {
   minStockAlert: number;
   description: string;
   image: string; // URL, Base64, or visual placeholder representation
+  version?: number;
 }
 
 export interface StockMovement {
