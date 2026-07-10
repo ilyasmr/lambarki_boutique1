@@ -381,6 +381,29 @@ export default function ClientsList({
     return clientPurchasesInPeriod.reduce((sum, p) => sum + p.total, 0);
   }, [clientPurchasesInPeriod]);
 
+  const combinedHistory = React.useMemo(() => {
+    if (!selectedClient) return [];
+    const purchases = clientPurchasesInPeriod.map(p => ({
+      type: 'purchase' as const,
+      date: p.date,
+      data: p
+    }));
+    const payments = (selectedClient.debtPayments || [])
+      .filter(pay => {
+         const pDate = pay.date.split('T')[0];
+         if (purchaseDateFrom && pDate < purchaseDateFrom) return false;
+         if (purchaseDateTo && pDate > purchaseDateTo) return false;
+         return true;
+      })
+      .map(pay => ({
+        type: 'payment' as const,
+        date: pay.date,
+        data: pay
+      }));
+      
+    return [...purchases, ...payments].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  }, [clientPurchasesInPeriod, selectedClient, purchaseDateFrom, purchaseDateTo]);
+
   // Check alerts computation for Client list (within 2 days or past)
   const checkAlerts = React.useMemo(() => {
     const today = new Date();
@@ -1015,13 +1038,34 @@ export default function ClientsList({
               </div>
 
               <div className={`space-y-2 overflow-y-auto pr-0.5 ${isMaximized ? 'flex-1 min-h-[300px]' : 'max-h-[160px]'}`}>
-                {clientPurchasesInPeriod.length === 0 ? (
+                {combinedHistory.length === 0 ? (
                   <div className="p-8 text-center text-gray-400 border border-dashed border-gray-200 rounded-xl bg-gray-50/50">
                     <ShoppingBag className="w-8 h-8 mx-auto stroke-1 text-gray-300 mb-1.5" />
-                    <p className="text-[10px] font-semibold">{isRtl ? 'لا توجد عمليات شراء تطابق الفترة الحالية.' : 'Quasi aucun achat durant cette période.'}</p>
+                    <p className="text-[10px] font-semibold">{isRtl ? 'لا توجد عمليات تطابق الفترة الحالية.' : 'Aucun événement durant cette période.'}</p>
                   </div>
                 ) : (
-                  clientPurchasesInPeriod.slice().reverse().map((p, idx) => {
+                  combinedHistory.slice().reverse().map((item, idx) => {
+                    if (item.type === 'payment') {
+                      const pay = item.data as any;
+                      return (
+                        <div key={`pay-${idx}`} className="bg-emerald-50/70 p-3 rounded-xl border border-emerald-200 flex justify-between items-center shadow-sm">
+                          <div className="flex items-center gap-3">
+                             <div className="p-2 bg-emerald-100 rounded-lg text-emerald-700">
+                               <Sparkles className="w-4 h-4" />
+                             </div>
+                             <div>
+                               <p className="text-[10px] text-emerald-900 font-bold uppercase tracking-wider">{isRtl ? 'تسديد دين / استخلاص' : 'Règlement de dette'}</p>
+                               <p className="text-[9px] text-emerald-700/80 font-medium">{pay.date.split('T')[0]} - {pay.notes}</p>
+                             </div>
+                          </div>
+                          <div className="text-right">
+                             <span className="font-black text-emerald-700 text-[13px] font-mono">+{pay.amount.toFixed(2)} DH</span>
+                          </div>
+                        </div>
+                      );
+                    }
+                    
+                    const p = item.data as any;
                     const invoice = invoices.find(inv => inv.id === p.invoiceId || inv.invoiceNumber === p.invoiceId);
                     const hasDebt = invoice && invoice.amountDue && invoice.amountDue > 0;
                     const isExpanded = expandedInvoiceId === p.invoiceId;
@@ -1419,21 +1463,6 @@ export default function ClientsList({
                   onChange={(e) => setSettlementAmount(Number(e.target.value))}
                   className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono font-bold text-sm"
                 />
-              </div>
-
-              {/* Repay Method */}
-              <div className="space-y-1.5">
-                <label className="text-xxs text-slate-400 uppercase tracking-wider">{isRtl ? 'طريقة الاستلام :' : 'Mode de règlement :'}</label>
-                <select
-                  value={settlementMethod}
-                  onChange={(e: any) => setSettlementMethod(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold"
-                >
-                  <option value="cash">{isRtl ? 'نقداً (رأس مال)' : 'Espèces'}</option>
-                  <option value="card">{isRtl ? 'بطاقة بنكية' : 'Carte Bancaire'}</option>
-                  <option value="transfer">{isRtl ? 'حوالة / تحويل بنكي' : 'Virement Bancaire'}</option>
-                  <option value="check">{isRtl ? 'شيك بنكي موثق' : 'Chèque'}</option>
-                </select>
               </div>
 
               {/* Notes */}
