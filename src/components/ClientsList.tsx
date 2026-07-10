@@ -987,6 +987,15 @@ export default function ClientsList({
                     const hasDebt = invoice && invoice.amountDue && invoice.amountDue > 0;
                     const isExpanded = expandedInvoiceId === p.invoiceId;
 
+                    let safeItems: any[] = [];
+                    if (invoice && invoice.items) {
+                      if (typeof invoice.items === 'string') {
+                        try { safeItems = JSON.parse(invoice.items); } catch(e) {}
+                      } else if (Array.isArray(invoice.items)) {
+                        safeItems = invoice.items;
+                      }
+                    }
+
                     return (
                       <div key={idx} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm transition-all duration-200">
                         {/* Header Row */}
@@ -1026,7 +1035,7 @@ export default function ClientsList({
                         </div>
 
                         {/* Expanded Items Details */}
-                        {isExpanded && invoice && invoice.items && invoice.items.length > 0 && (
+                        {isExpanded && safeItems.length > 0 && (
                           <div className="border-t border-gray-100 bg-gray-50/50 p-3">
                             <table className="w-full text-left border-collapse">
                               <thead>
@@ -1038,7 +1047,7 @@ export default function ClientsList({
                                 </tr>
                               </thead>
                               <tbody className="text-[10px] font-mono">
-                                {invoice.items.map((item, i) => (
+                                {safeItems.map((item, i) => (
                                   <tr key={i} className="border-b border-gray-100/50 last:border-0 hover:bg-gray-100/50 transition-colors">
                                     <td className={`py-1.5 ${isRtl ? 'text-right' : 'text-left'} text-gray-700 font-medium`}>{item.name}</td>
                                     <td className={`py-1.5 ${isRtl ? 'text-right' : 'text-left'} text-gray-600`}>{item.qty}</td>
