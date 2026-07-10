@@ -989,10 +989,18 @@ export default function ClientsList({
 
                     let safeItems: any[] = [];
                     if (invoice && invoice.items) {
-                      if (typeof invoice.items === 'string') {
-                        try { safeItems = JSON.parse(invoice.items); } catch(e) {}
-                      } else if (Array.isArray(invoice.items)) {
-                        safeItems = invoice.items;
+                      let parsedItems = invoice.items;
+                      let attempts = 0;
+                      while (typeof parsedItems === 'string' && attempts < 3) {
+                        try { 
+                          parsedItems = JSON.parse(parsedItems); 
+                        } catch(e) { 
+                          break; 
+                        }
+                        attempts++;
+                      }
+                      if (Array.isArray(parsedItems)) {
+                        safeItems = parsedItems;
                       }
                     }
 
@@ -1035,28 +1043,36 @@ export default function ClientsList({
                         </div>
 
                         {/* Expanded Items Details */}
-                        {isExpanded && safeItems.length > 0 && (
+                        {isExpanded && (
                           <div className="border-t border-gray-100 bg-gray-50/50 p-3">
-                            <table className="w-full text-left border-collapse">
-                              <thead>
-                                <tr className="border-b border-gray-200 text-[9px] font-bold text-gray-400 uppercase tracking-wider">
-                                  <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'السلعة' : 'Produit'}</th>
-                                  <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'الكمية' : 'Qté'}</th>
-                                  <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'السعر' : 'Prix'}</th>
-                                  <th className={`pb-2 text-right font-medium`}>{isRtl ? 'المجموع' : 'Total'}</th>
-                                </tr>
-                              </thead>
-                              <tbody className="text-[10px] font-mono">
-                                {safeItems.map((item, i) => (
-                                  <tr key={i} className="border-b border-gray-100/50 last:border-0 hover:bg-gray-100/50 transition-colors">
-                                    <td className={`py-1.5 ${isRtl ? 'text-right' : 'text-left'} text-gray-700 font-medium`}>{item.name}</td>
-                                    <td className={`py-1.5 ${isRtl ? 'text-right' : 'text-left'} text-gray-600`}>{item.qty}</td>
-                                    <td className={`py-1.5 ${isRtl ? 'text-right' : 'text-left'} text-gray-600`}>{item.sellPrice.toFixed(2)}</td>
-                                    <td className="py-1.5 text-right font-bold text-gray-800">{(item.qty * item.sellPrice).toFixed(2)}</td>
+                            {safeItems.length > 0 ? (
+                              <table className="w-full text-left border-collapse">
+                                <thead>
+                                  <tr className="border-b border-gray-200 text-[9px] font-bold text-gray-400 uppercase tracking-wider">
+                                    <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'السلعة' : 'Produit'}</th>
+                                    <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'الكمية' : 'Qté'}</th>
+                                    <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'السعر' : 'Prix'}</th>
+                                    <th className={`pb-2 text-right font-medium`}>{isRtl ? 'المجموع' : 'Total'}</th>
                                   </tr>
-                                ))}
-                              </tbody>
-                            </table>
+                                </thead>
+                                <tbody className="text-[10px] font-mono">
+                                  {safeItems.map((item, i) => (
+                                    <tr key={i} className="border-b border-gray-100/50 last:border-0 hover:bg-gray-100/50 transition-colors">
+                                      <td className={`py-1.5 ${isRtl ? 'text-right' : 'text-left'} text-gray-700 font-medium`}>{item.name || 'Unknown'}</td>
+                                      <td className={`py-1.5 ${isRtl ? 'text-right' : 'text-left'} text-gray-600`}>{item.qty}</td>
+                                      <td className={`py-1.5 ${isRtl ? 'text-right' : 'text-left'} text-gray-600`}>{Number(item.sellPrice || 0).toFixed(2)}</td>
+                                      <td className="py-1.5 text-right font-bold text-gray-800">{(Number(item.qty || 0) * Number(item.sellPrice || 0)).toFixed(2)}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            ) : (
+                              <div className="text-center text-gray-400 py-3 text-xs font-medium">
+                                {invoice 
+                                  ? (isRtl ? 'لا توجد تفاصيل سلع لهذه الفاتورة' : 'Aucun produit trouvé') 
+                                  : (isRtl ? 'تعذر العثور على الفاتورة لتفاصيل السلع' : 'Facture introuvable')}
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
