@@ -141,6 +141,11 @@ export default function ClientsList({
   const [settlementAmount, setSettlementAmount] = React.useState(0);
   const [settlementNote, setSettlementNote] = React.useState('');
   const [settlementMethod, setSettlementMethod] = React.useState<'cash' | 'card' | 'transfer' | 'check'>('cash');
+  const [historyPage, setHistoryPage] = React.useState(1);
+
+  React.useEffect(() => {
+    setHistoryPage(1);
+  }, [selectedClient, purchaseDateFrom, purchaseDateTo, showOnlyDebtInvoices]);
 
   const handleSettleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -383,26 +388,54 @@ export default function ClientsList({
 
   const combinedHistory = React.useMemo(() => {
     if (!selectedClient) return [];
-    const purchases = clientPurchasesInPeriod.map(p => ({
+    
+    // 1. Build full history to calculate running debt correctly
+    const allPurchases = (selectedClient.purchases || []).map(p => ({
       type: 'purchase' as const,
       date: p.date,
       data: p
     }));
-    const payments = (selectedClient.debtPayments || [])
-      .filter(pay => {
-         const pDate = pay.date.split('T')[0];
-         if (purchaseDateFrom && pDate < purchaseDateFrom) return false;
-         if (purchaseDateTo && pDate > purchaseDateTo) return false;
-         return true;
-      })
-      .map(pay => ({
-        type: 'payment' as const,
-        date: pay.date,
-        data: pay
-      }));
+    
+    const allPayments = (selectedClient.debtPayments || []).map(pay => ({
+      type: 'payment' as const,
+      date: pay.date,
+      data: pay
+    }));
+    
+    const fullHistory = [...allPurchases, ...allPayments].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    
+    let currentDebt = 0;
+    const historyWithDebt = fullHistory.map(item => {
+      if (item.type === 'purchase') {
+        const p = item.data;
+        const invoice = invoices.find(inv => inv.id === p.invoiceId || inv.invoiceNumber === p.invoiceId);
+        if (invoice && invoice.amountDue && invoice.amountDue > 0) {
+          currentDebt += invoice.amountDue;
+        }
+      } else if (item.type === 'payment') {
+        const pay = item.data;
+        currentDebt -= pay.amount;
+      }
+      return { ...item, runningDebt: currentDebt };
+    });
+    
+    // 2. Filter based on current filters
+    return historyWithDebt.filter(item => {
+      const iDate = item.date.split('T')[0];
+      if (purchaseDateFrom && iDate < purchaseDateFrom) return false;
+      if (purchaseDateTo && iDate > purchaseDateTo) return false;
       
-    return [...purchases, ...payments].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  }, [clientPurchasesInPeriod, selectedClient, purchaseDateFrom, purchaseDateTo]);
+      if (item.type === 'purchase') {
+        if (showOnlyDebtInvoices) {
+          const p = item.data;
+          const invoice = invoices.find(inv => inv.id === p.invoiceId || inv.invoiceNumber === p.invoiceId);
+          if (!invoice || !invoice.amountDue || invoice.amountDue <= 0) return false;
+        }
+      }
+      
+      return true;
+    });
+  }, [selectedClient, invoices, purchaseDateFrom, purchaseDateTo, showOnlyDebtInvoices]);
 
   // Check alerts computation for Client list (within 2 days or past)
   const checkAlerts = React.useMemo(() => {
@@ -1044,7 +1077,7 @@ export default function ClientsList({
                     <p className="text-[10px] font-semibold">{isRtl ? 'لا توجد عمليات تطابق الفترة الحالية.' : 'Aucun événement durant cette période.'}</p>
                   </div>
                 ) : (
-                  combinedHistory.slice().reverse().map((item, idx) => {
+                  combinedHistory.slice().reverse().slice((historyPage - 1) * 10, historyPage * 10).map((item, idx) => {
                     if (item.type === 'payment') {
                       const pay = item.data as any;
                       return (
@@ -1118,6 +1151,9 @@ export default function ClientsList({
                                   {isRtl ? 'الباقي:' : 'Reste:'} {invoice.amountDue?.toFixed(2)} DH
                                 </span>
                               )}
+                              <span className="block text-[8px] font-bold text-gray-500 mt-1 bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200 w-max ml-auto">
+                                {isRtl ? 'الرصيد:' : 'Solde:'} {(item as any).runningDebt.toFixed(2)} DH
+                              </span>
                             </div>
                             <div className="text-gray-400">
                               {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -1163,6 +1199,29 @@ export default function ClientsList({
                   })
                 )}
               </div>
+
+              {/* Pagination Controls */}
+              {combinedHistory.length > 10 && (
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100 mt-2">
+                  <button 
+                    onClick={() => setHistoryPage(p => Math.max(1, p - 1))}
+                    disabled={historyPage === 1}
+                    className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-[10px] font-bold text-gray-600 disabled:opacity-50 hover:bg-gray-50"
+                  >
+                    {isRtl ? 'السابق' : 'Précédent'}
+                  </button>
+                  <span className="text-[10px] font-bold text-gray-500">
+                    {historyPage} / {Math.ceil(combinedHistory.length / 10)}
+                  </span>
+                  <button 
+                    onClick={() => setHistoryPage(p => Math.min(Math.ceil(combinedHistory.length / 10), p + 1))}
+                    disabled={historyPage >= Math.ceil(combinedHistory.length / 10)}
+                    className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-[10px] font-bold text-gray-600 disabled:opacity-50 hover:bg-gray-50"
+                  >
+                    {isRtl ? 'التالي' : 'Suivant'}
+                  </button>
+                </div>
+              )}
             </div>
 
           </div>
