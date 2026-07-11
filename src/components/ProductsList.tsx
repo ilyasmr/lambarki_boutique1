@@ -141,6 +141,15 @@ export default function ProductsList({
       return;
     }
 
+    const isDuplicateName = products.some(p => p.name.trim().toLowerCase() === formName.trim().toLowerCase() && p.id !== editingId);
+    if (isDuplicateName) {
+      alert(isRtl 
+        ? 'خطأ: هذا المنتج مسجل مسبقاً بنفس الاسم!' 
+        : 'Erreur: Ce produit est déjà enregistré avec ce nom !'
+      );
+      return;
+    }
+
     if (formSellPrice < formBuyPrice) {
       const ok = window.confirm(isRtl 
         ? 'تنبيه: سعر البيع أقل من سعر الشراء (خسارة محتومة). هل ترغب بالمضي قدماً؟' 

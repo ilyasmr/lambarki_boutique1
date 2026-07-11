@@ -260,6 +260,12 @@ export default function ClientsList({
       return;
     }
 
+    const isDuplicate = clients.some(c => c.name.trim().toLowerCase() === formName.trim().toLowerCase() && c.id !== editingId);
+    if (isDuplicate) {
+      alert(isRtl ? 'هذا الزبون مسجل مسبقاً بنفس الاسم!' : 'Ce client est déjà enregistré avec ce nom !');
+      return;
+    }
+
     const matchedClient = clients.find(c => c.id === editingId);
 
     const payload: Client = {
@@ -729,29 +735,26 @@ export default function ClientsList({
                       selectedClient && selectedClient.id === c.id ? 'bg-blue-50/50' : ''
                     }`}
                   >
-                    <td className="py-3.5 px-4 font-bold text-gray-800">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-blue-50/80 font-black text-blue-700 flex flex-col items-center justify-center text-xs border border-blue-100/50 truncate shrink-0">
-                          <span className="text-[8px] text-blue-400 font-mono tracking-tighter uppercase">{isRtl ? 'زبون' : 'ZAB'}</span>
-                          <span className="text-[11px] font-mono mt-[-2px]">#{String(getSequentialNumber(c)).padStart(2, '0')}</span>
+                    <td className="py-4 px-4 font-bold text-gray-800">
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center text-lg font-black shadow-sm shrink-0">
+                          {c.name.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <p className="font-bold text-gray-900">{c.name}</p>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="font-extrabold text-gray-900 text-[13px]">{c.name}</p>
                             {c.postalChecks && c.postalChecks.length > 0 && (
-                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] font-black bg-indigo-50 text-indigo-700 border border-indigo-150 animate-pulse animate-duration-1000" title={isRtl ? 'شيك بريدي مسجل' : 'Chèque postal enregistré'}>
+                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-black bg-indigo-50 text-indigo-700 border border-indigo-150 animate-pulse animate-duration-1000" title={isRtl ? 'شيك بريدي مسجل' : 'Chèque postal enregistré'}>
                                 ✉️ {isRtl ? `شيكات (${c.postalChecks.length})` : `Chèques (${c.postalChecks.length})`}
                               </span>
                             )}
                           </div>
-                          <div className="flex flex-col gap-0.5">
-                            <span className="text-[10px] text-gray-400 font-mono">ID: {c.id}</span>
-                          </div>
+                          <span className="text-[9px] text-gray-400 font-mono bg-gray-50 px-1.5 py-0.5 rounded-md border border-gray-100 block w-fit mt-1">#{String(getSequentialNumber(c)).padStart(2, '0')}</span>
                         </div>
                       </div>
                     </td>
-                    <td className="py-3.5 px-4 font-semibold text-gray-700 font-mono">{c.phone}</td>
-                    <td className="py-3.5 px-4 text-center" onClick={(e) => e.stopPropagation()}>
+                    <td className="py-4 px-4 font-semibold text-gray-700 font-mono">{c.phone}</td>
+                    <td className="py-4 px-4 text-center" onClick={(e) => e.stopPropagation()}>
                        {c.postalChecks && c.postalChecks.length > 0 ? (
                          <div className="flex flex-col gap-1 items-center justify-center">
                            {c.postalChecks.map((check, idx) => {
@@ -768,25 +771,22 @@ export default function ClientsList({
                          <span className="text-gray-300 font-bold font-mono text-center">—</span>
                        )}
                      </td>
-                    <td className="py-3.5 px-4 text-right">
+                    <td className="py-4 px-4 text-right">
                       {c.outstandingDebt && c.outstandingDebt > 0 ? (
                         <div className="flex flex-col items-end gap-1">
-                          <span className="font-extrabold text-rose-600 font-mono bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-100">
+                          <span className="font-extrabold text-rose-600 font-mono text-[13px] tracking-tight bg-rose-50/50 px-2 py-0.5 rounded border border-rose-100/50">
                             {c.outstandingDebt.toFixed(2)} DH
                           </span>
                           <div className="flex flex-col items-end text-[9px] text-gray-400 font-semibold leading-none font-mono">
                             <span>📅 {isRtl ? 'بدء:' : 'crédit:'} {c.debtDate || c.joinDate}</span>
-                            {c.debtDueDate && (
-                              <span className="text-rose-500 mt-0.5">⏰ {isRtl ? 'أجل:' : 'durée:'} {c.debtDueDate}</span>
-                            )}
                           </div>
                         </div>
                       ) : (
-                        <span className="text-gray-400 font-mono">0.00 DH</span>
+                        <span className="text-gray-300 font-medium font-mono text-xs">0.00 DH</span>
                       )}
                     </td>
                     {currentUser?.role !== 'cashier' && (
-                      <td className="py-3.5 px-4 text-center" onClick={(e) => e.stopPropagation()}>
+                      <td className="py-4 px-4 text-center" onClick={(e) => e.stopPropagation()}>
                         <div className="flex gap-2 justify-center">
                           <button
                             onClick={(e) => handleEditClick(c, e)}
@@ -942,13 +942,21 @@ export default function ClientsList({
 
             {/* Purchases ledger stack */}
             <div className="space-y-3.5">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap gap-2 items-center justify-between">
                 <h4 className="text-xxs text-slate-400 font-bold uppercase tracking-wider">
                   {isRtl ? 'سجل المعاملات والعمليات' : 'Historique d\'achats'}
                 </h4>
-                <span className="px-2 py-0.5 bg-emerald-50 text-emerald-800 text-[10px] uppercase font-black font-semibold rounded-md">
-                  {clientPurchasesInPeriod.length} / {(selectedClient.purchases || []).length} invoices
-                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setSortAscending(!sortAscending)}
+                    className="text-[10px] font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-2 py-1 rounded transition-colors flex items-center gap-1"
+                  >
+                    {sortAscending ? (isRtl ? '⬇️ الأقدم أولاً' : '⬇️ Plus ancien d\'abord') : (isRtl ? '⬆️ الأحدث أولاً' : '⬆️ Plus récent d\'abord')}
+                  </button>
+                  <span className="px-2 py-0.5 bg-emerald-50 text-emerald-800 text-[10px] uppercase font-black font-semibold rounded-md">
+                    {clientPurchasesInPeriod.length} / {(selectedClient.purchases || []).length} invoices
+                  </span>
+                </div>
               </div>
 
               {/* Period selection inputs */}
@@ -987,7 +995,7 @@ export default function ClientsList({
                   </span>
                 </div>
 
-                {/* Filter Debt Checkbox & Sort Toggle */}
+                {/* Filter Debt Checkbox */}
                 <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <input
@@ -1001,12 +1009,6 @@ export default function ClientsList({
                       {isRtl ? 'عرض فواتير الديون فقط' : 'Afficher uniquement les factures impayées'}
                     </label>
                   </div>
-                  <button
-                    onClick={() => setSortAscending(!sortAscending)}
-                    className="text-[10px] font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-2 py-1 rounded transition-colors flex items-center gap-1"
-                  >
-                    {sortAscending ? (isRtl ? '⬇️ الأقدم أولاً' : '⬇️ Plus ancien d\'abord') : (isRtl ? '⬆️ الأحدث أولاً' : '⬆️ Plus récent d\'abord')}
-                  </button>
                 </div>
 
                 {(purchaseDateFrom || purchaseDateTo || showOnlyDebtInvoices) && (
