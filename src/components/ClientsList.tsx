@@ -130,7 +130,7 @@ export default function ClientsList({
   // Period filters for purchase calculation
   const [purchaseDateFrom, setPurchaseDateFrom] = React.useState('');
   const [purchaseDateTo, setPurchaseDateTo] = React.useState('');
-  const [showOnlyDebtInvoices, setShowOnlyDebtInvoices] = React.useState(false);
+  const [showOnlyDebtInvoices, setShowOnlyDebtInvoices] = React.useState(true);
   const [isMaximized, setIsMaximized] = React.useState(false);
 
   // Confirmation modal state for client deletion
@@ -142,7 +142,7 @@ export default function ClientsList({
   const [settlementNote, setSettlementNote] = React.useState('');
   const [settlementMethod, setSettlementMethod] = React.useState<'cash' | 'card' | 'transfer' | 'check'>('cash');
   const [historyPage, setHistoryPage] = React.useState(1);
-  const [sortAscending, setSortAscending] = React.useState(false);
+  const [sortAscending, setSortAscending] = React.useState(true);
 
   React.useEffect(() => {
     setHistoryPage(1);
@@ -1101,11 +1101,22 @@ export default function ClientsList({
                                <p className="text-[9px] text-emerald-700/80 font-medium">{new Date(pay.date).toLocaleString(isRtl ? 'ar-MA' : 'fr', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })} - {pay.notes}</p>
                              </div>
                           </div>
-                          <div className="text-right flex flex-col items-end">
-                             <span className="font-black text-emerald-700 text-[13px] font-mono">+{pay.amount.toFixed(2)} DH</span>
-                             <span className="block text-[10px] font-bold text-gray-600 bg-white/60 mt-1 px-2 py-1 rounded-lg border border-gray-200">
-                               {isRtl ? 'الرصيد:' : 'Solde:'} {(item as any).runningDebt.toFixed(2)} DH
-                             </span>
+                          <div className="flex items-center gap-6 text-right">
+                            <div className="flex flex-col items-end">
+                              <span className="block text-[10px] font-bold text-gray-600 bg-white/80 px-2 py-1 rounded-lg border border-gray-200">
+                                {isRtl ? 'الرصيد:' : 'Solde:'} {(item as any).runningDebt.toFixed(2)} DH
+                              </span>
+                            </div>
+
+                            <div className="flex flex-col items-end w-20">
+                              <span className="font-black text-emerald-700 text-[13px] font-mono bg-emerald-100/50 px-2 py-0.5 rounded border border-emerald-200/50">
+                                +{pay.amount.toFixed(2)} DH
+                              </span>
+                            </div>
+
+                            <div className="text-emerald-200 ml-1 opacity-0 pointer-events-none">
+                              <ChevronDown className="w-4 h-4" />
+                            </div>
                           </div>
                         </div>
                       );
@@ -1182,6 +1193,11 @@ export default function ClientsList({
                         {/* Expanded Items Details */}
                         {isExpanded && (
                           <div className="border-t border-gray-100 bg-gray-50/50 p-3">
+                            <div className="mb-3 p-2 bg-white rounded-lg border border-blue-100 flex justify-between items-center shadow-sm">
+                              <span className="text-[11px] font-extrabold text-blue-900">{isRtl ? 'قيمة المبيعات (الفاتورة):' : 'Total facture:'}</span>
+                              <span className="text-[13px] font-black text-blue-700 font-mono">{p.total.toFixed(2)} DH</span>
+                            </div>
+                            
                             {safeItems.length > 0 ? (
                               <table className="w-full text-left border-collapse">
                                 <thead>
