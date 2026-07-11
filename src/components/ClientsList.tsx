@@ -1101,8 +1101,11 @@ export default function ClientsList({
                                <p className="text-[9px] text-emerald-700/80 font-medium">{new Date(pay.date).toLocaleString(isRtl ? 'ar-MA' : 'fr', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })} - {pay.notes}</p>
                              </div>
                           </div>
-                          <div className="text-right">
+                          <div className="text-right flex flex-col items-end">
                              <span className="font-black text-emerald-700 text-[13px] font-mono">+{pay.amount.toFixed(2)} DH</span>
+                             <span className="block text-[10px] font-bold text-gray-600 bg-white/60 mt-1 px-2 py-1 rounded-lg border border-gray-200">
+                               {isRtl ? 'الرصيد:' : 'Solde:'} {(item as any).runningDebt.toFixed(2)} DH
+                             </span>
                           </div>
                         </div>
                       );
