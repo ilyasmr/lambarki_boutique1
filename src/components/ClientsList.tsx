@@ -132,6 +132,7 @@ export default function ClientsList({
   const [purchaseDateTo, setPurchaseDateTo] = React.useState('');
   const [showOnlyDebtInvoices, setShowOnlyDebtInvoices] = React.useState(true);
   const [isMaximized, setIsMaximized] = React.useState(true);
+  const [expandedDebtPaymentId, setExpandedDebtPaymentId] = React.useState<string | null>(null);
 
   // Confirmation modal state for client deletion
   const [clientToDelete, setClientToDelete] = React.useState<Client | null>(null);
@@ -972,12 +973,36 @@ export default function ClientsList({
                   </span>
                   <div className="max-h-[120px] overflow-y-auto space-y-1 pr-0.5">
                     {selectedClient.debtPayments.slice().reverse().map((pay) => (
-                      <div key={pay.id} className="bg-white p-2 border border-rose-100 rounded-lg text-[10px] flex justify-between items-center font-mono">
-                        <div>
-                          <p className="font-bold text-gray-950">+{pay.amount.toFixed(2)} DH</p>
-                          <span className="text-[9px] text-gray-400 font-sans block">{new Date(pay.date).toLocaleDateString()} via {pay.paymentMethod}</span>
+                      <div key={pay.id} className="bg-white border border-rose-100 rounded-lg text-[10px] font-mono overflow-hidden transition-all duration-200 shadow-sm hover:shadow-md">
+                        <div 
+                           className="p-2 flex justify-between items-center cursor-pointer hover:bg-gray-50/80"
+                           onClick={() => setExpandedDebtPaymentId(expandedDebtPaymentId === pay.id ? null : pay.id)}
+                        >
+                          <div>
+                            <p className="font-bold text-gray-950">+{pay.amount.toFixed(2)} DH</p>
+                            <span className="text-[9px] text-gray-400 font-sans block">{new Date(pay.date).toLocaleDateString()}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                             <span className="text-[9px] text-gray-400 font-sans italic max-w-[100px] truncate">{pay.notes}</span>
+                             {expandedDebtPaymentId === pay.id ? <ChevronUp className="w-3 h-3 text-gray-400" /> : <ChevronDown className="w-3 h-3 text-gray-400" />}
+                          </div>
                         </div>
-                        <span className="text-[9px] text-gray-400 font-sans italic max-w-[100px] truncate">{pay.notes}</span>
+                        {expandedDebtPaymentId === pay.id && (
+                           <div className="bg-rose-50/30 p-2.5 border-t border-rose-50 flex flex-col gap-1.5 text-[9px] text-gray-600 font-sans">
+                             <p className="flex justify-between border-b border-rose-50 pb-1">
+                               <span className="font-bold text-rose-900">{isRtl ? 'التاريخ والوقت:' : 'Date et heure:'}</span> 
+                               <span>{new Date(pay.date).toLocaleString(isRtl ? 'ar-MA' : 'fr', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                             </p>
+                             <p className="flex justify-between border-b border-rose-50 pb-1">
+                               <span className="font-bold text-rose-900">{isRtl ? 'طريقة الدفع:' : 'Méthode:'}</span> 
+                               <span className="capitalize">{pay.paymentMethod}</span>
+                             </p>
+                             <p className="flex justify-between">
+                               <span className="font-bold text-rose-900">{isRtl ? 'الملاحظات:' : 'Notes:'}</span> 
+                               <span className="italic max-w-[120px] text-right break-words">{pay.notes || (isRtl ? 'لا يوجد' : 'N/A')}</span>
+                             </p>
+                           </div>
+                        )}
                       </div>
                     ))}
                   </div>
