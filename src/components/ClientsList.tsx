@@ -730,7 +730,7 @@ export default function ClientsList({
                 {filteredClients.map((c) => (
                   <tr 
                     key={c.id} 
-                    onClick={() => setSelectedClient(c)}
+                    onClick={() => { setSelectedClient(c); setIsMaximized(true); }}
                     className={`text-xs hover:bg-gray-50 cursor-pointer transition ${
                       selectedClient && selectedClient.id === c.id ? 'bg-blue-50/50' : ''
                     }`}
@@ -1033,8 +1033,11 @@ export default function ClientsList({
                     <p className="text-[10px] font-semibold">{isRtl ? 'لا توجد عمليات تطابق الفترة الحالية.' : 'Aucun événement durant cette période.'}</p>
                   </div>
                 ) : (
-                  (sortAscending ? combinedHistory.slice() : combinedHistory.slice().reverse())
-                  .slice((historyPage - 1) * 10, historyPage * 10).map((item, idx) => {
+                  (() => {
+                    const globalHistory = combinedHistory.slice().reverse();
+                    const pageItems = globalHistory.slice((historyPage - 1) * 10, historyPage * 10);
+                    return sortAscending ? pageItems.slice().reverse() : pageItems;
+                  })().map((item, idx) => {
                     if (item.type === 'payment') {
                       const pay = item.data as any;
                       return (
