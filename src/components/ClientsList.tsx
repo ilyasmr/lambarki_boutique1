@@ -1153,10 +1153,7 @@ export default function ClientsList({
 
                           <div className="flex items-center gap-6 text-right">
                             <div className="flex flex-col items-end">
-                              <span className="block font-extrabold text-blue-900 text-[13px] leading-tight">
-                                {p.total.toFixed(2)} DH
-                              </span>
-                              <span className="block text-[8px] font-bold text-gray-500 mt-1 bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200">
+                              <span className="block text-[10px] font-bold text-gray-600 bg-gray-100 px-2 py-1 rounded-lg border border-gray-200">
                                 {isRtl ? 'الرصيد:' : 'Solde:'} {(item as any).runningDebt.toFixed(2)} DH
                               </span>
                             </div>
