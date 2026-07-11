@@ -255,8 +255,8 @@ export default function ClientsList({
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formName.trim() || !formPhone.trim()) {
-      alert(isRtl ? 'اسم الزبون ورقم الهاتف حقول ضرورية.' : 'Le nom complet et le téléphone sont obligatoires.');
+    if (!formName.trim()) {
+      alert(isRtl ? 'اسم الزبون حقل ضروري.' : 'Le nom complet est obligatoire.');
       return;
     }
 
@@ -874,11 +874,13 @@ export default function ClientsList({
                
                {/* Right: Debt summary & Action */}
                <div className="flex items-center gap-3 border-s border-gray-100 ps-3">
+                  {editingId && (
                   <div className={`text-${isRtl ? 'right' : 'left'}`}>
                     <span className="text-[8.5px] text-rose-800 font-bold uppercase tracking-wider block mb-0.5">{isRtl ? 'المديونية :' : 'Dette :'}</span>
                     <span className="text-[12px] font-black text-rose-600 font-mono">{(selectedClient.outstandingDebt || 0).toFixed(2)} DH</span>
                   </div>
-                  {(selectedClient.outstandingDebt || 0) > 0 && currentUser?.role !== 'cashier' && (
+                  )}
+                  {editingId && (selectedClient.outstandingDebt || 0) > 0 && currentUser?.role !== 'cashier' && (
                     <button
                       onClick={() => {
                         setSettlementAmount(selectedClient.outstandingDebt || 0);
@@ -1243,20 +1245,17 @@ export default function ClientsList({
                   required
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  placeholder={isRtl ? 'مثال: فوزي بنجلون...' : 'Ex: Fatima Zahra Aloui'}
                   className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold"
                 />
               </div>
 
               {/* Phone */}
               <div className="space-y-1">
-                <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'رقم الهاتف المحمول *' : 'Numéro de Téléphone *'}</label>
+                <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'رقم الهاتف المحمول' : 'Numéro de Téléphone'}</label>
                 <input
                   type="text"
-                  required
                   value={formPhone}
                   onChange={(e) => setFormPhone(e.target.value)}
-                  placeholder="+212 6..."
                   className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
                 />
               </div>
@@ -1268,78 +1267,76 @@ export default function ClientsList({
                   type="email"
                   value={formEmail}
                   onChange={(e) => setFormEmail(e.target.value)}
-                  placeholder="client@example.com"
                   className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
                 />
               </div>
 
               {/* Address */}
               <div className="space-y-1">
-                <label className="text-xxs text-slate-400 uppercase tracking-wide">{tLabel.physicalAddress} *</label>
+                <label className="text-xxs text-slate-400 uppercase tracking-wide">{tLabel.physicalAddress}</label>
                 <input
                   type="text"
-                  required
                   value={formAddress}
                   onChange={(e) => setFormAddress(e.target.value)}
-                  placeholder={isRtl ? 'مثال: حي الرياض، الرباط...' : 'Ex: Quartier El Massira, Marrakech'}
                   className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold"
                 />
               </div>
 
-              {/* Outstanding Debt */}
-              <div className="space-y-1">
-                <label className="text-xxs text-rose-800 uppercase tracking-wide">
-                  {isRtl ? 'الديون المستحقة والمترتبة على الزبون (قابل للتعديل) *' : 'Dette en cours réglable de ce client *'}
-                </label>
-                <div className="relative">
-                  <span className="absolute right-3.5 top-3 text-xs text-rose-600 font-black font-mono">DH</span>
-                  <input
-                    type="number"
-                    step="1"
-                    min="0"
-                    value={formOutstandingDebt}
-                    onChange={(e) => setFormOutstandingDebt(parseFloat(e.target.value) || 0)}
-                    placeholder="0"
-                    className="w-full pl-3 pr-12 py-2.5 bg-rose-50/50 border border-rose-100 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono font-bold text-rose-700"
-                  />
-                </div>
-                <p className="text-[10px] text-gray-400 mt-0.5">
-                  {isRtl ? 'تعديل أو إدخال رصيد الدين المستحق على الزبون مباشرة.' : 'Ajustez ou entrez directement le solde débiteur en suspens.'}
-                </p>
-              </div>
-
-              {/* Debt Dates details (Date of Debt & Collection Due Date) */}
-              {formOutstandingDebt > 0 && (
-                <div className="grid grid-cols-2 gap-3.5 p-4 bg-rose-50/25 border border-rose-100/50 rounded-2xl animate-fade-in">
-                  <div className="space-y-1 text-left">
-                    <label className="text-xxs text-rose-800 uppercase tracking-wide block">
-                      {isRtl ? 'تاريخ بدء الدين *' : 'Date de début du crédit *'}
+              {editingId && (
+                <>
+                  {/* Outstanding Debt */}
+                  <div className="space-y-1">
+                    <label className="text-xxs text-rose-800 uppercase tracking-wide">
+                      {isRtl ? 'الديون المستحقة والمترتبة على الزبون (قابل للتعديل) *' : 'Dette en cours réglable de ce client *'}
                     </label>
-                    <input
-                      type="date"
-                      required
-                      value={formDebtDate}
-                      onChange={(e) => setFormDebtDate(e.target.value)}
-                      className="w-full px-3 py-2 bg-white border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 font-mono font-bold text-rose-900"
-                    />
+                    <div className="relative">
+                      <span className="absolute right-3.5 top-3 text-xs text-rose-600 font-black font-mono">DH</span>
+                      <input
+                        type="number"
+                        step="1"
+                        min="0"
+                        value={formOutstandingDebt}
+                        onChange={(e) => setFormOutstandingDebt(parseFloat(e.target.value) || 0)}
+                        className="w-full pl-3 pr-12 py-2.5 bg-rose-50/50 border border-rose-100 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono font-bold text-rose-700"
+                      />
+                    </div>
+                    <p className="text-[10px] text-gray-400 mt-0.5">
+                      {isRtl ? 'تعديل أو إدخال رصيد الدين المستحق على الزبون مباشرة.' : 'Ajustez ou entrez directement le solde débiteur en suspens.'}
+                    </p>
                   </div>
-                  <div className="space-y-1 text-left">
-                    <label className="text-xxs text-rose-800 uppercase tracking-wide block">
-                      {isRtl ? 'تاريخ التحصيل الاستحقاق' : 'Échéance de recouvrement'}
-                    </label>
-                    <input
-                      type="date"
-                      value={formDebtDueDate}
-                      onChange={(e) => setFormDebtDueDate(e.target.value)}
-                      className="w-full px-3 py-2 bg-white border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 font-mono font-bold text-rose-900"
-                    />
-                  </div>
-                </div>
-              )}
 
-              {/* Postal Check Section */}
-              <div className="p-4 bg-slate-50 border border-slate-200/60 rounded-2xl space-y-3">
-                <div className="flex items-center justify-between">
+                  {/* Debt Dates details (Date of Debt & Collection Due Date) */}
+                  {formOutstandingDebt > 0 && (
+                    <div className="grid grid-cols-2 gap-3.5 p-4 bg-rose-50/25 border border-rose-100/50 rounded-2xl animate-fade-in">
+                      <div className="space-y-1 text-left">
+                        <label className="text-xxs text-rose-800 uppercase tracking-wide block">
+                          {isRtl ? 'تاريخ بدء الدين *' : 'Date de début du crédit *'}
+                        </label>
+                        <input
+                          type="date"
+                          required
+                          value={formDebtDate}
+                          onChange={(e) => setFormDebtDate(e.target.value)}
+                          className="w-full px-3 py-2 bg-white border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 font-mono font-bold text-rose-900"
+                        />
+                      </div>
+                      <div className="space-y-1 text-left">
+                        <label className="text-xxs text-rose-800 uppercase tracking-wide block">
+                          {isRtl ? 'تاريخ التحصيل الاستحقاق' : 'Échéance de recouvrement'}
+                        </label>
+                        <input
+                          type="date"
+                          value={formDebtDueDate}
+                          onChange={(e) => setFormDebtDueDate(e.target.value)}
+                          className="w-full px-3 py-2 bg-white border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 font-mono font-bold text-rose-900"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Postal Check Section */}
+                  <div className="p-4 bg-slate-50 border border-slate-200/60 rounded-2xl space-y-3">
+                    <div className="flex items-center justify-between">
                   <label className="text-xxs text-indigo-900 font-extrabold uppercase tracking-wide flex items-center gap-1.5 cursor-pointer select-none">
                     <input
                       type="checkbox"
@@ -1447,6 +1444,8 @@ export default function ClientsList({
                   </div>
                 )}
               </div>
+              </>
+              )}
 
               {/* Action buttons */}
               <div className="pt-4 border-t border-gray-100 flex gap-3 text-sm">
