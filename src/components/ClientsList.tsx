@@ -392,11 +392,14 @@ export default function ClientsList({
     if (!selectedClient) return [];
     
     // 1. Build full history to calculate running debt correctly
-    const allPurchases = (selectedClient.purchases || []).map(p => ({
-      type: 'purchase' as const,
-      date: p.date,
-      data: p
-    }));
+    const allPurchases = (selectedClient.purchases || []).map(p => {
+      const inv = invoices.find(i => i.id === p.invoiceId || i.invoiceNumber === p.invoiceId);
+      return {
+        type: 'purchase' as const,
+        date: inv?.date || p.date,
+        data: p
+      };
+    });
     
     const allPayments = (selectedClient.debtPayments || []).map(pay => ({
       type: 'payment' as const,
@@ -1103,7 +1106,7 @@ export default function ClientsList({
                                   </span>
                                 )}
                               </p>
-                              <p className="text-[10px] text-gray-450 font-medium">{new Date(p.date).toLocaleString(isRtl ? 'ar-MA' : 'fr', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                              <p className="text-[10px] text-gray-450 font-medium">{new Date(item.date).toLocaleString(isRtl ? 'ar-MA' : 'fr', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
                             </div>
                           </div>
 
