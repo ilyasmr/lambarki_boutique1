@@ -131,7 +131,7 @@ export default function ClientsList({
   const [purchaseDateFrom, setPurchaseDateFrom] = React.useState('');
   const [purchaseDateTo, setPurchaseDateTo] = React.useState('');
   const [showOnlyDebtInvoices, setShowOnlyDebtInvoices] = React.useState(true);
-  const [isMaximized, setIsMaximized] = React.useState(false);
+  const [isMaximized, setIsMaximized] = React.useState(true);
 
   // Confirmation modal state for client deletion
   const [clientToDelete, setClientToDelete] = React.useState<Client | null>(null);
@@ -850,10 +850,10 @@ export default function ClientsList({
           </div>
 
           {/* Profile particulars */}
-          <div className="p-4 space-y-4 overflow-y-auto flex-1 text-xs">
+          <div className="p-3 space-y-3 overflow-y-auto flex-1 text-xs">
             
-            <div className="flex items-center gap-4 pb-3 border-b border-gray-50">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 font-mono font-black text-white flex flex-col items-center justify-center shadow-md shadow-blue-500/10 shrink-0">
+            <div className="flex items-center gap-3 pb-2 border-b border-gray-50">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 font-mono font-black text-white flex flex-col items-center justify-center shadow-md shadow-blue-500/10 shrink-0">
                 <span className="text-[7px] text-blue-200 uppercase tracking-widest">{isRtl ? 'حساب' : 'COMPTE'}</span>
                 <span className="text-md font-bold mt-[-2px]">#{String(getSequentialNumber(selectedClient)).padStart(2, '0')}</span>
               </div>
