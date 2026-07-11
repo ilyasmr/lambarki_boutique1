@@ -709,11 +709,9 @@ export default function ClientsList({
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-gray-50/60 border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
-                  <th className="py-3 px-4">{tLabel.newClient}</th>
+                  <th className="py-3 px-4">{isRtl ? 'الزبون' : 'Client'}</th>
                   <th className="py-3 px-4">{tLabel.phoneNumber}</th>
-                  <th className="py-3 px-4">{isRtl ? 'العنوان' : 'Adresse'}</th>
                   <th className="py-3 px-4 text-center">{isRtl ? 'شيكات الضمان' : 'Chèques de Garantie'}</th>
-                  <th className="py-3 px-4 text-right">{isRtl ? 'إجمالي المشتريات' : 'Fidélité cumulée'}</th>
                   <th className="py-3 px-4 text-right text-rose-700">{isRtl ? 'الديون المستحقة' : 'Ardoise / Dettes'}</th>
                   {currentUser?.role !== 'cashier' && <th className="py-3 px-4 text-center">{t.actions}</th>}
                 </tr>
@@ -749,7 +747,6 @@ export default function ClientsList({
                       </div>
                     </td>
                     <td className="py-3.5 px-4 font-semibold text-gray-700 font-mono">{c.phone}</td>
-                    <td className="py-3.5 px-4 text-gray-500 font-medium truncate max-w-[150px]" title={c.address}>{c.address}</td>
                     <td className="py-3.5 px-4 text-center" onClick={(e) => e.stopPropagation()}>
                        {c.postalChecks && c.postalChecks.length > 0 ? (
                          <div className="flex flex-col gap-1 items-center justify-center">
@@ -767,11 +764,6 @@ export default function ClientsList({
                          <span className="text-gray-300 font-bold font-mono text-center">—</span>
                        )}
                      </td>
-                    <td className="py-3.5 px-4 text-right">
-                      <span className="font-black text-blue-900 font-mono">
-                        {(c.totalSpent || 0).toFixed(2)} DH
-                      </span>
-                    </td>
                     <td className="py-3.5 px-4 text-right">
                       {c.outstandingDebt && c.outstandingDebt > 0 ? (
                         <div className="flex flex-col items-end gap-1">
@@ -858,35 +850,37 @@ export default function ClientsList({
           </div>
 
           {/* Profile particulars */}
-          <div className="p-6 space-y-6 overflow-y-auto flex-1 text-xs">
+          <div className="p-4 space-y-4 overflow-y-auto flex-1 text-xs">
             
-            <div className="text-center pb-5 border-b border-gray-50">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 font-mono font-black text-white flex flex-col items-center justify-center mx-auto shadow-md shadow-blue-500/10 shrink-0">
-                <span className="text-[9px] text-blue-200 uppercase tracking-widest">{isRtl ? 'حساب' : 'COMPTE'}</span>
-                <span className="text-lg font-bold mt-[-2px]">#{String(getSequentialNumber(selectedClient)).padStart(2, '0')}</span>
+            <div className="flex items-center gap-4 pb-3 border-b border-gray-50">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 font-mono font-black text-white flex flex-col items-center justify-center shadow-md shadow-blue-500/10 shrink-0">
+                <span className="text-[7px] text-blue-200 uppercase tracking-widest">{isRtl ? 'حساب' : 'COMPTE'}</span>
+                <span className="text-md font-bold mt-[-2px]">#{String(getSequentialNumber(selectedClient)).padStart(2, '0')}</span>
               </div>
-              <h2 className="text-md font-extrabold text-gray-900 mt-3">{selectedClient.name}</h2>
-              <p className="text-xxs text-gray-400 font-mono mt-0.5">{isRtl ? 'انضم للمحل بتاريخ:' : 'Inscrit le :'} {selectedClient.joinDate}</p>
+              <div>
+                <h2 className="text-sm font-extrabold text-gray-900">{selectedClient.name}</h2>
+                <p className="text-xxs text-gray-400 font-mono">{isRtl ? 'انضم للمحل بتاريخ:' : 'Inscrit le :'} {selectedClient.joinDate}</p>
+              </div>
             </div>
 
             {/* Direct contact info */}
-            <div className="space-y-3 font-semibold text-gray-700">
-              <div className="flex items-center gap-3 bg-gray-50 p-2.5 rounded-xl border border-gray-55/60">
+            <div className="grid grid-cols-2 gap-2 font-semibold text-gray-700">
+              <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-xl border border-gray-100">
                 <span className="p-1.5 bg-blue-50 text-blue-600 rounded-lg">
-                  <Phone className="w-4 h-4" />
+                  <Phone className="w-3.5 h-3.5" />
                 </span>
-                <span className="font-mono">{selectedClient.phone}</span>
+                <span className="font-mono text-[10px] truncate">{selectedClient.phone}</span>
               </div>
-              <div className="flex items-start gap-3 bg-gray-50 p-2.5 rounded-xl border border-gray-55/60">
-                <span className="p-1.5 bg-purple-50 text-purple-600 rounded-lg mt-0.5">
-                  <MapPin className="w-4 h-4" />
+              <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-xl border border-gray-100">
+                <span className="p-1.5 bg-purple-50 text-purple-600 rounded-lg">
+                  <MapPin className="w-3.5 h-3.5" />
                 </span>
-                <span className="leading-relaxed text-xxs block">{selectedClient.address}</span>
+                <span className="text-[10px] truncate max-w-[100px]" title={selectedClient.address}>{selectedClient.address}</span>
               </div>
             </div>
 
             {/* Postal Check details block */}
-            <div className={`p-4.5 rounded-2xl border ${selectedClient.postalChecks && selectedClient.postalChecks.length > 0 ? 'bg-indigo-50/40 border-indigo-100' : 'bg-slate-50 border-slate-200'} space-y-3`}>
+            <div className={`p-3 rounded-xl border ${selectedClient.postalChecks && selectedClient.postalChecks.length > 0 ? 'bg-indigo-50/40 border-indigo-100' : 'bg-slate-50 border-slate-200'} space-y-2`}>
               <div className="flex items-center justify-between">
                 <h4 className={`text-[10px] font-black uppercase tracking-wide ${selectedClient.postalChecks && selectedClient.postalChecks.length > 0 ? 'text-indigo-800' : 'text-slate-500'}`}>
                   {isRtl ? 'حالة الشيكات البريدية كضمان مالي' : 'Garanties de Chèques Postaux'}
@@ -933,7 +927,7 @@ export default function ClientsList({
             </div>
 
             {/* Debt status and Settlement action panel */}
-            <div className="bg-rose-50/60 p-4.5 rounded-2xl border border-rose-100 flex flex-col gap-3">
+            <div className="bg-rose-50/60 p-3 rounded-xl border border-rose-100 flex flex-col gap-2">
               <div className="flex justify-between items-center">
                 <div>
                   <h4 className="text-[10px] text-rose-800 font-extrabold uppercase tracking-wide">
