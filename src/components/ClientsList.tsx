@@ -716,13 +716,13 @@ export default function ClientsList({
         {/* Database records list */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
+            <table className="w-full text-start">
               <thead>
                 <tr className="bg-gray-50/60 border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
-                  <th className="py-3 px-4">{isRtl ? 'الزبون' : 'Client'}</th>
-                  <th className="py-3 px-4">{tLabel.phoneNumber}</th>
+                  <th className="py-3 px-4 text-start">{isRtl ? 'الزبون' : 'Client'}</th>
+                  <th className="py-3 px-4 text-start">{tLabel.phoneNumber}</th>
                   <th className="py-3 px-4 text-center">{isRtl ? 'شيكات الضمان' : 'Chèques de Garantie'}</th>
-                  <th className="py-3 px-4 text-right text-rose-700">{isRtl ? 'الديون المستحقة' : 'Ardoise / Dettes'}</th>
+                  <th className="py-3 px-4 text-end text-rose-700">{isRtl ? 'الديون المستحقة' : 'Ardoise / Dettes'}</th>
                   {currentUser?.role !== 'cashier' && <th className="py-3 px-4 text-center">{t.actions}</th>}
                 </tr>
               </thead>
@@ -735,7 +735,7 @@ export default function ClientsList({
                       selectedClient && selectedClient.id === c.id ? 'bg-blue-50/50' : ''
                     }`}
                   >
-                    <td className="py-4 px-4 font-bold text-gray-800">
+                    <td className="py-4 px-4 font-bold text-gray-800 text-start">
                       <div className="flex items-center gap-3.5">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center text-lg font-black shadow-sm shrink-0">
                           {c.name.charAt(0).toUpperCase()}
@@ -753,7 +753,7 @@ export default function ClientsList({
                         </div>
                       </div>
                     </td>
-                    <td className="py-4 px-4 font-semibold text-gray-700 font-mono">{c.phone}</td>
+                    <td className="py-4 px-4 font-semibold text-gray-700 font-mono text-start">{c.phone}</td>
                     <td className="py-4 px-4 text-center" onClick={(e) => e.stopPropagation()}>
                        {c.postalChecks && c.postalChecks.length > 0 ? (
                          <div className="flex flex-col gap-1 items-center justify-center">
@@ -771,7 +771,7 @@ export default function ClientsList({
                          <span className="text-gray-300 font-bold font-mono text-center">—</span>
                        )}
                      </td>
-                    <td className="py-4 px-4 text-right">
+                    <td className="py-4 px-4 text-end">
                       {c.outstandingDebt && c.outstandingDebt > 0 ? (
                         <div className="flex flex-col items-end gap-1">
                           <span className="font-extrabold text-rose-600 font-mono text-[13px] tracking-tight bg-rose-50/50 px-2 py-0.5 rounded border border-rose-100/50">
