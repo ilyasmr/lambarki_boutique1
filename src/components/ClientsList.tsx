@@ -113,11 +113,10 @@ export default function ClientsList({
 
   const [formName, setFormName] = React.useState('');
   const [formPhone, setFormPhone] = React.useState('');
-  const [formEmail, setFormEmail] = React.useState('');
   const [formAddress, setFormAddress] = React.useState('');
   const [formOutstandingDebt, setFormOutstandingDebt] = React.useState<number>(0);
   const [formDebtDate, setFormDebtDate] = React.useState<string>(todayStr);
-  const [formDebtDueDate, setFormDebtDueDate] = React.useState<string>('');
+  const [formDebtDueDate, setFormDebtDueDate] = React.useState<string>(todayStr);
   
   // Postal Check Form States
   const [formHasPostalCheck, setFormHasPostalCheck] = React.useState<boolean>(false);
@@ -222,11 +221,10 @@ export default function ClientsList({
     setEditingId(c.id);
     setFormName(c.name);
     setFormPhone(c.phone);
-    setFormEmail(c.email || '');
     setFormAddress(c.address);
     setFormOutstandingDebt(c.outstandingDebt || 0);
     setFormDebtDate(c.debtDate || todayStr);
-    setFormDebtDueDate(c.debtDueDate || '');
+    setFormDebtDueDate(c.debtDueDate || todayStr);
     setFormHasPostalCheck(c.hasPostalCheck || (c.postalChecks && c.postalChecks.length > 0) || false);
     setFormPostalChecks(c.postalChecks || []);
     setTempAmount('');
@@ -239,11 +237,10 @@ export default function ClientsList({
     setEditingId(null);
     setFormName('');
     setFormPhone('');
-    setFormEmail('');
     setFormAddress('');
     setFormOutstandingDebt(0);
     setFormDebtDate(todayStr);
-    setFormDebtDueDate('');
+    setFormDebtDueDate(todayStr);
     setFormHasPostalCheck(false);
     setFormPostalChecks([]);
     setTempAmount('');
@@ -271,7 +268,7 @@ export default function ClientsList({
     const payload: Client = {
       id: editingId || `cli-${Date.now()}`,
       name: formName,
-      email: formEmail.trim(),
+      email: '',
       phone: formPhone,
       address: formAddress || (isRtl ? 'العنوان غير محدد' : 'Adresse non spécifiée'),
       joinDate: matchedClient?.joinDate || new Date().toISOString().split('T')[0],
@@ -1260,16 +1257,7 @@ export default function ClientsList({
                 />
               </div>
 
-              {/* Email */}
-              <div className="space-y-1">
-                <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'البريد الإلكتروني' : 'Adresse Email'}</label>
-                <input
-                  type="email"
-                  value={formEmail}
-                  onChange={(e) => setFormEmail(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
-                />
-              </div>
+
 
               {/* Address */}
               <div className="space-y-1">
