@@ -142,6 +142,7 @@ export default function ClientsList({
   const [settlementNote, setSettlementNote] = React.useState('');
   const [settlementMethod, setSettlementMethod] = React.useState<'cash' | 'card' | 'transfer' | 'check'>('cash');
   const [historyPage, setHistoryPage] = React.useState(1);
+  const [sortAscending, setSortAscending] = React.useState(false);
 
   React.useEffect(() => {
     setHistoryPage(1);
@@ -1041,18 +1042,26 @@ export default function ClientsList({
                   </span>
                 </div>
 
-                {/* Filter Debt Checkbox */}
-                <div className="pt-2 border-t border-slate-200/60 flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="showOnlyDebtInvoices"
-                    checked={showOnlyDebtInvoices}
-                    onChange={(e) => setShowOnlyDebtInvoices(e.target.checked)}
-                    className="w-3.5 h-3.5 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
-                  />
-                  <label htmlFor="showOnlyDebtInvoices" className="text-[10px] font-extrabold text-slate-700 cursor-pointer">
-                    {isRtl ? 'عرض فواتير الديون فقط' : 'Afficher uniquement les factures impayées'}
-                  </label>
+                {/* Filter Debt Checkbox & Sort Toggle */}
+                <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="showOnlyDebtInvoices"
+                      checked={showOnlyDebtInvoices}
+                      onChange={(e) => setShowOnlyDebtInvoices(e.target.checked)}
+                      className="w-3.5 h-3.5 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
+                    />
+                    <label htmlFor="showOnlyDebtInvoices" className="text-[10px] font-extrabold text-slate-700 cursor-pointer">
+                      {isRtl ? 'عرض فواتير الديون فقط' : 'Afficher uniquement les factures impayées'}
+                    </label>
+                  </div>
+                  <button
+                    onClick={() => setSortAscending(!sortAscending)}
+                    className="text-[10px] font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-2 py-1 rounded transition-colors flex items-center gap-1"
+                  >
+                    {sortAscending ? (isRtl ? '⬇️ الأقدم أولاً' : '⬇️ Plus ancien d\'abord') : (isRtl ? '⬆️ الأحدث أولاً' : '⬆️ Plus récent d\'abord')}
+                  </button>
                 </div>
 
                 {(purchaseDateFrom || purchaseDateTo || showOnlyDebtInvoices) && (
@@ -1077,7 +1086,8 @@ export default function ClientsList({
                     <p className="text-[10px] font-semibold">{isRtl ? 'لا توجد عمليات تطابق الفترة الحالية.' : 'Aucun événement durant cette période.'}</p>
                   </div>
                 ) : (
-                  combinedHistory.slice().reverse().slice((historyPage - 1) * 10, historyPage * 10).map((item, idx) => {
+                  (sortAscending ? combinedHistory.slice() : combinedHistory.slice().reverse())
+                  .slice((historyPage - 1) * 10, historyPage * 10).map((item, idx) => {
                     if (item.type === 'payment') {
                       const pay = item.data as any;
                       return (
@@ -1141,21 +1151,29 @@ export default function ClientsList({
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-4 text-right">
-                            <div>
+                          <div className="flex items-center gap-6 text-right">
+                            <div className="flex flex-col items-end">
                               <span className="block font-extrabold text-blue-900 text-[13px] leading-tight">
                                 {p.total.toFixed(2)} DH
                               </span>
-                              {hasDebt && (
-                                <span className="block text-[10px] font-bold text-rose-600 mt-0.5">
-                                  {isRtl ? 'الباقي:' : 'Reste:'} {invoice.amountDue?.toFixed(2)} DH
-                                </span>
-                              )}
-                              <span className="block text-[8px] font-bold text-gray-500 mt-1 bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200 w-max ml-auto">
+                              <span className="block text-[8px] font-bold text-gray-500 mt-1 bg-gray-100 px-1.5 py-0.5 rounded border border-gray-200">
                                 {isRtl ? 'الرصيد:' : 'Solde:'} {(item as any).runningDebt.toFixed(2)} DH
                               </span>
                             </div>
-                            <div className="text-gray-400">
+                            
+                            <div className="flex flex-col items-end w-20">
+                              {hasDebt ? (
+                                <span className="block text-[10px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">
+                                  {isRtl ? 'الباقي:' : 'Reste:'} {invoice.amountDue?.toFixed(2)} DH
+                                </span>
+                              ) : (
+                                <span className="block text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
+                                  {isRtl ? 'خالص' : 'Réglé'}
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="text-gray-400 ml-1">
                               {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                             </div>
                           </div>
