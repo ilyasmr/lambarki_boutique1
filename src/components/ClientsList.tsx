@@ -853,31 +853,40 @@ export default function ClientsList({
           {/* Profile particulars */}
           <div className="p-3 space-y-3 overflow-y-auto flex-1 text-xs">
             
-            <div className="flex items-center gap-3 pb-2 border-b border-gray-50">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 font-mono font-black text-white flex flex-col items-center justify-center shadow-md shadow-blue-500/10 shrink-0">
-                <span className="text-[7px] text-blue-200 uppercase tracking-widest">{isRtl ? 'حساب' : 'COMPTE'}</span>
-                <span className="text-md font-bold mt-[-2px]">#{String(getSequentialNumber(selectedClient)).padStart(2, '0')}</span>
-              </div>
-              <div>
-                <h2 className="text-sm font-extrabold text-gray-900">{selectedClient.name}</h2>
-                <p className="text-xxs text-gray-400 font-mono">{isRtl ? 'انضم للمحل بتاريخ:' : 'Inscrit le :'} {selectedClient.joinDate}</p>
-              </div>
-            </div>
-
-            {/* Direct contact info */}
-            <div className="grid grid-cols-2 gap-2 font-semibold text-gray-700">
-              <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-xl border border-gray-100">
-                <span className="p-1.5 bg-blue-50 text-blue-600 rounded-lg">
-                  <Phone className="w-3.5 h-3.5" />
-                </span>
-                <span className="font-mono text-[10px] truncate">{selectedClient.phone}</span>
-              </div>
-              <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-xl border border-gray-100">
-                <span className="p-1.5 bg-purple-50 text-purple-600 rounded-lg">
-                  <MapPin className="w-3.5 h-3.5" />
-                </span>
-                <span className="text-[10px] truncate max-w-[100px]" title={selectedClient.address}>{selectedClient.address}</span>
-              </div>
+            {/* Unified Client Header & Debt Summary */}
+            <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-3 p-3 bg-white rounded-xl border border-gray-200 shadow-sm">
+               {/* Left: Avatar + Name + Contact */}
+               <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 font-mono font-black text-white flex flex-col items-center justify-center shadow-md shadow-blue-500/10 shrink-0">
+                    <span className="text-md font-bold mt-[-2px]">#{String(getSequentialNumber(selectedClient)).padStart(2, '0')}</span>
+                  </div>
+                  <div className="flex flex-col">
+                     <h2 className="text-sm font-extrabold text-gray-900 leading-tight">{selectedClient.name}</h2>
+                     <div className="flex flex-wrap items-center gap-1.5 text-[9.5px] text-gray-500 font-mono mt-1">
+                        <span className="flex items-center gap-1 bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100"><Phone className="w-2.5 h-2.5 text-blue-500"/> {selectedClient.phone}</span>
+                        <span className="flex items-center gap-1 bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100 max-w-[120px] truncate" title={selectedClient.address}><MapPin className="w-2.5 h-2.5 text-purple-500"/> {selectedClient.address}</span>
+                     </div>
+                  </div>
+               </div>
+               
+               {/* Right: Debt summary & Action */}
+               <div className="flex items-center gap-3 border-s border-gray-100 ps-3">
+                  <div className={`text-${isRtl ? 'right' : 'left'}`}>
+                    <span className="text-[8.5px] text-rose-800 font-bold uppercase tracking-wider block mb-0.5">{isRtl ? 'المديونية :' : 'Dette :'}</span>
+                    <span className="text-[12px] font-black text-rose-600 font-mono">{(selectedClient.outstandingDebt || 0).toFixed(2)} DH</span>
+                  </div>
+                  {(selectedClient.outstandingDebt || 0) > 0 && currentUser?.role !== 'cashier' && (
+                    <button
+                      onClick={() => {
+                        setSettlementAmount(selectedClient.outstandingDebt || 0);
+                        setIsOpenSettleModal(true);
+                      }}
+                      className="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xxs font-black transition-all shadow-sm shrink-0"
+                    >
+                      {isRtl ? 'دفع' : 'Régler'}
+                    </button>
+                  )}
+               </div>
             </div>
 
             {/* Postal Check details block */}
@@ -927,92 +936,6 @@ export default function ClientsList({
               )}
             </div>
 
-            {/* Debt status and Settlement action panel */}
-            <div className="bg-rose-50/60 p-3 rounded-xl border border-rose-100 flex flex-col gap-2">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h4 className="text-[10px] text-rose-800 font-extrabold uppercase tracking-wide">
-                    {isRtl ? 'حساب المديونية للمحل / دين بالكامل' : 'Ardoise Crédits & Dettes'}
-                  </h4>
-                  <p className="text-lg font-black text-rose-600 font-mono mt-0.5">
-                    {(selectedClient.outstandingDebt || 0).toFixed(2)} DH
-                  </p>
-                </div>
-                {(selectedClient.outstandingDebt || 0) > 0 && currentUser?.role !== 'cashier' && (
-                  <button
-                    onClick={() => {
-                      setSettlementAmount(selectedClient.outstandingDebt || 0);
-                      setIsOpenSettleModal(true);
-                    }}
-                    className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xxs font-black transition-all shadow-sm"
-                  >
-                    {isRtl ? 'تسديد / دفع جزء' : 'Régler Dette'}
-                  </button>
-                )}
-              </div>
-
-              {/* Debt Dates details (Date of Debt & Collection Due Date) */}
-              {(selectedClient.outstandingDebt || 0) > 0 && (
-                <div className="grid grid-cols-2 gap-2 text-xxs border-t border-rose-100/60 pt-2.5 font-bold text-rose-950">
-                  <div>
-                    <span className="text-gray-400 block text-[9px] mb-0.5">{isRtl ? 'تاريخ بدء الدين :' : 'Date début crédit :'}</span>
-                    <span className="font-mono">{selectedClient.debtDate || selectedClient.joinDate || 'N/A'}</span>
-                  </div>
-                  <div>
-                    <span className="text-gray-400 block text-[9px] mb-0.5">{isRtl ? 'أجل تحصيل الدين :' : 'Échéance de paiement :'}</span>
-                    <span className="font-mono text-rose-700 font-black">{selectedClient.debtDueDate || (isRtl ? 'غير محدد' : 'Non spécifié')}</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Repayments log */}
-              {selectedClient.debtPayments && selectedClient.debtPayments.length > 0 ? (
-                <div className="space-y-1.5 border-t border-rose-100 pt-2.5">
-                  <span className="text-[9px] text-rose-800 uppercase font-bold tracking-wider block">
-                    {isRtl ? 'آخر الدفعات المستلمة :' : 'Historique des règlements de dette :'}
-                  </span>
-                  <div className="max-h-[120px] overflow-y-auto space-y-1 pr-0.5">
-                    {selectedClient.debtPayments.slice().reverse().map((pay) => (
-                      <div key={pay.id} className="bg-white border border-rose-100 rounded-lg text-[10px] font-mono overflow-hidden transition-all duration-200 shadow-sm hover:shadow-md">
-                        <div 
-                           className="p-2 flex justify-between items-center cursor-pointer hover:bg-gray-50/80"
-                           onClick={() => setExpandedDebtPaymentId(expandedDebtPaymentId === pay.id ? null : pay.id)}
-                        >
-                          <div>
-                            <p className="font-bold text-gray-950">+{pay.amount.toFixed(2)} DH</p>
-                            <span className="text-[9px] text-gray-400 font-sans block">{new Date(pay.date).toLocaleDateString()}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                             <span className="text-[9px] text-gray-400 font-sans italic max-w-[100px] truncate">{pay.notes}</span>
-                             {expandedDebtPaymentId === pay.id ? <ChevronUp className="w-3 h-3 text-gray-400" /> : <ChevronDown className="w-3 h-3 text-gray-400" />}
-                          </div>
-                        </div>
-                        {expandedDebtPaymentId === pay.id && (
-                           <div className="bg-rose-50/30 p-2.5 border-t border-rose-50 flex flex-col gap-1.5 text-[9px] text-gray-600 font-sans">
-                             <p className="flex justify-between border-b border-rose-50 pb-1">
-                               <span className="font-bold text-rose-900">{isRtl ? 'التاريخ والوقت:' : 'Date et heure:'}</span> 
-                               <span>{new Date(pay.date).toLocaleString(isRtl ? 'ar-MA' : 'fr', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
-                             </p>
-                             <p className="flex justify-between border-b border-rose-50 pb-1">
-                               <span className="font-bold text-rose-900">{isRtl ? 'طريقة الدفع:' : 'Méthode:'}</span> 
-                               <span className="capitalize">{pay.paymentMethod}</span>
-                             </p>
-                             <p className="flex justify-between">
-                               <span className="font-bold text-rose-900">{isRtl ? 'الملاحظات:' : 'Notes:'}</span> 
-                               <span className="italic max-w-[120px] text-right break-words">{pay.notes || (isRtl ? 'لا يوجد' : 'N/A')}</span>
-                             </p>
-                           </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <p className="text-[9px] text-gray-400 font-medium italic">
-                  {isRtl ? 'لا توجد دفعات استرداد مسجلة.' : 'Aucun paiement de dette enregistré.'}
-                </p>
-              )}
-            </div>
 
             {/* Purchases ledger stack */}
             <div className="space-y-3.5">
