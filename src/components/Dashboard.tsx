@@ -71,15 +71,29 @@ export default function Dashboard({
   const tLabel = arabicDashboardLabels[lang];
 
   const [filterDate, setFilterDate] = React.useState('');
+  const [activityFilter, setActivityFilter] = React.useState('all');
+  const [selectedActivityForDetails, setSelectedActivityForDetails] = React.useState<any | null>(null);
 
   const [editingActivity, setEditingActivity] = React.useState<any | null>(null);
   const [editDescAr, setEditDescAr] = React.useState('');
   const [editDescFr, setEditDescFr] = React.useState('');
 
   const filteredActivities = React.useMemo(() => {
-    if (!filterDate) return activities;
-    return activities.filter(act => act.date && act.date.startsWith(filterDate));
-  }, [activities, filterDate]);
+    let filtered = activities;
+    if (filterDate) {
+      filtered = filtered.filter(act => act.date && act.date.startsWith(filterDate));
+    }
+    if (activityFilter !== 'all') {
+      filtered = filtered.filter(act => {
+        if (activityFilter === 'sales') return ['sale', 'invoice_edit', 'invoice_delete'].includes(act.type);
+        if (activityFilter === 'clients') return ['client_add', 'client_edit', 'client_delete', 'payment'].includes(act.type);
+        if (activityFilter === 'products') return ['product_add', 'product_edit', 'product_delete', 'stock_edit'].includes(act.type);
+        if (activityFilter === 'cash') return ['withdraw_add', 'withdraw_edit', 'withdraw_delete'].includes(act.type);
+        return true;
+      });
+    }
+    return filtered;
+  }, [activities, filterDate, activityFilter]);
 
   // Calculations for KPI Cards
   const paidInvoices = invoices.filter(inv => inv.status === 'paid');
@@ -403,68 +417,9 @@ export default function Dashboard({
 
       </div>
 
-      {/* Dynamic bottom layout - Split Grid between Recent Sales and Activities log */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-6">
+      {/* Unified Recent Activity Log */}
+      <div className="grid grid-cols-1 gap-6 pb-6">
         
-        {/* Recent Invoices list */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h3 className="text-md font-bold text-gray-900">{t.recentSales}</h3>
-                <p className="text-xs text-gray-500">{isRtl ? 'سجل آخر المبيعات الصادرة في الصندوق حالياً' : 'Consultez et imprimez les dernières ventes enregistrées'}</p>
-              </div>
-              <button 
-                onClick={() => setActiveTab('sales')}
-                className="text-xs text-blue-600 hover:text-blue-800 font-bold flex items-center gap-1 cursor-pointer animate-pulse"
-              >
-                <span>{isRtl ? 'كل المبيعات والطلبات' : 'Voir tout'}</span>
-                <ArrowUpRight className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
-                    <th className="py-3 px-3">{tLabel.invoiceNum}</th>
-                    <th className="py-3 px-3">{tLabel.invoiceClient}</th>
-                    <th className="py-3 px-3 text-right">{tLabel.invoiceTotal}</th>
-                    <th className="py-3 px-3 text-center">{t.actions}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {invoices.length === 0 ? (
-                    <tr>
-                      <td colSpan={4} className="py-10 text-center text-gray-400 text-xs font-semibold">
-                        {isRtl ? 'لا توجد فواتير بعد.' : 'Aucune facture à afficher.'}
-                      </td>
-                    </tr>
-                  ) : (
-                    invoices.slice().reverse().slice(0, 5).map((invoice) => (
-                      <tr key={invoice.id} className="text-xs font-semibold hover:bg-gray-50 transition">
-                        <td className="py-3.5 px-3 font-mono text-blue-600">{invoice.invoiceNumber}</td>
-                        <td className="py-3.5 px-3 text-gray-900 truncate max-w-[120px]">{invoice.clientName}</td>
-                        <td className="py-3.5 px-3 text-right font-mono font-bold text-gray-950">
-                          {invoice.total.toFixed(2)} DH
-                        </td>
-                        <td className="py-3.5 px-3 text-center">
-                          <button
-                            onClick={() => onViewInvoice(invoice)}
-                            className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 hover:text-blue-800 rounded-lg text-xxs font-bold transition-all cursor-pointer"
-                          >
-                            {t.print}
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
         {/* Recent Activity Log (سجل آخر المستجدات) */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col justify-between">
           <div>
@@ -480,21 +435,43 @@ export default function Dashboard({
                     : 'Suivi instantané des ventes, ajouts, modifications, suppressions et stocks.'}
                 </p>
               </div>
-              <div className="flex items-center gap-1.5 shrink-0 self-start sm:self-center">
-                <input
-                  type="date"
-                  value={filterDate}
-                  onChange={(e) => setFilterDate(e.target.value)}
-                  className="py-1 px-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xxs font-bold text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white transition cursor-pointer"
-                />
-                {filterDate && (
-                  <button
-                    onClick={() => setFilterDate('')}
-                    className="text-xxs font-extrabold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100/75 border border-rose-100 px-2.5 py-1 rounded-lg cursor-pointer transition"
-                  >
-                    {isRtl ? 'مسح' : 'Effacer'}
-                  </button>
-                )}
+              <div className="flex flex-wrap items-center gap-2 shrink-0 self-start sm:self-center">
+                <div className="flex items-center bg-gray-100/50 p-1 rounded-xl">
+                  {['all', 'sales', 'clients', 'products', 'cash'].map((filter) => {
+                    const labelsAr: Record<string, string> = { all: 'الكل', sales: 'المبيعات', clients: 'الزبائن', products: 'المنتجات', cash: 'الصندوق' };
+                    const labelsFr: Record<string, string> = { all: 'Tout', sales: 'Ventes', clients: 'Clients', products: 'Produits', cash: 'Caisse' };
+                    return (
+                      <button
+                        key={filter}
+                        onClick={() => setActivityFilter(filter)}
+                        className={`px-3 py-1.5 rounded-lg text-xxs font-bold transition-all ${
+                          activityFilter === filter 
+                            ? 'bg-white text-emerald-600 shadow-sm border border-emerald-100' 
+                            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200/50'
+                        }`}
+                      >
+                        {isRtl ? labelsAr[filter] : labelsFr[filter]}
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                <div className="flex items-center gap-1.5">
+                  <input
+                    type="date"
+                    value={filterDate}
+                    onChange={(e) => setFilterDate(e.target.value)}
+                    className="py-1.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white transition cursor-pointer"
+                  />
+                  {filterDate && (
+                    <button
+                      onClick={() => setFilterDate('')}
+                      className="text-xs font-extrabold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100/75 border border-rose-100 px-3 py-1.5 rounded-xl cursor-pointer transition"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -549,30 +526,42 @@ export default function Dashboard({
                   })();
 
                   return (
-                    <div key={act.id} className="group flex gap-3 text-xs items-start p-2 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition">
-                      <div className={`p-2 rounded-lg border flex-shrink-0 ${meta.bgColor}`}>
-                        <IconComp className="w-3.5 h-3.5" />
+                    <div 
+                      key={act.id} 
+                      onClick={() => {
+                        if (act.type === 'sale' && act.targetId) {
+                          const invoiceToOpen = invoices.find(inv => inv.id === act.targetId || inv.invoiceNumber === act.targetId);
+                          if (invoiceToOpen) onViewInvoice(invoiceToOpen);
+                          else setSelectedActivityForDetails(act);
+                        } else {
+                          setSelectedActivityForDetails(act);
+                        }
+                      }}
+                      className="group flex gap-3 text-xs items-start p-3 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition cursor-pointer shadow-none hover:shadow-sm"
+                    >
+                      <div className={`p-2.5 rounded-xl border flex-shrink-0 ${meta.bgColor}`}>
+                        <IconComp className="w-4 h-4" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="font-extrabold text-[9px] uppercase text-gray-500 tracking-wider">
+                          <span className="font-extrabold text-[10px] uppercase text-gray-500 tracking-wider">
                             {isRtl ? meta.labelAr : meta.labelFr}
                           </span>
-                          <span className="text-[9px] text-gray-400 flex items-center gap-1 shrink-0">
-                            <Clock className="w-2.5 h-2.5" />
+                          <span className="text-[10px] text-gray-400 flex items-center gap-1 shrink-0 font-mono font-medium">
+                            <Clock className="w-3 h-3" />
                             {formattedTime}
                           </span>
                         </div>
-                        <p className="text-gray-900 font-bold leading-relaxed mt-0.5 text-[11px] ltr:text-left rtl:text-right">
+                        <p className="text-gray-900 font-bold leading-relaxed mt-1 text-xs ltr:text-left rtl:text-right">
                           {isRtl ? act.descriptionAr : act.descriptionFr}
                         </p>
-                        <div className="flex items-center justify-between gap-2 mt-0.5">
-                          <div className="flex items-center gap-1.5 text-[9px] text-gray-400 ltr:text-left rtl:text-right">
+                        <div className="flex items-center justify-between gap-2 mt-1.5">
+                          <div className="flex items-center gap-1.5 text-[10px] text-gray-400 ltr:text-left rtl:text-right">
                             <span>{isRtl ? `بواسطة: ${act.operator}` : `Par: ${act.operator}`}</span>
                             {act.targetId && act.targetId !== 'bulk' && (
                               <>
                                 <span>•</span>
-                                <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-blue-600 font-bold">
+                                <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-blue-600 font-bold border border-slate-200/60">
                                   {act.targetId}
                                 </span>
                               </>
@@ -583,27 +572,29 @@ export default function Dashboard({
                           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
                             <button
                               type="button"
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 setEditingActivity(act);
                                 setEditDescAr(act.descriptionAr || '');
                                 setEditDescFr(act.descriptionFr || '');
                               }}
-                              className="p-0.5 text-blue-650 hover:text-blue-800 rounded transition cursor-pointer"
+                              className="p-1.5 text-blue-650 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition cursor-pointer"
                               title={isRtl ? 'تعديل' : 'Modifier'}
                             >
-                              <Edit2 className="w-3 h-3" />
+                              <Edit2 className="w-3.5 h-3.5" />
                             </button>
                             <button
                               type="button"
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 if (window.confirm(isRtl ? 'هل أنت متأكد من حذف هذا النشاط؟' : 'Confirmer la suppression de cette activité ?')) {
                                   onDeleteActivity?.(act.id);
                                 }
                               }}
-                              className="p-0.5 text-rose-600 hover:text-rose-800 rounded transition cursor-pointer"
+                              className="p-1.5 text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded-lg transition cursor-pointer"
                               title={isRtl ? 'حذف' : 'Supprimer'}
                             >
-                              <Trash2 className="w-3 h-3" />
+                              <Trash2 className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         </div>
@@ -617,6 +608,77 @@ export default function Dashboard({
         </div>
 
       </div>
+
+      {/* Activity Details Modal */}
+      {selectedActivityForDetails && (
+        <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4.5 border-b border-gray-100 bg-gray-50 rounded-t-2xl">
+              <h3 className="text-sm font-black text-gray-900 flex items-center gap-2">
+                <Activity className="w-4 h-4 text-emerald-600" />
+                {isRtl ? 'تفاصيل العملية' : "Détails de l'opération"}
+              </h3>
+              <button onClick={() => setSelectedActivityForDetails(null)} className="p-1.5 hover:bg-gray-200 rounded-lg transition cursor-pointer text-gray-500 hover:text-gray-700">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-5" dir={isRtl ? 'rtl' : 'ltr'}>
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3">
+                <div>
+                  <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{isRtl ? 'الوصف' : 'Description'}</span>
+                  <p className="text-sm font-bold text-gray-900 leading-relaxed">
+                    {isRtl ? selectedActivityForDetails.descriptionAr : selectedActivityForDetails.descriptionFr}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white border border-gray-100 p-3 rounded-xl shadow-xxs">
+                  <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{isRtl ? 'المنفذ' : 'Opérateur'}</span>
+                  <p className="text-xs font-black text-gray-800 flex items-center gap-1.5">
+                    <UserCheck className="w-3.5 h-3.5 text-blue-500" />
+                    {selectedActivityForDetails.operator}
+                  </p>
+                </div>
+                
+                <div className="bg-white border border-gray-100 p-3 rounded-xl shadow-xxs">
+                  <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{isRtl ? 'الوقت والتاريخ' : 'Date & Heure'}</span>
+                  <p className="text-xs font-black text-gray-800 font-mono flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-purple-500" />
+                    {(() => {
+                      try {
+                        const d = new Date(selectedActivityForDetails.date);
+                        return d.toLocaleTimeString(isRtl ? 'ar-MA' : 'fr-FR', { hour: '2-digit', minute: '2-digit' }) + ' ' + d.toLocaleDateString(isRtl ? 'ar-MA' : 'fr-FR', { day: '2-digit', month: '2-digit' });
+                      } catch {
+                        return selectedActivityForDetails.date;
+                      }
+                    })()}
+                  </p>
+                </div>
+              </div>
+
+              {selectedActivityForDetails.targetId && selectedActivityForDetails.targetId !== 'bulk' && (
+                <div className="bg-white border border-gray-100 p-3 rounded-xl shadow-xxs">
+                  <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{isRtl ? 'المرجع / المعرف' : 'Référence / ID'}</span>
+                  <p className="text-xs font-mono font-black text-indigo-700 bg-indigo-50 px-2 py-1 rounded-md inline-block">
+                    {selectedActivityForDetails.targetId}
+                  </p>
+                </div>
+              )}
+            </div>
+            
+            <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end">
+              <button 
+                onClick={() => setSelectedActivityForDetails(null)} 
+                className="px-6 py-2 bg-white border border-gray-200 hover:bg-gray-100 text-gray-800 rounded-xl font-bold cursor-pointer transition shadow-sm"
+              >
+                {isRtl ? 'إغلاق' : 'Fermer'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Edit Activity Modal */}
       {editingActivity && (
