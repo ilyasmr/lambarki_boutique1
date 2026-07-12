@@ -1191,8 +1191,6 @@ export default function ClientsList({
               )}
             </div>
 
-            </div>
-
             {/* Postal Check details block */}
             <div className={`p-3 rounded-xl border ${selectedClient.postalChecks && selectedClient.postalChecks.length > 0 ? 'bg-indigo-50/40 border-indigo-100' : 'bg-slate-50 border-slate-200'} space-y-2`}>
               <div className="flex items-center justify-between">
