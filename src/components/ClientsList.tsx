@@ -138,6 +138,7 @@ export default function ClientsList({
 
   // Debt settlement states
   const [isOpenSettleModal, setIsOpenSettleModal] = React.useState(false);
+  const [debtOpType, setDebtOpType] = React.useState<'settle' | 'borrow'>('settle');
   const [settlementAmount, setSettlementAmount] = React.useState(0);
   const [settlementNote, setSettlementNote] = React.useState('');
   const [settlementMethod, setSettlementMethod] = React.useState<'cash' | 'card' | 'transfer' | 'check'>('cash');
@@ -157,29 +158,37 @@ export default function ClientsList({
       alert(isRtl ? 'المبلغ يجب أن يكون أكبر من 0.' : 'Le montant doit être supérieur à 0.');
       return;
     }
-    if (settlementAmount > currentDebt) {
-      alert(isRtl 
-        ? 'خطأ: مبلغ التسديد أكبر من الدين المترتب على الزبون !' 
-        : 'Erreur: Le montant dépasse la dette restante !'
-      );
-      return;
+    
+    let finalDebt = currentDebt;
+    let paymentAmount = settlementAmount;
+    
+    if (debtOpType === 'settle') {
+      if (settlementAmount > currentDebt) {
+        alert(isRtl ? 'خطأ: مبلغ التسديد أكبر من الدين المترتب على الزبون !' : 'Erreur: Le montant dépasse la dette restante !');
+        return;
+      }
+      finalDebt = Math.max(0, currentDebt - settlementAmount);
+    } else {
+      finalDebt = currentDebt + settlementAmount;
+      paymentAmount = -settlementAmount;
     }
 
     const newPayment = {
       id: `dp-${Date.now()}`,
       date: new Date().toISOString(),
-      amount: settlementAmount,
+      amount: paymentAmount,
       paymentMethod: settlementMethod,
-      notes: settlementNote || (isRtl ? 'تسديد دفعة من الحساب' : 'Repaiement partiel/Intégral de dette'),
+      notes: settlementNote || (debtOpType === 'settle' 
+        ? (isRtl ? 'تسديد دفعة من الحساب' : 'Repaiement partiel/Intégral de dette')
+        : (isRtl ? 'إضافة دين / سلف جديد' : 'Nouveau crédit / Dette')),
       operator: 'Caisse POS'
     };
 
-    const finalDebt = Math.max(0, currentDebt - settlementAmount);
     const updatedClient: Client = {
       ...selectedClient,
       outstandingDebt: finalDebt,
-      debtDate: finalDebt > 0 ? selectedClient.debtDate : undefined,
-      debtDueDate: finalDebt > 0 ? selectedClient.debtDueDate : undefined,
+      debtDate: finalDebt > 0 ? (selectedClient.debtDate || todayStr) : undefined,
+      debtDueDate: finalDebt > 0 ? (selectedClient.debtDueDate || todayStr) : undefined,
       debtPayments: [...(selectedClient.debtPayments || []), newPayment]
     };
 
@@ -871,23 +880,38 @@ export default function ClientsList({
                
                {/* Right: Debt summary & Action */}
                <div className="flex items-center gap-3 border-s border-gray-100 ps-3">
-                  {editingId && (
                   <div className={`text-${isRtl ? 'right' : 'left'}`}>
                     <span className="text-[8.5px] text-rose-800 font-bold uppercase tracking-wider block mb-0.5">{isRtl ? 'المديونية :' : 'Dette :'}</span>
                     <span className="text-[12px] font-black text-rose-600 font-mono">{(selectedClient.outstandingDebt || 0).toFixed(2)} DH</span>
                   </div>
-                  )}
-                  {editingId && (selectedClient.outstandingDebt || 0) > 0 && currentUser?.role !== 'cashier' && (
-                    <button
-                      onClick={() => {
-                        setSettlementAmount(selectedClient.outstandingDebt || 0);
-                        setIsOpenSettleModal(true);
-                      }}
-                      className="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xxs font-black transition-all shadow-sm shrink-0"
-                    >
-                      {isRtl ? 'دفع' : 'Régler'}
-                    </button>
-                  )}
+                  
+                  <div className="flex gap-1">
+                    {(selectedClient.outstandingDebt || 0) > 0 && currentUser?.role !== 'cashier' && (
+                      <button
+                        onClick={() => {
+                          setDebtOpType('settle');
+                          setSettlementAmount(selectedClient.outstandingDebt || 0);
+                          setIsOpenSettleModal(true);
+                        }}
+                        className="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xxs font-black transition-all shadow-sm shrink-0"
+                      >
+                        {isRtl ? 'دفع' : 'Régler'}
+                      </button>
+                    )}
+                    {currentUser?.role !== 'cashier' && (
+                      <button
+                        onClick={() => {
+                          setDebtOpType('borrow');
+                          setSettlementAmount(0);
+                          setIsOpenSettleModal(true);
+                        }}
+                        className="px-2.5 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-xxs font-black transition-all shadow-sm shrink-0 flex gap-1 items-center"
+                      >
+                        <Plus className="w-3 h-3" />
+                        {isRtl ? 'دين' : 'Crédit'}
+                      </button>
+                    )}
+                  </div>
                </div>
             </div>
 
@@ -1039,15 +1063,22 @@ export default function ClientsList({
                   })().map((item, idx) => {
                     if (item.type === 'payment') {
                       const pay = item.data as any;
+                      const isBorrow = pay.amount < 0;
+                      const absAmount = Math.abs(pay.amount);
+                      
                       return (
-                        <div key={`pay-${idx}`} className="bg-emerald-50/70 p-3 rounded-xl border border-emerald-200 flex justify-between items-center shadow-sm">
+                        <div key={`pay-${idx}`} className={`${isBorrow ? 'bg-orange-50/70 border-orange-200' : 'bg-emerald-50/70 border-emerald-200'} p-3 rounded-xl border flex justify-between items-center shadow-sm`}>
                           <div className="flex items-center gap-3">
-                             <div className="p-2 bg-emerald-100 rounded-lg text-emerald-700">
+                             <div className={`p-2 rounded-lg ${isBorrow ? 'bg-orange-100 text-orange-700' : 'bg-emerald-100 text-emerald-700'}`}>
                                <Sparkles className="w-4 h-4" />
                              </div>
                              <div>
-                               <p className="text-[10px] text-emerald-900 font-bold uppercase tracking-wider">{isRtl ? 'تسديد دين / استخلاص' : 'Règlement de dette'}</p>
-                               <p className="text-[9px] text-emerald-700/80 font-medium">{new Date(pay.date).toLocaleString(isRtl ? 'ar-MA' : 'fr', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })} - {pay.notes}</p>
+                               <p className={`text-[10px] font-bold uppercase tracking-wider ${isBorrow ? 'text-orange-900' : 'text-emerald-900'}`}>
+                                 {isBorrow ? (isRtl ? 'إضافة دين / سلف' : 'Nouveau Crédit') : (isRtl ? 'تسديد دين / استخلاص' : 'Règlement de dette')}
+                               </p>
+                               <p className={`text-[9px] font-medium ${isBorrow ? 'text-orange-700/80' : 'text-emerald-700/80'}`}>
+                                 {new Date(pay.date).toLocaleString(isRtl ? 'ar-MA' : 'fr', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })} - {pay.notes}
+                               </p>
                              </div>
                           </div>
                           <div className="flex items-center gap-6 text-right">
@@ -1058,12 +1089,12 @@ export default function ClientsList({
                             </div>
 
                             <div className="flex flex-col items-end w-20">
-                              <span className="font-black text-emerald-700 text-[13px] font-mono bg-emerald-100/50 px-2 py-0.5 rounded border border-emerald-200/50">
-                                +{pay.amount.toFixed(2)} DH
+                              <span className={`font-black text-[13px] font-mono px-2 py-0.5 rounded border ${isBorrow ? 'text-orange-700 bg-orange-100/50 border-orange-200/50' : 'text-emerald-700 bg-emerald-100/50 border-emerald-200/50'}`}>
+                                {isBorrow ? '-' : '+'}{absAmount.toFixed(2)} DH
                               </span>
                             </div>
 
-                            <div className="text-emerald-200 ml-1 opacity-0 pointer-events-none">
+                            <div className={`${isBorrow ? 'text-orange-200' : 'text-emerald-200'} ml-1 opacity-0 pointer-events-none`}>
                               <ChevronDown className="w-4 h-4" />
                             </div>
                           </div>
@@ -1270,57 +1301,7 @@ export default function ClientsList({
                 />
               </div>
 
-              {editingId && (
-                <>
-                  {/* Outstanding Debt */}
-                  <div className="space-y-1">
-                    <label className="text-xxs text-rose-800 uppercase tracking-wide">
-                      {isRtl ? 'الديون المستحقة والمترتبة على الزبون (قابل للتعديل) *' : 'Dette en cours réglable de ce client *'}
-                    </label>
-                    <div className="relative">
-                      <span className="absolute right-3.5 top-3 text-xs text-rose-600 font-black font-mono">DH</span>
-                      <input
-                        type="number"
-                        step="1"
-                        min="0"
-                        value={formOutstandingDebt}
-                        onChange={(e) => setFormOutstandingDebt(parseFloat(e.target.value) || 0)}
-                        className="w-full pl-3 pr-12 py-2.5 bg-rose-50/50 border border-rose-100 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-rose-500 font-mono font-bold text-rose-700"
-                      />
-                    </div>
-                    <p className="text-[10px] text-gray-400 mt-0.5">
-                      {isRtl ? 'تعديل أو إدخال رصيد الدين المستحق على الزبون مباشرة.' : 'Ajustez ou entrez directement le solde débiteur en suspens.'}
-                    </p>
-                  </div>
 
-                  {/* Debt Dates details (Date of Debt & Collection Due Date) */}
-                  {formOutstandingDebt > 0 && (
-                    <div className="grid grid-cols-2 gap-3.5 p-4 bg-rose-50/25 border border-rose-100/50 rounded-2xl animate-fade-in">
-                      <div className="space-y-1 text-left">
-                        <label className="text-xxs text-rose-800 uppercase tracking-wide block">
-                          {isRtl ? 'تاريخ بدء الدين *' : 'Date de début du crédit *'}
-                        </label>
-                        <input
-                          type="date"
-                          required
-                          value={formDebtDate}
-                          onChange={(e) => setFormDebtDate(e.target.value)}
-                          className="w-full px-3 py-2 bg-white border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 font-mono font-bold text-rose-900"
-                        />
-                      </div>
-                      <div className="space-y-1 text-left">
-                        <label className="text-xxs text-rose-800 uppercase tracking-wide block">
-                          {isRtl ? 'تاريخ التحصيل الاستحقاق' : 'Échéance de recouvrement'}
-                        </label>
-                        <input
-                          type="date"
-                          value={formDebtDueDate}
-                          onChange={(e) => setFormDebtDueDate(e.target.value)}
-                          className="w-full px-3 py-2 bg-white border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 font-mono font-bold text-rose-900"
-                        />
-                      </div>
-                    </div>
-                  )}
 
                   {/* Postal Check Section */}
                   <div className="p-4 bg-slate-50 border border-slate-200/60 rounded-2xl space-y-3">
@@ -1432,8 +1413,6 @@ export default function ClientsList({
                   </div>
                 )}
               </div>
-              </>
-              )}
 
               {/* Action buttons */}
               <div className="pt-4 border-t border-gray-100 flex gap-3 text-sm">
@@ -1465,7 +1444,9 @@ export default function ClientsList({
             
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50 rounded-t-2xl shrink-0">
               <h3 className="text-sm font-bold text-gray-900">
-                {isRtl ? 'تسجيل دفعة استخلاص الدين' : 'Enregistrer un remboursement de dette'}
+                {debtOpType === 'settle' 
+                  ? (isRtl ? 'تسجيل دفعة استخلاص الدين' : 'Enregistrer un remboursement de dette')
+                  : (isRtl ? 'تسجيل دين / سلف جديد' : 'Enregistrer un nouveau crédit')}
               </h3>
               <button onClick={() => setIsOpenSettleModal(false)} className="p-1 hover:bg-gray-200 rounded-lg transition">
                 <X className="w-5 h-5" />
@@ -1474,21 +1455,27 @@ export default function ClientsList({
 
             <form onSubmit={handleSettleSubmit} className="p-6 space-y-4 text-xs font-semibold overflow-y-auto flex-1">
               
-              <div className="bg-rose-50/50 p-3 rounded-xl border border-rose-100 text-center">
-                <p className="text-xxs text-rose-800 uppercase tracking-wide">{isRtl ? 'إجمالي الدين الحالي للتسوية :' : 'Total dette restante à solder :'}</p>
-                <p className="text-lg font-black text-rose-700 font-mono mt-0.5">
+              <div className={`p-3 rounded-xl border text-center ${debtOpType === 'settle' ? 'bg-rose-50/50 border-rose-100' : 'bg-orange-50/50 border-orange-100'}`}>
+                <p className={`text-xxs uppercase tracking-wide ${debtOpType === 'settle' ? 'text-rose-800' : 'text-orange-800'}`}>
+                  {isRtl ? 'إجمالي الدين الحالي :' : 'Total dette en cours :'}
+                </p>
+                <p className={`text-lg font-black font-mono mt-0.5 ${debtOpType === 'settle' ? 'text-rose-700' : 'text-orange-700'}`}>
                   {(selectedClient.outstandingDebt || 0).toFixed(2)} DH
                 </p>
               </div>
 
               {/* Repay Amount */}
               <div className="space-y-1">
-                <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'المبلغ المستخلص بالدرهم *' : 'Montant à rembourser (DH) *'}</label>
+                <label className="text-xxs text-slate-400 uppercase tracking-wide">
+                  {debtOpType === 'settle' 
+                    ? (isRtl ? 'المبلغ المستخلص بالدرهم *' : 'Montant à rembourser (DH) *')
+                    : (isRtl ? 'مبلغ الدين المضاف بالدرهم *' : 'Montant du crédit ajouté (DH) *')}
+                </label>
                 <input
                   type="number"
                   required
                   min="1"
-                  max={selectedClient.outstandingDebt || 0}
+                  max={debtOpType === 'settle' ? (selectedClient.outstandingDebt || 0) : undefined}
                   value={settlementAmount || ''}
                   onChange={(e) => setSettlementAmount(Number(e.target.value))}
                   className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono font-bold text-sm"
@@ -1511,9 +1498,9 @@ export default function ClientsList({
               <div className="pt-4 border-t border-gray-100 flex gap-3 text-sm">
                 <button
                   type="submit"
-                  className="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold font-sans shadow-md"
+                  className={`flex-1 py-3 text-white rounded-xl font-bold font-sans shadow-md ${debtOpType === 'settle' ? 'bg-green-600 hover:bg-green-700' : 'bg-orange-600 hover:bg-orange-700'}`}
                 >
-                  {isRtl ? 'تأكيد وقيد الاستلام' : 'Solder & Confirmer'}
+                  {debtOpType === 'settle' ? (isRtl ? 'تأكيد وقيد الاستلام' : 'Solder & Confirmer') : (isRtl ? 'تأكيد وإضافة الدين' : 'Ajouter le crédit')}
                 </button>
                 <button
                   type="button"
