@@ -10,7 +10,6 @@ import {
 } from './types';
 import { api } from './api';
 import { Capacitor } from '@capacitor/core';
-import { CapacitorUpdater } from '@capgo/capacitor-updater';
 import { 
   initialUsers, 
   initialClients, 
@@ -307,10 +306,6 @@ export default function App() {
       }
     };
     loadAll();
-
-    if (Capacitor.isNativePlatform()) {
-      CapacitorUpdater.notifyAppReady().catch(console.error);
-    }
   }, []);
 
   const logActivity = (

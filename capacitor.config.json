@@ -2,11 +2,6 @@
   "appId": "lambarki.boutique.erp",
   "appName": "Lambarki Boutique",
   "webDir": "dist",
-  "bundledWebRuntime": false,
-  "plugins": {
-    "CapacitorUpdater": {
-      "autoUpdate": true,
-      "appId": "lambarki.boutique.erp"
-    }
-  }
+  "bundledWebRuntime": false
 }
+
