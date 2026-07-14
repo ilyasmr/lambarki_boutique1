@@ -132,9 +132,9 @@ export default function UsersManager({
             <span>{isRtl ? 'سجل المستخدمين وطاقم المتجر' : 'Comptes & Droits du Personnel'}</span>
           </h3>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
+          <div className="overflow-x-hidden md:overflow-x-auto">
+            <table className="w-full text-left block md:table">
+              <thead className="hidden md:table-header-group">
                 <tr className="bg-gray-50/60 border-b border-gray-100 text-xs font-semibold uppercase text-gray-400">
                   <th className="py-3 px-3">{tLabel.username}</th>
                   <th className="py-3 px-3">{isRtl ? 'الدور والصلاحية' : 'Rôle ERP'}</th>
@@ -142,7 +142,7 @@ export default function UsersManager({
                   <th className="py-3 px-3 text-center">{isRtl ? 'حماية الحساب' : 'Sécurité Compte'}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="block md:table-row-group divide-y divide-gray-100/60 md:divide-gray-50">
                 {users.slice().sort((a, b) => {
                   // Principal Admin (Ilyas) first
                   if (a.username === 'admin') return -1;
@@ -152,30 +152,38 @@ export default function UsersManager({
                 }).map((u) => {
                   const isSelf = u.id === currentUser.id;
                   return (
-                    <tr key={u.id} className={`text-xs hover:bg-gray-50/45 transition-all ${isSelf ? 'bg-indigo-50/20 font-bold' : ''}`}>
-                      <td className="py-4 px-3 flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-150 to-gray-200 font-black text-gray-700 flex items-center justify-center">
-                          {resolveUserName(u.name, lang).charAt(0)}
-                        </div>
-                        <div>
-                          <p className="text-gray-900 flex items-center gap-1 text-xs">
-                            <span>{resolveUserName(u.name, lang)}</span>
-                            {isSelf && (
-                              <span className="text-[9px] bg-blue-100 text-blue-800 px-1 py-0.2 rounded-md uppercase font-semibold">
-                                {isRtl ? 'أنت حالياً' : 'Actif'}
-                              </span>
-                            )}
-                          </p>
-                          <span className="text-xxs text-gray-400 font-mono">@{u.username}</span>
+                    <tr key={u.id} className={`block md:table-row text-xs hover:bg-gray-50/45 transition-all p-4 md:p-0 ${isSelf ? 'bg-indigo-50/20 font-bold' : ''}`}>
+                      <td className="flex justify-between md:table-cell py-2 md:py-4 md:px-3 text-left">
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase shrink-0 mt-2">{tLabel.username}</span>
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-150 to-gray-200 font-black text-gray-700 flex items-center justify-center">
+                            {resolveUserName(u.name, lang).charAt(0)}
+                          </div>
+                          <div>
+                            <p className="text-gray-900 flex items-center gap-1 text-[14px] md:text-xs font-bold">
+                              <span>{resolveUserName(u.name, lang)}</span>
+                              {isSelf && (
+                                <span className="text-[9px] bg-blue-100 text-blue-800 px-1 py-0.2 rounded-md uppercase font-semibold">
+                                  {isRtl ? 'أنت حالياً' : 'Actif'}
+                                </span>
+                              )}
+                            </p>
+                            <span className="text-xxs text-gray-400 font-mono">@{u.username}</span>
+                          </div>
                         </div>
                       </td>
-                      <td className="py-4 px-3">
+                      <td className="flex justify-between md:table-cell py-2 md:py-4 px-3 border-t border-dashed border-gray-100 md:border-none mt-3 md:mt-0 pt-3 md:pt-4">
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'الدور والصلاحية' : 'Rôle ERP'}</span>
                         <span className={`inline-block px-2.5 py-0.5 rounded-md text-[10px] uppercase font-black font-semibold ${getRoleBadge(u.role)}`}>
                           {getRoleLabel(u.role)}
                         </span>
                       </td>
-                      <td className="py-4 px-3 text-gray-500 font-mono text-xxs truncate max-w-[140px]">{u.email}</td>
-                      <td className="py-4 px-3 text-center">
+                      <td className="flex justify-between md:table-cell py-2 md:py-4 px-3 text-gray-500 font-mono text-xxs truncate max-w-full md:max-w-[140px] border-t border-dashed border-gray-100 md:border-none">
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{tLabel.emailAddress}</span>
+                        <span className="truncate">{u.email}</span>
+                      </td>
+                      <td className="flex justify-between md:table-cell py-2 md:py-4 px-3 text-center border-t border-dashed border-gray-100 md:border-none">
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'حماية الحساب' : 'Sécurité Compte'}</span>
                         <span className="inline-flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-lg text-xxs font-mono font-bold text-slate-500 border border-slate-200">
                           <Lock className="w-3.5 h-3.5 text-slate-400" />
                           <span>••••••</span>

@@ -402,9 +402,9 @@ export default function InvoicesList({
         </div>
 
         {/* Invoice List Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
+        <div className="overflow-x-hidden md:overflow-x-auto">
+          <table className="w-full text-left block md:table">
+            <thead className="hidden md:table-header-group">
               <tr className="border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
                 <th className="py-3 px-3">{tLabel.invoiceNum}</th>
                 <th className="py-3 px-3">{tLabel.invoiceClient}</th>
@@ -417,7 +417,7 @@ export default function InvoicesList({
                 <th className="py-3 px-3 text-center">{t.actions}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="block md:table-row-group divide-y divide-gray-100/60 md:divide-gray-50">
               {filteredInvoices.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="py-12 text-center text-gray-400 text-xs font-bold">
@@ -426,21 +426,35 @@ export default function InvoicesList({
                 </tr>
               ) : (
                 filteredInvoices.slice().reverse().map((invoice) => (
-                  <tr key={invoice.id} className="text-xs hover:bg-gray-50 transition">
-                    <td className="py-3.5 px-3 font-mono text-indigo-600 font-bold">{invoice.invoiceNumber}</td>
-                    <td className="py-3.5 px-3 text-gray-900 font-bold">{invoice.clientName}</td>
-                    <td className="py-3.5 px-3 text-gray-500 font-medium">
-                      {new Date(invoice.date).toLocaleString(lang === 'ar' ? 'ar-MA' : 'fr', {
-                        day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
-                      })}
+                  <tr key={invoice.id} className="block md:table-row text-xs hover:bg-gray-50 transition p-4 md:p-0">
+                    <td className="block md:table-cell py-1 md:py-3.5 md:px-3 font-mono text-indigo-600 font-bold">
+                      <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase mr-2 ml-2">{tLabel.invoiceNum}: </span>
+                      <span className="text-[14px] md:text-xs">{invoice.invoiceNumber}</span>
                     </td>
-                    <td className="py-3.5 px-3 text-right font-mono font-bold text-amber-600 bg-amber-50/20">
-                      {invoice.discount && invoice.discount > 0 ? `-${invoice.discount.toFixed(2)} DH` : '-'}
+                    <td className="flex justify-between md:table-cell py-2 md:py-3.5 md:px-3 text-gray-900 font-bold border-t border-dashed border-gray-100 md:border-none mt-3 md:mt-0 pt-3 md:pt-3.5">
+                      <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{tLabel.invoiceClient}</span>
+                      <span className="text-sm md:text-xs">{invoice.clientName}</span>
                     </td>
-                    <td className="py-3.5 px-3 text-right font-mono font-black text-slate-900">
-                      {invoice.total.toFixed(2)} DH
+                    <td className="flex justify-between md:table-cell py-2 md:py-3.5 md:px-3 text-gray-500 font-medium border-t border-dashed border-gray-100 md:border-none">
+                      <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{tLabel.invoiceDate}</span>
+                      <span>
+                        {new Date(invoice.date).toLocaleString(lang === 'ar' ? 'ar-MA' : 'fr', {
+                          day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                        })}
+                      </span>
                     </td>
-                    <td className="py-3.5 px-3 text-center">
+                    <td className="flex justify-between md:table-cell py-2 md:py-3.5 md:px-3 text-right font-mono font-bold text-amber-600 md:bg-amber-50/20 border-t border-dashed border-gray-100 md:border-none">
+                      <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'قيمة الخصم' : 'Remise'}</span>
+                      <span className="bg-amber-50/50 md:bg-transparent px-2 py-0.5 md:p-0 rounded">
+                        {invoice.discount && invoice.discount > 0 ? `-${invoice.discount.toFixed(2)} DH` : '-'}
+                      </span>
+                    </td>
+                    <td className="flex justify-between md:table-cell py-2 md:py-3.5 md:px-3 text-right font-mono font-black text-slate-900 border-t border-dashed border-gray-100 md:border-none">
+                      <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{tLabel.invoiceTotal}</span>
+                      <span className="text-[14px] md:text-xs">{invoice.total.toFixed(2)} DH</span>
+                    </td>
+                    <td className="flex justify-between md:table-cell py-2 md:py-3.5 md:px-3 text-center border-t border-dashed border-gray-100 md:border-none">
+                      <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{tLabel.invoiceStatus}</span>
                       {invoice.status === 'cancelled' ? (
                         <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-gray-100 text-gray-800 border border-gray-200">
                           {isRtl ? 'ملغاة' : 'Annulée'}
@@ -459,37 +473,41 @@ export default function InvoicesList({
                         </span>
                       )}
                     </td>
-                    <td className="py-3.5 px-3 text-center font-bold text-gray-600">
-                      {{
-                        cash: tLabel.paymentCash,
-                        card: tLabel.paymentCard,
-                        transfer: tLabel.paymentTransfer,
-                        check: tLabel.paymentCheck
-                      }[invoice.paymentMethod] || invoice.paymentMethod}
+                    <td className="flex justify-between md:table-cell py-2 md:py-3.5 md:px-3 text-center font-bold text-gray-600 border-t border-dashed border-gray-100 md:border-none">
+                      <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{tLabel.invoicePayment}</span>
+                      <span>
+                        {{
+                          cash: tLabel.paymentCash,
+                          card: tLabel.paymentCard,
+                          transfer: tLabel.paymentTransfer,
+                          check: tLabel.paymentCheck
+                        }[invoice.paymentMethod] || invoice.paymentMethod}
+                      </span>
                     </td>
-                    <td className="py-3.5 px-3 text-center text-slate-600 font-medium truncate max-w-[120px]">
-                      {resolveUserName(invoice.cashierName, lang)}
+                    <td className="flex justify-between md:table-cell py-2 md:py-3.5 md:px-3 text-center text-slate-600 font-medium truncate max-w-[120px] md:max-w-[120px] w-full md:w-auto border-t border-dashed border-gray-100 md:border-none">
+                      <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase shrink-0">{isRtl ? 'البائع' : 'Caissier'}</span>
+                      <span className="truncate">{resolveUserName(invoice.cashierName, lang)}</span>
                     </td>
-                    <td className="py-3.5 px-3 text-center">
-                      <div className="flex items-center justify-center gap-1.5 min-w-[150px]">
+                    <td className="block md:table-cell py-3 md:py-3.5 md:px-3 text-center border-t border-dashed border-gray-100 md:border-none bg-slate-50 md:bg-transparent rounded-xl mt-2 md:mt-0 px-3 md:px-3">
+                      <div className="flex items-center justify-center gap-2 md:gap-1.5 w-full md:min-w-[150px]">
                         <button
                           onClick={() => onViewInvoice(invoice)}
-                          className="p-1 px-2 bg-indigo-50 text-indigo-750 font-bold rounded-lg hover:bg-indigo-100 text-[10px] transition cursor-pointer inline-flex items-center gap-1"
+                          className="flex-1 md:flex-none p-2 md:p-1 md:px-2 bg-white md:bg-indigo-50 text-indigo-750 font-bold rounded-lg border border-indigo-100 md:border-none hover:bg-indigo-100 text-[11px] md:text-[10px] transition cursor-pointer inline-flex items-center justify-center gap-1.5 md:gap-1 shadow-xxs md:shadow-none"
                           title={isRtl ? 'مشاهدة وطباعة الفاتورة' : 'Voir & Imprimer'}
                         >
-                          <Printer className="w-3 h-3 text-indigo-600" />
-                          <span>{t.print}</span>
+                          <Printer className="w-4 h-4 md:w-3 md:h-3 text-indigo-600" />
+                          <span className="md:hidden sm:inline">{t.print}</span>
                         </button>
 
                         {isAdmin && (
                           <>
                             <button
                               onClick={() => handleStartEdit(invoice)}
-                              className="p-1 px-2 bg-amber-50 text-amber-700 font-bold rounded-lg hover:bg-amber-100 text-[10px] transition cursor-pointer inline-flex items-center gap-1"
+                              className="flex-1 md:flex-none p-2 md:p-1 md:px-2 bg-white md:bg-amber-50 text-amber-700 font-bold rounded-lg border border-amber-100 md:border-none hover:bg-amber-100 text-[11px] md:text-[10px] transition cursor-pointer inline-flex items-center justify-center gap-1.5 md:gap-1 shadow-xxs md:shadow-none"
                               title={isRtl ? 'تعديل الفاتورة' : 'Modifier'}
                             >
-                              <Edit3 className="w-3 h-3 text-amber-600" />
-                              <span>{isRtl ? 'تعديل' : 'Modifier'}</span>
+                              <Edit3 className="w-4 h-4 md:w-3 md:h-3 text-amber-600" />
+                              <span className="md:hidden sm:inline">{isRtl ? 'تعديل' : 'Modifier'}</span>
                             </button>
 
                             <button
@@ -497,11 +515,11 @@ export default function InvoicesList({
                                 setInvoiceToDelete(invoice);
                                 setConfirmDelete(true);
                               }}
-                              className="p-1 px-2 bg-rose-50 text-rose-700 font-bold rounded-lg hover:bg-rose-100 text-[10px] transition cursor-pointer inline-flex items-center gap-1"
+                              className="flex-1 md:flex-none p-2 md:p-1 md:px-2 bg-white md:bg-rose-50 text-rose-700 font-bold rounded-lg border border-rose-100 md:border-none hover:bg-rose-100 text-[11px] md:text-[10px] transition cursor-pointer inline-flex items-center justify-center gap-1.5 md:gap-1 shadow-xxs md:shadow-none"
                               title={isRtl ? 'حذف الفاتورة' : 'Supprimer'}
                             >
-                              <Trash2 className="w-3 h-3 text-rose-600" />
-                              <span>{isRtl ? 'حذف' : 'Supprimer'}</span>
+                              <Trash2 className="w-4 h-4 md:w-3 md:h-3 text-rose-600" />
+                              <span className="md:hidden sm:inline">{isRtl ? 'حذف' : 'Supprimer'}</span>
                             </button>
                           </>
                         )}

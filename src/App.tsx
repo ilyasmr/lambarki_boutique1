@@ -1407,9 +1407,8 @@ export default function App() {
           </div>
         </header>
 
-        {/* Scrollable Main Content Router */}
         <main 
-          className="flex-1 p-4 sm:p-8 overflow-y-auto max-w-full bg-slate-50"
+          className="flex-1 p-3 sm:p-6 pb-20 sm:pb-8 overflow-y-auto overflow-x-hidden max-w-full bg-slate-50 relative"
           dir={isRtl ? 'rtl' : 'ltr'}
         >
           {renderTabContent()}

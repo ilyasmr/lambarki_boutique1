@@ -594,9 +594,9 @@ export default function StocksManager({
             </div>
           </div>
 
-          <div className="overflow-x-auto max-h-[64vh]">
-            <table className="w-full text-left">
-              <thead>
+          <div className="overflow-x-hidden md:overflow-x-auto max-h-[64vh]">
+            <table className="w-full text-left block md:table">
+              <thead className="hidden md:table-header-group">
                 <tr className="bg-gray-50/60 border-b border-gray-100 text-xs font-bold uppercase text-gray-450">
                   <th className="py-3 px-3">{isRtl ? 'المنتج' : 'Produit'}</th>
                   <th className="py-3 px-3 text-center">{isRtl ? 'النوع' : 'Mouvement'}</th>
@@ -606,7 +606,7 @@ export default function StocksManager({
                   <th className="py-3 px-3 text-center">{isRtl ? 'الإجراءات' : 'Actions'}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="block md:table-row-group divide-y divide-gray-100/60 md:divide-gray-50">
                 {(() => {
                   const reversedList = filteredMovements.slice().reverse();
                   return reversedList.map((m, idx) => {
@@ -619,8 +619,8 @@ export default function StocksManager({
                     return (
                       <React.Fragment key={m.id}>
                         {isFirstInBatch && (
-                          <tr className="bg-blue-50/25 border-y border-blue-100/50">
-                            <td colSpan={6} className="py-2 px-3 text-[10px] font-black text-blue-700 tracking-wider">
+                          <tr className="block md:table-row bg-blue-50/25 border-y border-blue-100/50">
+                            <td colSpan={6} className="block md:table-cell py-2 px-3 text-[10px] md:text-[10px] font-black text-blue-700 tracking-wider">
                               <span className="flex items-center gap-1.5 justify-start">
                                 <span className="w-1.5 h-1.5 rounded-full bg-blue-650 animate-pulse"></span>
                                 {isRtl ? 'عملية موحدة (عدة سلع دفعة واحدة)' : 'Opération groupée (Multi-articles)'}
@@ -628,18 +628,19 @@ export default function StocksManager({
                             </td>
                           </tr>
                         )}
-                        <tr className={`text-xs hover:bg-gray-50/40 transition ${
+                        <tr className={`block md:table-row text-xs hover:bg-gray-50/40 transition p-4 md:p-0 ${
                           isPartOfBatch 
                             ? isRtl 
                               ? 'bg-blue-50/5 border-r-2 border-r-blue-400' 
                               : 'bg-blue-50/5 border-l-2 border-l-blue-400'
                             : ''
                         }`}>
-                          <td className="py-3 px-3">
-                            <p className="font-extrabold text-gray-800 truncate max-w-[150px]">{m.productName}</p>
+                          <td className="block md:table-cell py-1 md:py-3 px-3">
+                            <p className="font-extrabold text-gray-800 text-[14px] md:text-xs truncate max-w-full md:max-w-[150px]">{m.productName}</p>
                             <span className="text-[9px] text-gray-400 font-mono">ID: {m.productId}</span>
                           </td>
-                          <td className="py-3 px-3 text-center">
+                          <td className="flex justify-between md:table-cell py-2 md:py-3 px-3 text-center border-t border-dashed border-gray-100 md:border-none mt-3 md:mt-0 pt-3 md:pt-3">
+                            <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'النوع' : 'Mouvement'}</span>
                             <span className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-0.5 rounded-full text-xxs font-bold uppercase ${
                               m.type === 'in' 
                                 ? 'bg-emerald-50 text-emerald-800 border border-emerald-100' 
@@ -648,19 +649,26 @@ export default function StocksManager({
                               {m.type === 'in' ? '+' : '-'}
                             </span>
                           </td>
-                          <td className="py-3 px-3 text-right font-mono font-black text-gray-800">{m.qty}</td>
-                          <td className="py-3 px-3 italic text-gray-500 font-medium text-[11px] max-w-[120px] truncate" title={m.reason}>
-                            {m.reason}
+                          <td className="flex justify-between md:table-cell py-2 md:py-3 px-3 text-right font-mono font-black text-gray-800 border-t border-dashed border-gray-100 md:border-none">
+                            <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'القدر' : 'Qté'}</span>
+                            <span className="text-[14px] md:text-xs">{m.qty}</span>
                           </td>
-                          <td className="py-3 px-3 text-xxs font-medium text-gray-400 leading-normal space-y-0.5">
-                            <p className="font-semibold text-gray-600 font-sans">{m.operator}</p>
-                            <p className="font-mono text-gray-400">
-                              {new Date(m.date).toLocaleDateString(lang === 'ar' ? 'ar-MA' : 'fr', {
-                                day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
-                              })}
+                          <td className="flex justify-between md:table-cell py-2 md:py-3 px-3 italic text-gray-500 font-medium text-[11px] max-w-full md:max-w-[120px] truncate border-t border-dashed border-gray-100 md:border-none" title={m.reason}>
+                            <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'التفاصيل' : 'Détail'}</span>
+                            <span className="truncate max-w-[150px] md:max-w-none text-right md:text-left">{m.reason}</span>
+                          </td>
+                          <td className="flex justify-between md:table-cell py-2 md:py-3 px-3 text-xxs font-medium text-gray-400 leading-normal space-y-0.5 border-t border-dashed border-gray-100 md:border-none">
+                            <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase shrink-0">{isRtl ? 'منفذ' : 'Opérateur'}</span>
+                            <div className="text-right md:text-left">
+                              <p className="font-semibold text-gray-600 font-sans">{m.operator}</p>
+                              <p className="font-mono text-gray-400">
+                                {new Date(m.date).toLocaleDateString(lang === 'ar' ? 'ar-MA' : 'fr', {
+                                  day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+                                })}
                             </p>
+                            </div>
                           </td>
-                          <td className="py-3 px-3 text-center">
+                          <td className="block md:table-cell py-3 md:py-3 px-3 text-center border-t border-dashed border-gray-100 md:border-none bg-slate-50 md:bg-transparent rounded-xl mt-2 md:mt-0">
                             <div className="flex items-center justify-center gap-1">
                               <button
                                 type="button"
@@ -669,7 +677,7 @@ export default function StocksManager({
                                   setEditQty(m.qty);
                                   setEditReason(m.reason);
                                 }}
-                                className="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg cursor-pointer transition"
+                                className="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg cursor-pointer transition flex-1 md:flex-none border border-blue-200 md:border-none bg-white md:bg-transparent shadow-sm md:shadow-none"
                               >
                                 <Edit2 className="w-3.5 h-3.5" />
                               </button>

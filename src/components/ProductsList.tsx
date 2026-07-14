@@ -423,9 +423,9 @@ export default function ProductsList({
       ) : (
         /* Classic Business Table Layout */
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
+          <div className="overflow-x-hidden md:overflow-x-auto">
+            <table className="w-full text-left block md:table">
+              <thead className="hidden md:table-header-group">
                 <tr className="bg-gray-50/60 border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
                   <th className="py-3 px-4">{isRtl ? 'المنتج' : 'Désignation'}</th>
                   <th className="py-3 px-4">{isRtl ? 'الباركود' : 'Code SKU'}</th>
@@ -435,22 +435,30 @@ export default function ProductsList({
                   <th className="py-3 px-4 text-center">{isRtl ? 'إجراء' : 'Actions'}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="block md:table-row-group divide-y divide-gray-100/60 md:divide-gray-50">
                 {filteredProducts.map((p) => {
                   const isLowStock = p.stock <= p.minStockAlert;
                   return (
-                    <tr key={p.id} className="text-xs hover:bg-gray-50/40 transition">
-                      <td className="py-4 px-4">
-                        <p className="font-bold text-gray-900 text-sm">{p.name}</p>
+                    <tr key={p.id} className="block md:table-row text-xs hover:bg-gray-50/40 transition p-4 md:p-0">
+                      <td className="block md:table-cell py-1 md:py-4 md:px-4">
+                        <p className="font-bold text-gray-900 text-[15px] md:text-sm">{p.name}</p>
                       </td>
-                      <td className="py-4 px-4 font-mono text-slate-500">{p.sku}</td>
-                      <td className="py-4 px-4 font-semibold">
+                      <td className="flex justify-between md:table-cell py-2 md:py-4 md:px-4 font-mono text-slate-500 border-t border-dashed border-gray-100 md:border-none mt-3 md:mt-0 pt-3 md:pt-4">
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'الباركود' : 'Code SKU'}</span>
+                        <span className="text-sm md:text-xs">{p.sku}</span>
+                      </td>
+                      <td className="flex justify-between md:table-cell py-2 md:py-4 md:px-4 font-semibold border-t border-dashed border-gray-100 md:border-none">
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'التصنيف' : 'Catégorie'}</span>
                         <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md">
                           {p.category}
                         </span>
                       </td>
-                      <td className="py-4 px-4 text-right font-mono font-bold text-blue-900">{(p.sellPrice || 0).toFixed(2)} DH</td>
-                      <td className="py-4 px-4 text-center">
+                      <td className="flex justify-between md:table-cell py-2 md:py-4 md:px-4 text-right font-mono font-bold text-blue-900 border-t border-dashed border-gray-100 md:border-none">
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'سعر البيع' : 'Prix Vente'}</span>
+                        <span className="text-[14px] md:text-[12px]">{(p.sellPrice || 0).toFixed(2)} DH</span>
+                      </td>
+                      <td className="flex justify-between md:table-cell py-2 md:py-4 md:px-4 text-center border-t border-dashed border-gray-100 md:border-none">
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'الكمية' : 'Qté'}</span>
                         <span className={`inline-block px-2.5 py-0.5 rounded-full text-xxs font-bold ${
                           p.stock === 0 
                             ? 'bg-rose-100 text-rose-800' 
@@ -461,20 +469,22 @@ export default function ProductsList({
                           {p.stock}
                         </span>
                       </td>
-                      <td className="py-4 px-4 text-center">
-                        <div className="flex gap-1.5 justify-center">
+                      <td className="block md:table-cell py-3 md:py-4 md:px-4 text-center border-t border-dashed border-gray-100 md:border-none bg-slate-50 md:bg-transparent rounded-xl mt-2 md:mt-0 px-3 md:px-4">
+                        <div className="flex gap-2.5 justify-center w-full">
                           <button
                             onClick={() => handleEditClick(p)}
-                            className="p-1 px-2.5 bg-gray-50 hover:bg-gray-150 border border-gray-105 text-gray-650 rounded-lg text-[10px] font-bold transition duration-150"
+                            className="flex-1 md:flex-none p-2 px-4 bg-white md:bg-gray-50 hover:bg-gray-150 border border-gray-200 md:border-gray-105 text-gray-650 rounded-lg text-[11px] md:text-[10px] font-bold transition duration-150 shadow-xxs md:shadow-none flex justify-center items-center gap-1.5"
                           >
-                            {t.edit}
+                            <Edit3 className="w-4 h-4 md:hidden" />
+                            <span>{t.edit}</span>
                           </button>
                           {!isCashier && (
                             <button
                               onClick={() => setProductToDelete(p)}
-                              className="p-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg border border-rose-100/50 transition duration-150"
+                              className="flex-1 md:flex-none p-2 px-4 bg-white md:bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg border border-rose-150 md:border-rose-100/50 transition duration-150 shadow-xxs md:shadow-none flex justify-center items-center gap-1.5"
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Trash2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
+                              <span className="md:hidden text-[11px] font-bold">{t.delete || 'Delete'}</span>
                             </button>
                           )}
                         </div>
