@@ -536,6 +536,10 @@ export default function ClientsList({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 font-sans" dir={isRtl ? 'rtl' : 'ltr'}>
+      <div className="lg:col-span-12 bg-rose-600 text-white p-6 rounded-2xl shadow-xl border-4 border-yellow-400 animate-pulse text-center">
+        <h1 className="text-3xl font-black uppercase">🚨 Test Update Version 0.0.3 🚨</h1>
+        <p className="font-bold mt-2">If you see this red banner, the Capgo / APK update was successful and the new code is running!</p>
+      </div>
       
       {/* Alert Banner for Expired/Expiring Postal Checks or Debt Collection dates within 2 days or past */}
       {(checkAlerts.length > 0 || debtAlerts.length > 0) && (
