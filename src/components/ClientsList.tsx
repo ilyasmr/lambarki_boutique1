@@ -743,24 +743,24 @@ export default function ClientsList({
                 }`}
               >
                 {/* Top Row: Avatar + Name + Debt Badge */}
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center text-lg font-black shadow-sm shrink-0">
+                <div className="flex items-start gap-2 sm:gap-3">
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center text-base sm:text-lg font-black shadow-sm shrink-0">
                     {c.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="font-extrabold text-gray-900 text-[15px] leading-tight truncate">{c.name}</p>
+                    <div className="flex flex-wrap items-center justify-between gap-1 sm:gap-2">
+                      <p className="font-extrabold text-gray-900 text-[14px] sm:text-[15px] leading-tight truncate max-w-full pr-1">{c.name}</p>
                       {hasDebt ? (
-                        <span className="font-black text-rose-600 font-mono text-[13px] bg-rose-50 border border-rose-100 px-2.5 py-0.5 rounded-lg shrink-0">
-                          {c.outstandingDebt!.toFixed(2)} <span className="text-[10px]">DH</span>
+                        <span className="font-black text-rose-600 font-mono text-[12px] sm:text-[13px] bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-lg shrink-0">
+                          {c.outstandingDebt!.toFixed(2)} <span className="text-[9px] sm:text-[10px]">DH</span>
                         </span>
                       ) : null}
                     </div>
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <span className="text-[10px] text-gray-400 font-mono bg-gray-50 px-1.5 py-0.5 rounded-md border border-gray-100">#{String(getSequentialNumber(c)).padStart(2, '0')}</span>
-                      {c.phone && <span className="text-[10px] text-gray-500 font-mono">📞 {c.phone}</span>}
+                    <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                      <span className="text-[9px] sm:text-[10px] text-gray-400 font-mono bg-gray-50 px-1.5 py-0.5 rounded-md border border-gray-100">#{String(getSequentialNumber(c)).padStart(2, '0')}</span>
+                      {c.phone && <span className="text-[9px] sm:text-[10px] text-gray-500 font-mono">📞 {c.phone}</span>}
                       {hasChecks && (
-                        <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-black bg-indigo-50 text-indigo-700 border border-indigo-100">
+                        <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8.5px] sm:text-[9px] font-black bg-indigo-50 text-indigo-700 border border-indigo-100">
                           ✉️ {c.postalChecks!.length}
                         </span>
                       )}
@@ -770,10 +770,10 @@ export default function ClientsList({
 
                 {/* Debt details row (only if debt exists) */}
                 {hasDebt && (
-                  <div className="flex items-center justify-between bg-rose-50/40 px-3 py-2 rounded-xl border border-rose-100/60">
-                    <div className="flex items-center gap-2 text-[10px] text-gray-500 font-semibold font-mono">
-                      <span>📅 {isRtl ? 'بدء:' : 'Crédit:'} {c.debtDate || c.joinDate}</span>
-                      {c.debtDueDate && <span>⏰ {isRtl ? 'أجل:' : 'Éch:'} {c.debtDueDate}</span>}
+                  <div className="flex flex-wrap items-center justify-between gap-2 bg-rose-50/40 px-3 py-2 rounded-xl border border-rose-100/60 mt-0.5">
+                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[9.5px] sm:text-[10px] text-gray-500 font-semibold font-mono w-full">
+                      <span className="shrink-0">📅 {isRtl ? 'بدء:' : 'Crédit:'} {c.debtDate || c.joinDate}</span>
+                      {c.debtDueDate && <span className="shrink-0">⏰ {isRtl ? 'أجل:' : 'Éch:'} {c.debtDueDate}</span>}
                     </div>
                   </div>
                 )}
