@@ -725,7 +725,7 @@ export default function ClientsList({
           <div className="overflow-x-hidden md:overflow-x-auto">
             
           {/* MOBILE CARDS */}
-          <div className="md:hidden space-y-4 px-4 pb-8 pt-2">
+          <div className="lg:hidden space-y-4 px-4 pb-8 pt-2">
             {filteredClients.map((c) => (
               <div 
                 key={c.id}
@@ -798,7 +798,7 @@ export default function ClientsList({
             )}
           </div>
 
-          <div className="hidden md:block overflow-x-auto">
+          <div className="hidden lg:block overflow-x-auto">
             <table className="w-full text-start table">
 
               <thead className="table-header-group">
@@ -1222,7 +1222,7 @@ export default function ClientsList({
                               
                               <>
                               {/* Mobile View for Purchases */}
-                              <div className="md:hidden space-y-2">
+                              <div className="lg:hidden space-y-2">
                                 {safeItems.map((item, i) => (
                                   <div key={i} className="flex justify-between items-center bg-white p-2.5 rounded-lg border border-gray-100 shadow-xxs">
                                     <div className="flex flex-col max-w-[65%]">
@@ -1236,7 +1236,7 @@ export default function ClientsList({
                                 ))}
                               </div>
 
-<table className="w-full text-left border-collapse hidden md:table">
+<table className="w-full text-left border-collapse hidden lg:table">
                                 <thead>
                                   <tr className="border-b border-gray-200 text-[9px] font-bold text-gray-400 uppercase tracking-wider">
                                     <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'السلعة' : 'Produit'}</th>
