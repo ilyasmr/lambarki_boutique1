@@ -662,16 +662,16 @@ export default function ClientsList({
           
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
             {/* Search Input */}
-            <div className="relative w-full sm:w-72">
+            <div className="relative w-full sm:w-72 md:w-80">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
                 <Search className="w-4 h-4" />
               </span>
               <input
                 type="text"
-                placeholder={isRtl ? 'ابحث عن زبون بالاسم أو الهاتف...' : 'Rechercher par nom, téléphone, email...'}
+                placeholder={isRtl ? 'ابحث عن زبون...' : 'Rechercher par nom, téléphone, email...'}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className={`w-full py-2.5 pl-10 pr-10 bg-slate-50 text-xs text-slate-800 font-bold rounded-xl border border-slate-200/80 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all ${
+                className={`w-full py-3 md:py-2.5 pl-10 pr-10 bg-slate-50 text-sm md:text-xs text-slate-800 font-bold rounded-xl border border-slate-200/80 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all shadow-sm ${
                   isRtl ? 'text-right' : 'text-left'
                 }`}
               />
@@ -682,17 +682,17 @@ export default function ClientsList({
                   className="absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 hover:text-slate-650 transition-all"
                   title={isRtl ? 'مسح البحث' : 'Effacer la recherche'}
                 >
-                  <span className="text-[10px] font-black bg-slate-200/60 text-slate-500 hover:text-slate-700 w-4.5 h-4.5 rounded-full flex items-center justify-center">✕</span>
+                  <span className="text-[12px] font-black bg-slate-200/60 text-slate-500 hover:text-slate-700 w-5 h-5 md:w-4.5 md:h-4.5 rounded-full flex items-center justify-center">✕</span>
                 </button>
               )}
             </div>
 
             {/* Dynamic Sort Selector */}
-            <div className="relative w-full sm:w-56">
+            <div className="relative w-full sm:w-56 md:w-64">
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className={`w-full py-2.5 bg-slate-50 text-xs text-slate-850 font-black rounded-xl border border-slate-200/80 outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all cursor-pointer ${
+                className={`w-full py-3 md:py-2.5 bg-slate-50 text-sm md:text-xs text-slate-850 font-black rounded-xl border border-slate-200/80 outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all cursor-pointer shadow-sm ${
                   isRtl ? 'text-right pr-3 pl-8' : 'text-left pl-3 pr-8'
                 }`}
               >
@@ -711,9 +711,9 @@ export default function ClientsList({
 
           <button
             onClick={handleCreateNewClick}
-            className="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-black shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 w-full md:w-auto shrink-0"
+            className="px-5 py-3 md:py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm md:text-xs font-black shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 w-full md:w-auto shrink-0"
           >
-            <UserPlus className="w-4 h-4" />
+            <UserPlus className="w-5 h-5 md:w-4 md:h-4" />
             <span>{isRtl ? 'فتح حساب زبون جديد' : 'Nouveau Client'}</span>
           </button>
 
@@ -721,9 +721,9 @@ export default function ClientsList({
 
         {/* Database records list */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-start">
-              <thead>
+          <div className="overflow-x-hidden md:overflow-x-auto">
+            <table className="w-full text-start block md:table">
+              <thead className="hidden md:table-header-group">
                 <tr className="bg-gray-50/60 border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
                   <th className="py-3 px-4 text-start">{isRtl ? 'الزبون' : 'Client'}</th>
                   <th className="py-3 px-4 text-start">{tLabel.phoneNumber}</th>
@@ -732,79 +732,90 @@ export default function ClientsList({
                   {currentUser?.role !== 'cashier' && <th className="py-3 px-4 text-center">{t.actions}</th>}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50 font-semibold text-slate-800">
+              <tbody className="block md:table-row-group divide-y divide-gray-100/60 md:divide-gray-50 font-semibold text-slate-800">
                 {filteredClients.map((c) => (
                   <tr 
                     key={c.id} 
                     onClick={() => { setSelectedClient(c); setIsMaximized(true); }}
-                    className={`text-xs hover:bg-gray-50 cursor-pointer transition ${
+                    className={`block md:table-row text-xs hover:bg-gray-50 cursor-pointer transition p-4 md:p-0 ${
                       selectedClient && selectedClient.id === c.id ? 'bg-blue-50/50' : ''
                     }`}
                   >
-                    <td className="py-4 px-4 font-bold text-gray-800 text-start">
+                    <td className="block md:table-cell py-1 md:py-4 md:px-4 font-bold text-gray-800 text-start">
                       <div className="flex items-center gap-3.5">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center text-lg font-black shadow-sm shrink-0">
+                        <div className="w-12 h-12 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center text-lg md:text-lg font-black shadow-sm shrink-0">
                           {c.name.charAt(0).toUpperCase()}
                         </div>
                         <div>
                           <div className="flex items-center gap-2 flex-wrap">
-                            <p className="font-extrabold text-gray-900 text-[13px]">{c.name}</p>
+                            <p className="font-extrabold text-gray-900 text-[15px] md:text-[13px]">{c.name}</p>
                             {c.postalChecks && c.postalChecks.length > 0 && (
                               <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-black bg-indigo-50 text-indigo-700 border border-indigo-150 animate-pulse animate-duration-1000" title={isRtl ? 'شيك بريدي مسجل' : 'Chèque postal enregistré'}>
                                 ✉️ {isRtl ? `شيكات (${c.postalChecks.length})` : `Chèques (${c.postalChecks.length})`}
                               </span>
                             )}
                           </div>
-                          <span className="text-[9px] text-gray-400 font-mono bg-gray-50 px-1.5 py-0.5 rounded-md border border-gray-100 block w-fit mt-1">#{String(getSequentialNumber(c)).padStart(2, '0')}</span>
+                          <span className="text-[10px] md:text-[9px] text-gray-400 font-mono bg-gray-50 px-1.5 py-0.5 rounded-md border border-gray-100 block w-fit mt-1.5 md:mt-1">#{String(getSequentialNumber(c)).padStart(2, '0')}</span>
                         </div>
                       </div>
                     </td>
-                    <td className="py-4 px-4 font-semibold text-gray-700 font-mono text-start">{c.phone}</td>
-                    <td className="py-4 px-4 text-center" onClick={(e) => e.stopPropagation()}>
+                    
+                    <td className="flex justify-between items-center md:table-cell py-2 md:py-4 md:px-4 font-semibold text-gray-700 font-mono text-start border-t border-dashed border-gray-100 md:border-none mt-3 md:mt-0 pt-3 md:pt-4">
+                      <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{tLabel.phoneNumber}</span>
+                      <span className="text-sm md:text-xs bg-slate-50 md:bg-transparent px-2 py-1 md:p-0 rounded-md border border-slate-100 md:border-none">{c.phone || '—'}</span>
+                    </td>
+                    
+                    <td className="flex justify-between items-center md:table-cell py-2 md:py-4 md:px-4 text-center border-t border-dashed border-gray-100 md:border-none" onClick={(e) => e.stopPropagation()}>
+                       <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'شيكات الضمان' : 'Chèques'}</span>
                        {c.postalChecks && c.postalChecks.length > 0 ? (
-                         <div className="flex flex-col gap-1 items-center justify-center">
+                         <div className="flex flex-col gap-1 items-end md:items-center justify-center">
                            {c.postalChecks.map((check, idx) => {
                              const status = getCheckStatus(check.expiryDate);
                              return (
-                               <div key={check.id || idx} className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border text-[9.5px] font-black ${status.className} min-w-[95px] shadow-xxs justify-between`}>
+                               <div key={check.id || idx} className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border text-[10px] md:text-[9.5px] font-black ${status.className} min-w-[95px] shadow-xxs justify-between`}>
                                  <span className="font-mono">{check.amount?.toFixed(0)} DH</span>
-                                 <span className="text-[7.5px] font-bold opacity-80 whitespace-nowrap">📅 {check.expiryDate}</span>
+                                 <span className="text-[8px] md:text-[7.5px] font-bold opacity-80 whitespace-nowrap">📅 {check.expiryDate}</span>
                                </div>
                              );
                            })}
                          </div>
                        ) : (
-                         <span className="text-gray-300 font-bold font-mono text-center">—</span>
+                         <span className="text-gray-300 font-bold font-mono text-center text-sm md:text-xs">—</span>
                        )}
                      </td>
-                    <td className="py-4 px-4 text-end">
+                     
+                    <td className="flex justify-between items-center md:table-cell py-2 md:py-4 md:px-4 text-end border-t border-dashed border-gray-100 md:border-none">
+                      <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'الديون المستحقة' : 'Ardoise / Dettes'}</span>
                       {c.outstandingDebt && c.outstandingDebt > 0 ? (
                         <div className="flex flex-col items-end gap-1">
-                          <span className="font-extrabold text-rose-600 font-mono text-[13px] tracking-tight bg-rose-50/50 px-2 py-0.5 rounded border border-rose-100/50">
+                          <span className="font-extrabold text-rose-600 font-mono text-[14px] md:text-[13px] tracking-tight bg-rose-50/80 px-2.5 py-1 md:py-0.5 rounded border border-rose-100 shadow-xxs">
                             {c.outstandingDebt.toFixed(2)} DH
                           </span>
-                          <div className="flex flex-col items-end text-[9px] text-gray-400 font-semibold leading-none font-mono">
+                          <div className="flex flex-col items-end text-[10px] md:text-[9px] text-gray-400 font-semibold leading-none font-mono mt-0.5 md:mt-0">
                             <span>📅 {isRtl ? 'بدء:' : 'crédit:'} {c.debtDate || c.joinDate}</span>
                           </div>
                         </div>
                       ) : (
-                        <span className="text-gray-300 font-medium font-mono text-xs">0.00 DH</span>
+                        <span className="text-gray-300 font-medium font-mono text-sm md:text-xs bg-gray-50 md:bg-transparent px-2 py-1 md:p-0 rounded border border-gray-100 md:border-none">0.00 DH</span>
                       )}
                     </td>
+                    
                     {currentUser?.role !== 'cashier' && (
-                      <td className="py-4 px-4 text-center" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex gap-2 justify-center">
+                      <td className="block md:table-cell py-3 md:py-4 md:px-4 text-center border-t border-dashed border-gray-100 md:border-none bg-slate-50 md:bg-transparent rounded-xl mt-2 md:mt-0 px-3 md:px-4" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex gap-3 justify-center w-full">
                           <button
                             onClick={(e) => handleEditClick(c, e)}
-                            className="p-1 px-2 hover:bg-gray-100 text-gray-600 rounded-lg border border-gray-150 transition"
+                            className="flex-1 md:flex-none p-2 px-4 hover:bg-white md:hover:bg-gray-100 text-gray-600 rounded-lg border border-gray-200 md:border-gray-150 transition shadow-xxs md:shadow-none flex justify-center items-center gap-1.5 bg-white md:bg-transparent"
                           >
-                            <Edit3 className="w-3.5 h-3.5" />
+                            <Edit3 className="w-4 h-4 md:w-3.5 md:h-3.5" />
+                            <span className="md:hidden text-[11px] font-bold">{t.edit || 'Edit'}</span>
                           </button>
                           <button
                             onClick={() => setClientToDelete(c)}
-                            className="p-1 hover:bg-rose-50 text-rose-600 rounded-lg border border-rose-100 transition"
+                            className="flex-1 md:flex-none p-2 px-4 bg-white md:bg-transparent hover:bg-rose-50 text-rose-600 rounded-lg border border-rose-150 md:border-rose-100 transition shadow-xxs md:shadow-none flex justify-center items-center gap-1.5"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <Trash2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
+                            <span className="md:hidden text-[11px] font-bold">{t.delete || 'Delete'}</span>
                           </button>
                         </div>
                       </td>
@@ -812,8 +823,8 @@ export default function ClientsList({
                   </tr>
                 ))}
                 {filteredClients.length === 0 && (
-                  <tr>
-                    <td colSpan={currentUser?.role === 'cashier' ? 6 : 7} className="py-12 text-center text-gray-400 text-xs font-semibold">
+                  <tr className="block md:table-row">
+                    <td colSpan={currentUser?.role === 'cashier' ? 6 : 7} className="block md:table-cell py-12 text-center text-gray-400 text-xs font-semibold">
                       {isRtl ? 'لا يوجد زبناء بهذا الاسم.' : 'Aucun client dans la base de données.'}
                     </td>
                   </tr>
