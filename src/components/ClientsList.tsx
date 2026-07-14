@@ -536,10 +536,7 @@ export default function ClientsList({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 font-sans" dir={isRtl ? 'rtl' : 'ltr'}>
-      <div className="lg:col-span-12 bg-rose-600 text-white p-6 rounded-2xl shadow-xl border-4 border-yellow-400 animate-pulse text-center">
-        <h1 className="text-3xl font-black uppercase">🚨 Test Update Version 0.0.3 🚨</h1>
-        <p className="font-bold mt-2">If you see this red banner, the Capgo / APK update was successful and the new code is running!</p>
-      </div>
+      
       
       {/* Alert Banner for Expired/Expiring Postal Checks or Debt Collection dates within 2 days or past */}
       {(checkAlerts.length > 0 || debtAlerts.length > 0) && (
@@ -726,8 +723,85 @@ export default function ClientsList({
         {/* Database records list */}
         <div className="md:bg-white md:rounded-2xl md:border md:border-gray-100 md:shadow-sm overflow-hidden">
           <div className="overflow-x-hidden md:overflow-x-auto">
-            <table className="w-full text-start block md:table">
-              <thead className="hidden md:table-header-group">
+            
+          {/* MOBILE CARDS */}
+          <div className="md:hidden space-y-4 px-4 pb-8 pt-2">
+            {filteredClients.map((c) => (
+              <div 
+                key={c.id}
+                onClick={() => { setSelectedClient(c); setIsMaximized(true); }}
+                className={`bg-white rounded-2xl shadow-sm border p-4 flex flex-col gap-4 relative overflow-hidden transition-all duration-200 active:scale-[0.98] ${
+                  selectedClient && selectedClient.id === c.id ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-gray-200'
+                }`}
+              >
+                {/* Header: Avatar + Name + Check tags */}
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center text-xl font-black shadow-sm shrink-0">
+                    {c.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-extrabold text-gray-900 text-[16px] leading-tight mb-1 truncate">{c.name}</p>
+                    <div className="flex flex-wrap gap-1">
+                      <span className="text-[10px] text-gray-500 font-mono bg-gray-100 px-2 py-0.5 rounded-md">#{String(getSequentialNumber(c)).padStart(2, '0')}</span>
+                      {c.postalChecks && c.postalChecks.length > 0 && (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-black bg-indigo-50 text-indigo-700 border border-indigo-150 animate-pulse animate-duration-1000">
+                          {isRtl ? `شيكات (${c.postalChecks.length})` : `Chèques (${c.postalChecks.length})`}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Details Grid */}
+                <div className="grid grid-cols-2 gap-3 bg-gray-50/50 p-3 rounded-xl border border-gray-100">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-gray-400 font-medium text-[9px] uppercase tracking-wider">{tLabel.phoneNumber}</span>
+                    <span className="text-[12px] font-semibold text-gray-700 font-mono truncate">{c.phone || '—'}</span>
+                  </div>
+                  <div className="flex flex-col gap-1 items-end text-end">
+                    <span className="text-gray-400 font-medium text-[9px] uppercase tracking-wider">{isRtl ? 'الأردواز / الديون' : 'Ardoise / Dettes'}</span>
+                    {c.outstandingDebt && c.outstandingDebt > 0 ? (
+                      <span className="font-black text-rose-600 font-mono text-[14px] bg-rose-100 px-2 rounded-md truncate max-w-full">
+                        {c.outstandingDebt.toFixed(2)} DH
+                      </span>
+                    ) : (
+                      <span className="text-gray-400 font-medium font-mono text-[12px]">0.00 DH</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Actions (if not cashier) */}
+                {currentUser?.role !== 'cashier' && (
+                  <div className="flex gap-2 mt-1">
+                    <button
+                      onClick={(e) => handleEditClick(c, e)}
+                      className="flex-1 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl border border-gray-200 font-bold text-[12px] flex justify-center items-center gap-2 transition"
+                    >
+                      <Edit3 className="w-4 h-4" />
+                      {t.edit || 'Edit'}
+                    </button>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setClientToDelete(c); }}
+                      className="flex-1 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl border border-rose-100 font-bold text-[12px] flex justify-center items-center gap-2 transition"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      {t.delete || 'Delete'}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+            {filteredClients.length === 0 && (
+              <div className="text-center py-12 px-6 bg-white rounded-2xl border border-gray-100">
+                <p className="text-gray-400 font-semibold">{isRtl ? 'لا يوجد عملاء.' : 'Aucun client.'}</p>
+              </div>
+            )}
+          </div>
+
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-start table">
+
+              <thead className="table-header-group">
                 <tr className="bg-gray-50/60 border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
                   <th className="py-3 px-4 text-start">{isRtl ? 'الزبون' : 'Client'}</th>
                   <th className="py-3 px-4 text-start">{tLabel.phoneNumber}</th>
@@ -736,89 +810,86 @@ export default function ClientsList({
                   {currentUser?.role !== 'cashier' && <th className="py-3 px-4 text-center">{t.actions}</th>}
                 </tr>
               </thead>
-              <tbody className="block md:table-row-group md:divide-y md:divide-gray-50 font-semibold text-slate-800 space-y-3 md:space-y-0 pb-4 md:pb-0">
+              <tbody className="table-row-group divide-y divide-gray-50 font-semibold text-slate-800">
                 {filteredClients.map((c) => (
                   <tr 
                     key={c.id} 
                     onClick={() => { setSelectedClient(c); setIsMaximized(true); }}
-                    className={`block md:table-row text-xs cursor-pointer transition p-4 md:p-0 bg-white rounded-2xl shadow-sm border border-gray-100 md:border-none md:shadow-none md:rounded-none md:bg-transparent relative ${
+                    className={`table-row text-xs cursor-pointer transition relative ${
                       selectedClient && selectedClient.id === c.id ? 'md:bg-blue-50/50 ring-2 ring-blue-500 md:ring-0' : 'hover:bg-gray-50'
                     }`}
                   >
-                    <td className="block md:table-cell py-1 md:py-4 md:px-4 font-bold text-gray-800 text-start">
+                    <td className="table-cell py-4 px-4 font-bold text-gray-800 text-start">
                       <div className="flex items-center gap-3.5">
-                        <div className="w-12 h-12 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center text-lg md:text-lg font-black shadow-sm shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center text-lg md:text-lg font-black shadow-sm shrink-0">
                           {c.name.charAt(0).toUpperCase()}
                         </div>
                         <div>
                           <div className="flex items-center gap-2 flex-wrap">
-                            <p className="font-extrabold text-gray-900 text-[15px] md:text-[13px]">{c.name}</p>
+                            <p className="font-extrabold text-gray-900 text-[13px]">{c.name}</p>
                             {c.postalChecks && c.postalChecks.length > 0 && (
                               <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-black bg-indigo-50 text-indigo-700 border border-indigo-150 animate-pulse animate-duration-1000" title={isRtl ? 'شيك بريدي مسجل' : 'Chèque postal enregistré'}>
                                 ✉️ {isRtl ? `شيكات (${c.postalChecks.length})` : `Chèques (${c.postalChecks.length})`}
                               </span>
                             )}
                           </div>
-                          <span className="text-[10px] md:text-[9px] text-gray-400 font-mono bg-gray-50 px-1.5 py-0.5 rounded-md border border-gray-100 block w-fit mt-1.5 md:mt-1">#{String(getSequentialNumber(c)).padStart(2, '0')}</span>
+                          <span className="text-[9px] text-gray-400 font-mono bg-gray-50 px-1.5 py-0.5 rounded-md border border-gray-100 block w-fit mt-1.5 md:mt-1">#{String(getSequentialNumber(c)).padStart(2, '0')}</span>
                         </div>
                       </div>
                     </td>
                     
-                    <td className="flex justify-between items-center md:table-cell py-2 md:py-4 md:px-4 font-semibold text-gray-700 font-mono text-start border-t border-dashed border-gray-100 md:border-none mt-3 md:mt-0 pt-3 md:pt-4">
-                      <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{tLabel.phoneNumber}</span>
-                      <span className="text-sm md:text-xs bg-slate-50 md:bg-transparent px-2 py-1 md:p-0 rounded-md border border-slate-100 md:border-none">{c.phone || '—'}</span>
+                    <td className="table-cell py-4 px-4 font-semibold text-gray-700 font-mono text-start">
+                      <span className="text-xs">{c.phone || '—'}</span>
                     </td>
                     
-                    <td className="flex justify-between items-center md:table-cell py-2 md:py-4 md:px-4 text-center border-t border-dashed border-gray-100 md:border-none" onClick={(e) => e.stopPropagation()}>
-                       <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'شيكات الضمان' : 'Chèques'}</span>
+                    <td className="table-cell py-4 px-4 text-center" onClick={(e) => e.stopPropagation()}>
                        {c.postalChecks && c.postalChecks.length > 0 ? (
-                         <div className="flex flex-col gap-1 items-end md:items-center justify-center">
+                         <div className="flex flex-col gap-1 items-center justify-center">
                            {c.postalChecks.map((check, idx) => {
                              const status = getCheckStatus(check.expiryDate);
                              return (
-                               <div key={check.id || idx} className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border text-[10px] md:text-[9.5px] font-black ${status.className} min-w-[95px] shadow-xxs justify-between`}>
+                               <div key={check.id || idx} className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border text-[9.5px] font-black ${status.className} min-w-[95px] shadow-xxs justify-between`}>
                                  <span className="font-mono">{check.amount?.toFixed(0)} DH</span>
-                                 <span className="text-[8px] md:text-[7.5px] font-bold opacity-80 whitespace-nowrap">📅 {check.expiryDate}</span>
+                                 <span className="text-[7.5px] font-bold opacity-80 whitespace-nowrap">📅 {check.expiryDate}</span>
                                </div>
                              );
                            })}
                          </div>
                        ) : (
-                         <span className="text-gray-300 font-bold font-mono text-center text-sm md:text-xs">—</span>
+                         <span className="text-gray-300 font-bold font-mono text-center text-xs">—</span>
                        )}
                      </td>
                      
-                    <td className="flex justify-between items-center md:table-cell py-2 md:py-4 md:px-4 text-end border-t border-dashed border-gray-100 md:border-none">
-                      <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'الديون المستحقة' : 'Ardoise / Dettes'}</span>
+                    <td className="table-cell py-4 px-4 text-end">
                       {c.outstandingDebt && c.outstandingDebt > 0 ? (
                         <div className="flex flex-col items-end gap-1">
-                          <span className="font-extrabold text-rose-600 font-mono text-[14px] md:text-[13px] tracking-tight bg-rose-50/80 px-2.5 py-1 md:py-0.5 rounded border border-rose-100 shadow-xxs">
+                          <span className="font-extrabold text-rose-600 font-mono text-[13px] tracking-tight bg-rose-50/80 px-2.5 py-0.5 rounded border border-rose-100 shadow-xxs">
                             {c.outstandingDebt.toFixed(2)} DH
                           </span>
-                          <div className="flex flex-col items-end text-[10px] md:text-[9px] text-gray-400 font-semibold leading-none font-mono mt-0.5 md:mt-0">
+                          <div className="flex flex-col items-end text-[10px] md:text-[9px] text-gray-400 font-semibold leading-none font-mono mt-0">
                             <span>📅 {isRtl ? 'بدء:' : 'crédit:'} {c.debtDate || c.joinDate}</span>
                           </div>
                         </div>
                       ) : (
-                        <span className="text-gray-300 font-medium font-mono text-sm md:text-xs bg-gray-50 md:bg-transparent px-2 py-1 md:p-0 rounded border border-gray-100 md:border-none">0.00 DH</span>
+                        <span className="text-gray-300 font-medium font-mono text-xs ">0.00 DH</span>
                       )}
                     </td>
                     
                     {currentUser?.role !== 'cashier' && (
-                      <td className="flex md:table-cell py-3 md:py-4 md:px-4 text-center border-t border-dashed border-gray-100 md:border-none bg-slate-50 md:bg-transparent rounded-xl mt-3 md:mt-0 px-3 md:px-4" onClick={(e) => e.stopPropagation()}>
+                      <td className="table-cell py-4 px-4 text-center" onClick={(e) => e.stopPropagation()}>
                         <div className="flex gap-2 justify-center w-full">
                           <button
                             onClick={(e) => handleEditClick(c, e)}
-                            className="flex-1 md:flex-none p-2 px-4 hover:bg-white md:hover:bg-gray-100 text-gray-600 rounded-lg border border-gray-200 md:border-gray-150 transition shadow-xxs md:shadow-none flex justify-center items-center gap-1.5 bg-white md:bg-transparent"
+                            className="p-2 hover:bg-gray-100 text-gray-600 rounded-lg border border-gray-150 transition flex justify-center items-center"
                           >
-                            <Edit3 className="w-4 h-4 md:w-3.5 md:h-3.5" />
+                            <Edit3 className="w-3.5 h-3.5" />
                             <span className="md:hidden text-[11px] font-bold">{t.edit || 'Edit'}</span>
                           </button>
                           <button
                             onClick={() => setClientToDelete(c)}
-                            className="flex-1 md:flex-none p-2 px-4 bg-white md:bg-transparent hover:bg-rose-50 text-rose-600 rounded-lg border border-rose-150 md:border-rose-100 transition shadow-xxs md:shadow-none flex justify-center items-center gap-1.5"
+                            className="p-2 hover:bg-rose-50 text-rose-600 rounded-lg border border-rose-100 transition flex justify-center items-center"
                           >
-                            <Trash2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
+                            <Trash2 className="w-3.5 h-3.5" />
                             <span className="md:hidden text-[11px] font-bold">{t.delete || 'Delete'}</span>
                           </button>
                         </div>
@@ -827,14 +898,15 @@ export default function ClientsList({
                   </tr>
                 ))}
                 {filteredClients.length === 0 && (
-                  <tr className="block md:table-row">
-                    <td colSpan={currentUser?.role === 'cashier' ? 6 : 7} className="block md:table-cell py-12 text-center text-gray-400 text-xs font-semibold">
+                  <tr className="table-row">
+                    <td colSpan={currentUser?.role === 'cashier' ? 6 : 7} className="table-cell py-12 text-center text-gray-400 text-xs font-semibold">
                       {isRtl ? 'لا يوجد زبناء بهذا الاسم.' : 'Aucun client dans la base de données.'}
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
+          </div>
           </div>
         </div>
 
@@ -1147,7 +1219,24 @@ export default function ClientsList({
                             </div>
                             
                             {safeItems.length > 0 ? (
-                              <table className="w-full text-left border-collapse">
+                              
+                              <>
+                              {/* Mobile View for Purchases */}
+                              <div className="md:hidden space-y-2">
+                                {safeItems.map((item, i) => (
+                                  <div key={i} className="flex justify-between items-center bg-white p-2.5 rounded-lg border border-gray-100 shadow-xxs">
+                                    <div className="flex flex-col max-w-[65%]">
+                                      <span className="text-[11px] font-bold text-gray-800 truncate">{item.name || 'Unknown'}</span>
+                                      <span className="text-[9px] font-mono text-gray-500">{item.qty} x {Number(item.sellPrice || 0).toFixed(2)} DH</span>
+                                    </div>
+                                    <div className="text-[12px] font-black font-mono text-gray-900 bg-gray-50 px-2 py-1 rounded">
+                                      {(Number(item.qty || 0) * Number(item.sellPrice || 0)).toFixed(2)} DH
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+
+<table className="w-full text-left border-collapse hidden md:table">
                                 <thead>
                                   <tr className="border-b border-gray-200 text-[9px] font-bold text-gray-400 uppercase tracking-wider">
                                     <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'السلعة' : 'Produit'}</th>
@@ -1167,6 +1256,7 @@ export default function ClientsList({
                                   ))}
                                 </tbody>
                               </table>
+                              </>
                             ) : (
                               <div className="text-center text-gray-400 py-3 text-xs font-medium">
                                 {invoice 
