@@ -126,8 +126,8 @@ export default function UsersManager({
       {/* RIGHT COLUMN: Active user accounts management table (8 cols) */}
       <div className="lg:col-span-8 space-y-6">
         
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 overflow-hidden">
-          <h3 className="text-sm font-black text-gray-900 flex items-center gap-2 mb-4">
+        <div className="md:bg-white md:rounded-2xl md:border md:border-gray-100 md:shadow-sm p-0 md:p-6 overflow-hidden">
+          <h3 className="text-sm font-black text-gray-900 flex items-center gap-2 mb-4 px-2 md:px-0">
             <UserCheck className="text-indigo-600 w-5 h-5 animate-pulse" />
             <span>{isRtl ? 'سجل المستخدمين وطاقم المتجر' : 'Comptes & Droits du Personnel'}</span>
           </h3>
@@ -142,7 +142,7 @@ export default function UsersManager({
                   <th className="py-3 px-3 text-center">{isRtl ? 'حماية الحساب' : 'Sécurité Compte'}</th>
                 </tr>
               </thead>
-              <tbody className="block md:table-row-group divide-y divide-gray-100/60 md:divide-gray-50">
+              <tbody className="block md:table-row-group md:divide-y md:divide-gray-50 space-y-3 md:space-y-0 pb-4 md:pb-0">
                 {users.slice().sort((a, b) => {
                   // Principal Admin (Ilyas) first
                   if (a.username === 'admin') return -1;
@@ -152,7 +152,7 @@ export default function UsersManager({
                 }).map((u) => {
                   const isSelf = u.id === currentUser.id;
                   return (
-                    <tr key={u.id} className={`block md:table-row text-xs hover:bg-gray-50/45 transition-all p-4 md:p-0 ${isSelf ? 'bg-indigo-50/20 font-bold' : ''}`}>
+                    <tr key={u.id} className={`block md:table-row text-xs transition-all p-4 md:p-0 bg-white rounded-2xl shadow-sm border border-gray-100 md:border-none md:shadow-none md:rounded-none md:bg-transparent relative ${isSelf ? 'md:bg-indigo-50/20 font-bold ring-2 ring-indigo-500 md:ring-0' : 'hover:bg-gray-50/45'}`}>
                       <td className="flex justify-between md:table-cell py-2 md:py-4 md:px-3 text-left">
                         <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase shrink-0 mt-2">{tLabel.username}</span>
                         <div className="flex items-center gap-2.5">

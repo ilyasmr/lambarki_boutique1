@@ -422,7 +422,7 @@ export default function ProductsList({
         </div>
       ) : (
         /* Classic Business Table Layout */
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="md:bg-white md:rounded-2xl md:border md:border-gray-100 md:shadow-sm overflow-hidden">
           <div className="overflow-x-hidden md:overflow-x-auto">
             <table className="w-full text-left block md:table">
               <thead className="hidden md:table-header-group">
@@ -435,11 +435,11 @@ export default function ProductsList({
                   <th className="py-3 px-4 text-center">{isRtl ? 'إجراء' : 'Actions'}</th>
                 </tr>
               </thead>
-              <tbody className="block md:table-row-group divide-y divide-gray-100/60 md:divide-gray-50">
+              <tbody className="block md:table-row-group md:divide-y md:divide-gray-50 space-y-3 md:space-y-0 pb-4 md:pb-0">
                 {filteredProducts.map((p) => {
                   const isLowStock = p.stock <= p.minStockAlert;
                   return (
-                    <tr key={p.id} className="block md:table-row text-xs hover:bg-gray-50/40 transition p-4 md:p-0">
+                    <tr key={p.id} className="block md:table-row text-xs hover:bg-gray-50/40 transition p-4 md:p-0 bg-white rounded-2xl shadow-sm border border-gray-100 md:border-none md:shadow-none md:rounded-none md:bg-transparent relative">
                       <td className="block md:table-cell py-1 md:py-4 md:px-4">
                         <p className="font-bold text-gray-900 text-[15px] md:text-sm">{p.name}</p>
                       </td>
@@ -469,8 +469,8 @@ export default function ProductsList({
                           {p.stock}
                         </span>
                       </td>
-                      <td className="block md:table-cell py-3 md:py-4 md:px-4 text-center border-t border-dashed border-gray-100 md:border-none bg-slate-50 md:bg-transparent rounded-xl mt-2 md:mt-0 px-3 md:px-4">
-                        <div className="flex gap-2.5 justify-center w-full">
+                      <td className="flex md:table-cell py-3 md:py-4 md:px-4 text-center border-t border-dashed border-gray-100 md:border-none bg-slate-50 md:bg-transparent rounded-xl mt-3 md:mt-0 px-3 md:px-4">
+                        <div className="flex gap-2 justify-center w-full">
                           <button
                             onClick={() => handleEditClick(p)}
                             className="flex-1 md:flex-none p-2 px-4 bg-white md:bg-gray-50 hover:bg-gray-150 border border-gray-200 md:border-gray-105 text-gray-650 rounded-lg text-[11px] md:text-[10px] font-bold transition duration-150 shadow-xxs md:shadow-none flex justify-center items-center gap-1.5"

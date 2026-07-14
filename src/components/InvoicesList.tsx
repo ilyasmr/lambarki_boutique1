@@ -402,9 +402,10 @@ export default function InvoicesList({
         </div>
 
         {/* Invoice List Table */}
-        <div className="overflow-x-hidden md:overflow-x-auto">
-          <table className="w-full text-left block md:table">
-            <thead className="hidden md:table-header-group">
+        <div className="md:bg-white md:rounded-2xl md:border md:border-gray-100 md:shadow-sm overflow-hidden">
+          <div className="overflow-x-hidden md:overflow-x-auto">
+            <table className="w-full text-left block md:table">
+              <thead className="hidden md:table-header-group">
               <tr className="border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
                 <th className="py-3 px-3">{tLabel.invoiceNum}</th>
                 <th className="py-3 px-3">{tLabel.invoiceClient}</th>
@@ -417,7 +418,7 @@ export default function InvoicesList({
                 <th className="py-3 px-3 text-center">{t.actions}</th>
               </tr>
             </thead>
-            <tbody className="block md:table-row-group divide-y divide-gray-100/60 md:divide-gray-50">
+            <tbody className="block md:table-row-group md:divide-y md:divide-gray-50 space-y-3 md:space-y-0 pb-4 md:pb-0">
               {filteredInvoices.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="py-12 text-center text-gray-400 text-xs font-bold">
@@ -426,7 +427,7 @@ export default function InvoicesList({
                 </tr>
               ) : (
                 filteredInvoices.slice().reverse().map((invoice) => (
-                  <tr key={invoice.id} className="block md:table-row text-xs hover:bg-gray-50 transition p-4 md:p-0">
+                  <tr key={invoice.id} className="block md:table-row text-xs hover:bg-gray-50 transition p-4 md:p-0 bg-white rounded-2xl shadow-sm border border-gray-100 md:border-none md:shadow-none md:rounded-none md:bg-transparent relative">
                     <td className="block md:table-cell py-1 md:py-3.5 md:px-3 font-mono text-indigo-600 font-bold">
                       <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase mr-2 ml-2">{tLabel.invoiceNum}: </span>
                       <span className="text-[14px] md:text-xs">{invoice.invoiceNumber}</span>
@@ -488,8 +489,8 @@ export default function InvoicesList({
                       <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase shrink-0">{isRtl ? 'البائع' : 'Caissier'}</span>
                       <span className="truncate">{resolveUserName(invoice.cashierName, lang)}</span>
                     </td>
-                    <td className="block md:table-cell py-3 md:py-3.5 md:px-3 text-center border-t border-dashed border-gray-100 md:border-none bg-slate-50 md:bg-transparent rounded-xl mt-2 md:mt-0 px-3 md:px-3">
-                      <div className="flex items-center justify-center gap-2 md:gap-1.5 w-full md:min-w-[150px]">
+                    <td className="flex md:table-cell py-3 md:py-3.5 md:px-3 text-center border-t border-dashed border-gray-100 md:border-none bg-slate-50 md:bg-transparent rounded-xl mt-3 md:mt-0 px-3 md:px-4">
+                      <div className="flex justify-center gap-2 md:gap-1.5 w-full md:min-w-[150px]">
                         <button
                           onClick={() => onViewInvoice(invoice)}
                           className="flex-1 md:flex-none p-2 md:p-1 md:px-2 bg-white md:bg-indigo-50 text-indigo-750 font-bold rounded-lg border border-indigo-100 md:border-none hover:bg-indigo-100 text-[11px] md:text-[10px] transition cursor-pointer inline-flex items-center justify-center gap-1.5 md:gap-1 shadow-xxs md:shadow-none"
@@ -531,6 +532,7 @@ export default function InvoicesList({
             </tbody>
           </table>
         </div>
+      </div>
 
       </div>
 

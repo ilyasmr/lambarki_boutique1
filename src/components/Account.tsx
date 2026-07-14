@@ -1581,7 +1581,7 @@ export default function Account({
                     <th className="py-2.5 px-2 text-center">{isRtl ? 'المطابقة والتدقيق' : 'Vérification'}</th>
                   </tr>
                 </thead>
-                <tbody className="block md:table-row-group divide-y divide-gray-100/60 md:divide-gray-50 text-xs font-semibold">
+                <tbody className="block md:table-row-group md:divide-y md:divide-gray-50 text-xs font-semibold space-y-3 md:space-y-0 pb-4 md:pb-0">
                   {filteredAuditProducts.length === 0 ? (
                     <tr>
                       <td colSpan={9} className="py-12 text-center text-gray-400 font-bold">
@@ -1597,7 +1597,7 @@ export default function Account({
                       const isVerified = !!verifiedProducts[p.id];
 
                       return (
-                        <tr key={p.id} className={`block md:table-row transition whitespace-normal md:whitespace-nowrap p-4 md:p-0 ${isVerified ? 'bg-emerald-50/20 hover:bg-emerald-50/40' : 'hover:bg-slate-50/50'}`}>
+                        <tr key={p.id} className="block md:table-row transition whitespace-normal md:whitespace-nowrap p-4 md:p-0 bg-white rounded-2xl shadow-sm border border-gray-100 md:border-none md:shadow-none md:rounded-none md:bg-transparent relative hover:bg-emerald-50/20">
                           <td className="block md:table-cell py-1 md:py-3 px-2 text-left">
                             <div className="flex items-center gap-1.5 flex-wrap">
                               <span className="font-mono font-bold text-gray-400 text-[10px] bg-slate-100 p-0.5 px-1.5 rounded">{p.sku}</span>
@@ -1676,7 +1676,7 @@ export default function Account({
                               </span>
                             )}
                           </td>
-                          <td className="py-3 px-2 text-center">
+                          <td className="py-3 px-2 text-center border-t border-dashed border-gray-100 md:border-none">
                             {diffValue === 0 ? (
                               <span className="inline-flex items-center gap-1 text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-black">
                                 <ShieldCheck className="w-3 h-3" />
@@ -1694,7 +1694,7 @@ export default function Account({
                               </span>
                             )}
                           </td>
-                          <td className="py-3 px-2 text-center">
+                          <td className="py-3 px-2 text-center border-t border-dashed border-gray-100 md:border-none">
                             <button
                               type="button"
                               onClick={() => {

@@ -542,7 +542,7 @@ export default function StocksManager({
       {/* RIGHT COLUMN: Ledger Logs History (7 cols) */}
       <div className="lg:col-span-7 space-y-6">
         
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 overflow-hidden">
+        <div className="md:bg-white md:rounded-2xl md:border md:border-gray-100 md:shadow-sm p-0 md:p-6 overflow-hidden">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 border-b border-gray-50 pb-4">
             <div className="flex items-center gap-2">
               <History className="text-blue-600 w-5 h-5" />
@@ -606,7 +606,7 @@ export default function StocksManager({
                   <th className="py-3 px-3 text-center">{isRtl ? 'الإجراءات' : 'Actions'}</th>
                 </tr>
               </thead>
-              <tbody className="block md:table-row-group divide-y divide-gray-100/60 md:divide-gray-50">
+              <tbody className="block md:table-row-group md:divide-y md:divide-gray-50 space-y-3 md:space-y-0 pb-4 md:pb-0">
                 {(() => {
                   const reversedList = filteredMovements.slice().reverse();
                   return reversedList.map((m, idx) => {
@@ -628,13 +628,7 @@ export default function StocksManager({
                             </td>
                           </tr>
                         )}
-                        <tr className={`block md:table-row text-xs hover:bg-gray-50/40 transition p-4 md:p-0 ${
-                          isPartOfBatch 
-                            ? isRtl 
-                              ? 'bg-blue-50/5 border-r-2 border-r-blue-400' 
-                              : 'bg-blue-50/5 border-l-2 border-l-blue-400'
-                            : ''
-                        }`}>
+                        <tr className="block md:table-row text-xs hover:bg-gray-50/50 transition-colors p-4 md:p-0 bg-white rounded-2xl shadow-sm border border-gray-100 md:border-none md:shadow-none md:rounded-none md:bg-transparent relative" style={{ borderLeft: (isPartOfBatch && !isRtl) ? '4px solid #60a5fa' : undefined, borderRight: (isPartOfBatch && isRtl) ? '4px solid #60a5fa' : undefined }}>
                           <td className="block md:table-cell py-1 md:py-3 px-3">
                             <p className="font-extrabold text-gray-800 text-[14px] md:text-xs truncate max-w-full md:max-w-[150px]">{m.productName}</p>
                             <span className="text-[9px] text-gray-400 font-mono">ID: {m.productId}</span>

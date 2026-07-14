@@ -720,7 +720,7 @@ export default function ClientsList({
         </div>
 
         {/* Database records list */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="md:bg-white md:rounded-2xl md:border md:border-gray-100 md:shadow-sm overflow-hidden">
           <div className="overflow-x-hidden md:overflow-x-auto">
             <table className="w-full text-start block md:table">
               <thead className="hidden md:table-header-group">
@@ -732,13 +732,13 @@ export default function ClientsList({
                   {currentUser?.role !== 'cashier' && <th className="py-3 px-4 text-center">{t.actions}</th>}
                 </tr>
               </thead>
-              <tbody className="block md:table-row-group divide-y divide-gray-100/60 md:divide-gray-50 font-semibold text-slate-800">
+              <tbody className="block md:table-row-group md:divide-y md:divide-gray-50 font-semibold text-slate-800 space-y-3 md:space-y-0 pb-4 md:pb-0">
                 {filteredClients.map((c) => (
                   <tr 
                     key={c.id} 
                     onClick={() => { setSelectedClient(c); setIsMaximized(true); }}
-                    className={`block md:table-row text-xs hover:bg-gray-50 cursor-pointer transition p-4 md:p-0 ${
-                      selectedClient && selectedClient.id === c.id ? 'bg-blue-50/50' : ''
+                    className={`block md:table-row text-xs cursor-pointer transition p-4 md:p-0 bg-white rounded-2xl shadow-sm border border-gray-100 md:border-none md:shadow-none md:rounded-none md:bg-transparent relative ${
+                      selectedClient && selectedClient.id === c.id ? 'md:bg-blue-50/50 ring-2 ring-blue-500 md:ring-0' : 'hover:bg-gray-50'
                     }`}
                   >
                     <td className="block md:table-cell py-1 md:py-4 md:px-4 font-bold text-gray-800 text-start">
@@ -801,8 +801,8 @@ export default function ClientsList({
                     </td>
                     
                     {currentUser?.role !== 'cashier' && (
-                      <td className="block md:table-cell py-3 md:py-4 md:px-4 text-center border-t border-dashed border-gray-100 md:border-none bg-slate-50 md:bg-transparent rounded-xl mt-2 md:mt-0 px-3 md:px-4" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex gap-3 justify-center w-full">
+                      <td className="flex md:table-cell py-3 md:py-4 md:px-4 text-center border-t border-dashed border-gray-100 md:border-none bg-slate-50 md:bg-transparent rounded-xl mt-3 md:mt-0 px-3 md:px-4" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex gap-2 justify-center w-full">
                           <button
                             onClick={(e) => handleEditClick(c, e)}
                             className="flex-1 md:flex-none p-2 px-4 hover:bg-white md:hover:bg-gray-100 text-gray-600 rounded-lg border border-gray-200 md:border-gray-150 transition shadow-xxs md:shadow-none flex justify-center items-center gap-1.5 bg-white md:bg-transparent"
