@@ -261,71 +261,75 @@ export default function Dashboard({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         
         {/* Revenue Card */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between group hover:shadow-md transition">
-          <div className="space-y-1.5 flex-1 min-w-0">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t.revenue}</p>
-            <h3 className="text-2xl font-black text-slate-900 font-mono tracking-tight truncate">
-              {revenueTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })} <span className="text-sm">DH</span>
+        <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-3xl shadow-xl flex items-center justify-between group hover:shadow-indigo-500/30 transition-all transform hover:-translate-y-1">
+          <div className="absolute -right-6 -top-6 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+          <div className="space-y-1.5 flex-1 min-w-0 relative z-10">
+            <p className="text-[11px] font-bold text-blue-100 uppercase tracking-widest">{t.revenue}</p>
+            <h3 className="text-3xl font-black text-white font-mono tracking-tight truncate drop-shadow-md">
+              {revenueTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })} <span className="text-sm font-bold opacity-80">DH</span>
             </h3>
-            <span className="inline-flex items-center gap-1.5 text-xs text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-md mt-1">
-              <TrendingUp className="w-3.5 h-3.5" />
+            <span className="inline-flex items-center gap-1.5 text-[10px] text-white font-bold bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-lg mt-2 shadow-sm border border-white/10">
+              <TrendingUp className="w-3.5 h-3.5 text-blue-200" />
               <span>+14.2%</span>
             </span>
           </div>
-          <span className="p-4 bg-blue-50 text-blue-600 rounded-2xl transition-transform duration-300 group-hover:scale-105">
-            <Coins className="w-6 h-6" />
-          </span>
+          <div className="relative z-10 p-4 bg-white/10 backdrop-blur-md text-white rounded-2xl border border-white/20 shadow-inner group-hover:rotate-12 transition-transform duration-300">
+            <Coins className="w-7 h-7" />
+          </div>
         </div>
 
         {/* Profit Margin Card */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between group hover:shadow-md transition">
-          <div className="space-y-1.5 flex-1 min-w-0">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t.profit}</p>
-            <h3 className="text-2xl font-black text-slate-900 font-mono tracking-tight truncate">
-              {profitTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })} <span className="text-sm">DH</span>
+        <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-700 p-6 rounded-3xl shadow-xl flex items-center justify-between group hover:shadow-emerald-500/30 transition-all transform hover:-translate-y-1">
+          <div className="absolute -left-6 -bottom-6 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+          <div className="space-y-1.5 flex-1 min-w-0 relative z-10">
+            <p className="text-[11px] font-bold text-emerald-100 uppercase tracking-widest">{t.profit}</p>
+            <h3 className="text-3xl font-black text-white font-mono tracking-tight truncate drop-shadow-md">
+              {profitTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })} <span className="text-sm font-bold opacity-80">DH</span>
             </h3>
-            <span className="inline-flex items-center gap-1.5 text-xs text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-md mt-1">
-              <TrendingUp className="w-3.5 h-3.5" />
+            <span className="inline-flex items-center gap-1.5 text-[10px] text-white font-bold bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-lg mt-2 shadow-sm border border-white/10">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-200" />
               <span>{revenueTotal > 0 ? ((profitTotal / revenueTotal) * 100).toFixed(1) : 0}% net</span>
             </span>
           </div>
-          <span className="p-4 bg-emerald-50 text-emerald-600 rounded-2xl transition-transform duration-300 group-hover:scale-105">
-            <TrendingUp className="w-6 h-6" />
-          </span>
+          <div className="relative z-10 p-4 bg-white/10 backdrop-blur-md text-white rounded-2xl border border-white/20 shadow-inner group-hover:rotate-12 transition-transform duration-300">
+            <TrendingUp className="w-7 h-7" />
+          </div>
         </div>
 
         {/* Number of Orders / Tickets Card */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between group hover:shadow-md transition">
-          <div className="space-y-1.5 flex-1 min-w-0">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t.totalSales}</p>
-            <h3 className="text-2xl font-black text-slate-900 font-mono tracking-tight truncate">
-              {salesCount} <span className="text-xs font-normal text-gray-400">({isRtl ? 'فاتورة' : 'Factures'})</span>
+        <div className="relative overflow-hidden bg-gradient-to-br from-violet-600 to-purple-800 p-6 rounded-3xl shadow-xl flex items-center justify-between group hover:shadow-purple-500/30 transition-all transform hover:-translate-y-1">
+          <div className="absolute top-0 right-1/2 w-40 h-40 bg-white opacity-5 rounded-full blur-3xl group-hover:opacity-20 transition-opacity duration-700"></div>
+          <div className="space-y-1.5 flex-1 min-w-0 relative z-10">
+            <p className="text-[11px] font-bold text-purple-200 uppercase tracking-widest">{t.totalSales}</p>
+            <h3 className="text-3xl font-black text-white font-mono tracking-tight truncate drop-shadow-md">
+              {salesCount} <span className="text-sm font-bold opacity-70">({isRtl ? 'فاتورة' : 'Factures'})</span>
             </h3>
-            <span className="inline-flex items-center gap-1.5 text-xs text-blue-600 font-bold bg-blue-50 px-2 py-0.5 rounded-md mt-1">
-              <ShoppingBag className="w-3.5 h-3.5" />
+            <span className="inline-flex items-center gap-1.5 text-[10px] text-white font-bold bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-lg mt-2 shadow-sm border border-white/10">
+              <ShoppingBag className="w-3.5 h-3.5 text-purple-200" />
               <span>{isRtl ? 'نشط اليوم' : 'Commandes actives'}</span>
             </span>
           </div>
-          <span className="p-4 bg-indigo-50 text-indigo-600 rounded-2xl transition-transform duration-300 group-hover:scale-105">
-            <ShoppingBag className="w-6 h-6" />
-          </span>
+          <div className="relative z-10 p-4 bg-white/10 backdrop-blur-md text-white rounded-2xl border border-white/20 shadow-inner group-hover:rotate-12 transition-transform duration-300">
+            <ShoppingBag className="w-7 h-7" />
+          </div>
         </div>
 
         {/* Active Clients Card */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between group hover:shadow-md transition">
-          <div className="space-y-1.5 flex-1 min-w-0">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t.activeClients}</p>
-            <h3 className="text-2xl font-black text-slate-900 font-mono tracking-tight truncate">
-              {activeClientsCount} <span className="text-xs font-normal text-gray-400">/ {clients.length}</span>
+        <div className="relative overflow-hidden bg-gradient-to-br from-amber-500 to-orange-600 p-6 rounded-3xl shadow-xl flex items-center justify-between group hover:shadow-orange-500/30 transition-all transform hover:-translate-y-1">
+          <div className="absolute -right-6 bottom-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+          <div className="space-y-1.5 flex-1 min-w-0 relative z-10">
+            <p className="text-[11px] font-bold text-amber-100 uppercase tracking-widest">{t.activeClients}</p>
+            <h3 className="text-3xl font-black text-white font-mono tracking-tight truncate drop-shadow-md">
+              {activeClientsCount} <span className="text-sm font-bold opacity-70">/ {clients.length}</span>
             </h3>
-            <span className="inline-flex items-center gap-1.5 text-xs text-purple-600 font-bold bg-purple-50 px-2 py-0.5 rounded-md mt-1">
-              <Users2 className="w-3.5 h-3.5" />
+            <span className="inline-flex items-center gap-1.5 text-[10px] text-white font-bold bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-lg mt-2 shadow-sm border border-white/10">
+              <Users2 className="w-3.5 h-3.5 text-amber-200" />
               <span>{isRtl ? 'ولاء عالي' : 'Portefeuille Tiers'}</span>
             </span>
           </div>
-          <span className="p-4 bg-purple-50 text-purple-600 rounded-2xl transition-transform duration-300 group-hover:scale-105">
-            <Users2 className="w-6 h-6" />
-          </span>
+          <div className="relative z-10 p-4 bg-white/10 backdrop-blur-md text-white rounded-2xl border border-white/20 shadow-inner group-hover:-rotate-12 transition-transform duration-300">
+            <Users2 className="w-7 h-7" />
+          </div>
         </div>
 
       </div>

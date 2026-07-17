@@ -3,7 +3,7 @@ import { Invoice, User, Product, StockMovement, Client } from '../types';
 import { translations, arabicDashboardLabels, resolveUserName } from '../translations';
 import { 
   Coins, 
-  TrendingUp, 
+  TrendingUp, TrendingDown, 
   Printer, 
   FileText, 
   ArrowDownRight, 
@@ -801,58 +801,130 @@ export default function Account({
   return (
     <div className="space-y-8">
       
-      {/* Title Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-4">
-        <div>
-          <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
-            <Lock className="w-5 h-5 text-emerald-600" />
-            <span>{isRtl ? 'إدارة ومطابقة أرصدة الصندوق' : 'Finances, Caisse & Audit de Caisse'}</span>
-          </h2>
-          <p className="text-xs text-gray-500 mt-1">
-            {isRtl 
-              ? (currentUser?.role === 'cashier' ? 'تتبع زمني دقيق لكل السحوبات المسجلة ومجموع المقتطعات من الصندوق.' : 'سحب الأموال والعمولات اليومية من الصندوق، والمطابقة الدورية الشاملة للمخزن ومراجعة فروقات الصندوق والاستحقاق.')
-              : (currentUser?.role === 'cashier' ? 'Suivi des prélèvements de caisse nets.' : 'Gérez les retraits de caisse quotidiens et réalisez l\'audit périodique d\'inventaire.')}
-          </p>
+      {/* Title Header & Financial Dashboard Overview */}
+      <div className="flex flex-col gap-6 border-b border-slate-100 pb-8 mb-4">
+        
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2.5 tracking-tight">
+              <span className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-sm">
+                <Lock className="w-5 h-5 text-white" />
+              </span>
+              <span>{isRtl ? 'إدارة ومطابقة أرصدة الصندوق' : 'Finances, Caisse & Audit de Caisse'}</span>
+            </h2>
+            <p className="text-sm font-semibold text-slate-500 mt-2 max-w-2xl">
+              {isRtl 
+                ? (currentUser?.role === 'cashier' ? 'تتبع زمني دقيق لكل السحوبات المسجلة ومجموع المقتطعات من الصندوق.' : 'سحب الأموال والعمولات اليومية من الصندوق، والمطابقة الدورية الشاملة للمخزن ومراجعة فروقات الصندوق والاستحقاق.')
+                : (currentUser?.role === 'cashier' ? 'Suivi des prélèvements de caisse nets.' : 'Gérez les retraits de caisse quotidiens et réalisez l\'audit périodique d\'inventaire.')}
+            </p>
+          </div>
         </div>
 
-        {/* Action Toggle Tab Header */}
+        {/* BENTO GRID FINANCIAL DASHBOARD */}
         {currentUser?.role !== 'cashier' && (
-          <div className="flex bg-gray-100 p-1 rounded-xl gap-1 self-start md:self-center flex-wrap">
-            <button
-              onClick={() => setActiveTab('withdrawals')}
-              className={`px-4 py-2 rounded-lg text-xs font-black transition cursor-pointer whitespace-nowrap flex items-center gap-2 ${
-                activeTab === 'withdrawals' 
-                  ? 'bg-white text-emerald-700 shadow-sm' 
-                  : 'text-gray-500 hover:text-gray-800'
-              }`}
-            >
-              <Coins className="w-3.5 h-3.5" />
-              <span>{isRtl ? 'مسحوبات الصندوق اليومية' : 'Retraits de Caisse'}</span>
-            </button>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mt-2">
             
-            <button
-              onClick={() => setActiveTab('audit')}
-              className={`px-4 py-2 rounded-lg text-xs font-black transition cursor-pointer whitespace-nowrap flex items-center gap-2 ${
-                activeTab === 'audit' 
-                  ? 'bg-white text-emerald-700 shadow-sm' 
-                  : 'text-gray-500 hover:text-gray-800'
-              }`}
-            >
-              <ClipboardCheck className="w-3.5 h-3.5" />
-              <span>{isRtl ? 'مطابقة ومراقبة فروقات الصندوق' : 'Audit & Contrôle de Caisse'}</span>
-            </button>
+            {/* Drawer Balance - Hero Card */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 p-6 rounded-[2rem] shadow-2xl flex flex-col justify-between group hover:shadow-indigo-500/20 transition-all transform hover:-translate-y-1">
+              <div className="absolute -right-10 -top-10 w-48 h-48 bg-white opacity-5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+              
+              <div className="relative z-10 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 bg-white/10 rounded-xl backdrop-blur-sm border border-white/10">
+                    <Lock className="w-5 h-5 text-indigo-300" />
+                  </div>
+                  <p className="text-xs font-extrabold text-indigo-200 uppercase tracking-widest">{isRtl ? 'رصيد الصندوق الحالي' : 'Solde Caisse Actuel'}</p>
+                </div>
+              </div>
+              
+              <div className="relative z-10 mt-6 mb-2">
+                <h3 className="text-4xl font-black text-white font-mono tracking-tight drop-shadow-md flex items-end gap-2">
+                  {currentDrawerBalance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </h3>
+              </div>
+            </div>
 
-            <button
-              onClick={() => setActiveTab('profits')}
-              className={`px-4 py-2 rounded-lg text-xs font-black transition cursor-pointer whitespace-nowrap flex items-center gap-2 ${
-                activeTab === 'profits' 
-                  ? 'bg-white text-emerald-700 shadow-sm' 
-                  : 'text-gray-500 hover:text-gray-800'
-              }`}
-            >
-              <TrendingUp className="w-3.5 h-3.5" />
-              <span>{isRtl ? 'مراقبة الأرباح والخصومات' : 'Marges & Chiffre d\'Affaires'}</span>
-            </button>
+            {/* Total Income */}
+            <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col justify-between group hover:shadow-md transition relative overflow-hidden">
+              <div className="absolute right-0 bottom-0 w-32 h-32 bg-emerald-50 rounded-full blur-3xl opacity-50"></div>
+              <div className="relative z-10 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 bg-emerald-50 rounded-xl border border-emerald-100 text-emerald-600">
+                    <TrendingUp className="w-5 h-5" />
+                  </div>
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{isRtl ? 'إجمالي المداخيل' : 'Entrées de Caisse'}</p>
+                </div>
+              </div>
+              
+              <div className="relative z-10 mt-6 mb-2">
+                <h3 className="text-3xl font-black text-slate-900 font-mono tracking-tight">
+                  {totalCashIncome.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </h3>
+              </div>
+            </div>
+
+            {/* Total Withdrawn */}
+            <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex flex-col justify-between group hover:shadow-md transition relative overflow-hidden">
+              <div className="absolute right-0 bottom-0 w-32 h-32 bg-rose-50 rounded-full blur-3xl opacity-50"></div>
+              <div className="relative z-10 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 bg-rose-50 rounded-xl border border-rose-100 text-rose-600">
+                    <TrendingDown className="w-5 h-5" />
+                  </div>
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">{isRtl ? 'إجمالي السحوبات' : 'Total Retraits'}</p>
+                </div>
+              </div>
+              
+              <div className="relative z-10 mt-6 mb-2">
+                <h3 className="text-3xl font-black text-slate-900 font-mono tracking-tight text-rose-650">
+                  {totalWithdrawnAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </h3>
+              </div>
+            </div>
+
+          </div>
+        )}
+
+        {/* Modern Segmented Control Navigation */}
+        {currentUser?.role !== 'cashier' && (
+          <div className="flex justify-center md:justify-start w-full mt-4">
+            <div className="flex bg-slate-100/80 p-1.5 rounded-[1.25rem] gap-1 shadow-inner backdrop-blur-md border border-slate-200/60 overflow-x-auto hide-scrollbar max-w-full">
+              <button
+                onClick={() => setActiveTab('withdrawals')}
+                className={`px-5 py-2.5 rounded-xl text-sm font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 relative ${
+                  activeTab === 'withdrawals' 
+                    ? 'bg-white text-indigo-700 shadow-[0_2px_10px_rgba(0,0,0,0.06)] scale-100 z-10' 
+                    : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50 scale-95 opacity-80'
+                }`}
+              >
+                <Coins className={`w-4 h-4 ${activeTab === 'withdrawals' ? 'text-indigo-600' : ''}`} />
+                <span>{isRtl ? 'مسحوبات الصندوق اليومية' : 'Retraits de Caisse'}</span>
+              </button>
+              
+              <button
+                onClick={() => setActiveTab('audit')}
+                className={`px-5 py-2.5 rounded-xl text-sm font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 relative ${
+                  activeTab === 'audit' 
+                    ? 'bg-white text-emerald-700 shadow-[0_2px_10px_rgba(0,0,0,0.06)] scale-100 z-10' 
+                    : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50 scale-95 opacity-80'
+                }`}
+              >
+                <ClipboardCheck className={`w-4 h-4 ${activeTab === 'audit' ? 'text-emerald-600' : ''}`} />
+                <span>{isRtl ? 'مطابقة ومراقبة فروقات الصندوق' : 'Audit & Contrôle de Caisse'}</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('profits')}
+                className={`px-5 py-2.5 rounded-xl text-sm font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 relative ${
+                  activeTab === 'profits' 
+                    ? 'bg-white text-purple-700 shadow-[0_2px_10px_rgba(0,0,0,0.06)] scale-100 z-10' 
+                    : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50 scale-95 opacity-80'
+                }`}
+              >
+                <TrendingUp className={`w-4 h-4 ${activeTab === 'profits' ? 'text-purple-600' : ''}`} />
+                <span>{isRtl ? 'مراقبة الأرباح والخصومات' : 'Marges & Chiffre d\'Affaires'}</span>
+              </button>
+            </div>
           </div>
         )}
       </div>
