@@ -528,19 +528,7 @@ export default function ProductsList({
                 />
               </div>
 
-              {/* SKU Barcode */}
-              <div className="space-y-1">
-                <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'الباركود / الرمز المرجعي EAN *' : 'Code à barre / SKU *'}</label>
-                <input
-                  type="text"
-                  required
-                  disabled={isCashier}
-                  value={formSku}
-                  onChange={(e) => setFormSku(e.target.value)}
-                  placeholder="Barcode number"
-                  className={`w-full px-3.5 py-2.5 border rounded-xl font-mono text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 ${isCashier ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed opacity-75' : 'bg-gray-50 border-gray-200 focus:bg-white text-blue-800'}`}
-                />
-              </div>
+              {/* SKU Barcode removed per user request */}
 
               {/* Category selector */}
               <div className="space-y-1.5">
