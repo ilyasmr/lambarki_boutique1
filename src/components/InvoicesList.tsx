@@ -240,7 +240,7 @@ export default function InvoicesList({
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto" dir={isRtl ? 'rtl' : 'ltr'}>
+    <div className="space-y-6 max-w-7xl mx-auto">
       
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -538,7 +538,7 @@ export default function InvoicesList({
 
       {/* MODAL 1: CONFIRM DELETE OVERLAY */}
       {confirmDelete && invoiceToDelete && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in" dir={isRtl ? 'rtl' : 'ltr'}>
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className="bg-white rounded-2xl border border-rose-100 shadow-2xl max-w-md w-full p-6 space-y-6 text-right">
             
             <div className="flex items-center gap-3 border-b border-gray-50 pb-3">
@@ -624,7 +624,7 @@ export default function InvoicesList({
 
       {/* MODAL 2: INTERACTIVE INVOICE EDIT OVERLAY */}
       {isEditModalOpen && editingInvoice && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in" dir={isRtl ? 'rtl' : 'ltr'}>
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className="bg-white rounded-2xl border border-gray-100 shadow-2xl max-w-4xl w-full flex flex-col max-h-[95vh]">
             
             {/* Modal Header */}

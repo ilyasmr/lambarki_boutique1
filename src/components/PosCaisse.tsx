@@ -292,7 +292,7 @@ export default function PosCaisse({
   const cartItemsCount = cart.reduce((sum, item) => sum + item.qty, 0);
 
   return (
-    <div className="flex flex-col gap-6" dir={isRtl ? 'rtl' : 'ltr'}>
+    <div className="flex flex-col gap-6">
       {/* Mobile Tab Switcher */}
       <div className="lg:hidden p-1.5 bg-slate-100/90 rounded-xl flex gap-1 border border-slate-200/60 w-full shrink-0">
         <button

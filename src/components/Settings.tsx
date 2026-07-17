@@ -73,7 +73,7 @@ export default function Settings({
   };
 
   return (
-    <div className="space-y-8 font-sans" dir={isRtl ? 'rtl' : 'ltr'}>
+    <div className="space-y-8 font-sans">
       
       {/* Visual Header */}
       <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">

@@ -67,13 +67,12 @@ export default function Sidebar({
 
   return (
     <aside 
-      className={`w-64 bg-white text-slate-700 flex flex-col h-screen shadow-lg overflow-y-auto no-print transition-all duration-300 border-r border-slate-200
+      className={`w-64 bg-white text-slate-700 flex flex-col h-screen shadow-lg overflow-y-auto no-print transition-all duration-300 border-slate-200
         fixed inset-y-0 z-50 
-        ${isHidden ? 'lg:hidden' : 'lg:relative lg:flex'}
-        ${isOpen ? 'translate-x-0' : (isRtl ? 'translate-x-full lg:translate-x-0' : '-translate-x-full lg:translate-x-0')}
-        ${isRtl ? 'right-0 border-l border-r-0' : 'left-0 border-r border-l-0'}
+        ${isHidden ? 'lg:hidden' : 'lg:relative lg:flex lg:right-auto lg:left-auto'}
+        ${isOpen ? (isRtl ? 'right-0' : 'left-0') : (isRtl ? '-right-64 lg:right-0' : '-left-64 lg:left-0')}
+        ${isRtl ? 'border-l border-r-0' : 'border-r border-l-0'}
       `}
-      dir={isRtl ? 'rtl' : 'ltr'}
     >
       {/* Brand Header & Mobile Close Button */}
       <div className="p-6 border-b border-slate-100 bg-slate-50/60 flex flex-col items-center gap-3 relative">

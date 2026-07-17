@@ -543,12 +543,12 @@ export default function ClientsList({
   }, [clients]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 font-sans" dir={isRtl ? 'rtl' : 'ltr'}>
+    <div className="flex flex-col gap-8 font-sans">
       
       
       {/* Alert Banner for Expired/Expiring Postal Checks or Debt Collection dates within 2 days or past */}
       {(checkAlerts.length > 0 || debtAlerts.length > 0) && (
-        <div className="col-span-12 bg-amber-50/80 border border-amber-200 rounded-3xl p-5 shadow-sm space-y-5 animate-fade-in no-print">
+        <div className="w-full bg-amber-50/80 border border-amber-200 rounded-3xl p-5 shadow-sm space-y-5 animate-fade-in no-print">
           <div className="flex items-center gap-2.5">
             <ShieldAlert className="w-6 h-6 text-amber-600 animate-bounce shrink-0" />
             <div>
@@ -664,8 +664,10 @@ export default function ClientsList({
         </div>
       )}
 
-      {/* LEFT COLUMN: Search & Database listing (7 or 8 cols in desktop) */}
-      <div className={`w-full max-w-full min-w-0 ${selectedClient ? 'lg:col-span-7' : 'lg:col-span-12'} space-y-6 transition-all duration-350`}>
+      {/* Content wrapper: Stack vertically on mobile, horizontally on desktop */}
+      <div className="flex flex-col lg:flex-row gap-8 items-start w-full max-w-full">
+        {/* LEFT COLUMN: Search & Database listing */}
+        <div className={`w-full max-w-full min-w-0 ${selectedClient ? 'lg:w-[58.333%]' : 'lg:w-full'} space-y-6 transition-all duration-350`}>
         
         <div className="w-full bg-white rounded-2xl border border-gray-100 p-5 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-4">
           
@@ -825,12 +827,12 @@ export default function ClientsList({
 
       </div>
 
-      {/* RIGHT COLUMN: Profile details inspections panel (5 cols) */}
+      {/* RIGHT COLUMN: Profile details inspections panel */}
       {selectedClient && (
         <div className={
           isMaximized 
             ? "fixed inset-0 z-50 w-full h-full bg-white rounded-none m-0 overflow-hidden flex flex-col justify-between animate-fade-in shadow-2xl" 
-            : "lg:col-span-5 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col justify-between max-h-[85vh] sticky top-6 animate-fade-in"
+            : "w-full max-w-full min-w-0 lg:w-[41.666%] bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col justify-between max-h-[85vh] sticky top-6 animate-fade-in"
         }>
           
           {/* Header */}
@@ -885,7 +887,7 @@ export default function ClientsList({
                     <span className="text-[12px] font-black text-rose-600 font-mono">{(selectedClient.outstandingDebt || 0).toFixed(2)} DH</span>
                   </div>
                   
-                  <div className="flex gap-1.5 ml-2">
+                  <div className="flex gap-2 ml-2 w-full sm:w-auto mt-3 sm:mt-0">
                     {(selectedClient.outstandingDebt || 0) > 0 && currentUser?.role !== 'cashier' && (
                       <button
                         onClick={() => {
@@ -893,21 +895,21 @@ export default function ClientsList({
                           setSettlementAmount(selectedClient.outstandingDebt || 0);
                           setIsOpenSettleModal(true);
                         }}
-                        className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-black transition-all shadow-md shrink-0 flex items-center justify-center min-w-[70px]"
+                        className="flex-1 sm:flex-none px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-lg font-black transition-all shadow-lg shrink-0 flex items-center justify-center min-w-[120px] ring-2 ring-rose-500/30"
                       >
                         {isRtl ? 'دفع' : 'Régler'}
                       </button>
                     )}
-                    {currentUser?.role !== 'cashier' && (
+                    {currentUser?.role === 'admin' && (
                       <button
                         onClick={() => {
                           setDebtOpType('borrow');
                           setSettlementAmount(0);
                           setIsOpenSettleModal(true);
                         }}
-                        className="px-3 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-black transition-all shadow-sm shrink-0 flex gap-1.5 items-center justify-center min-w-[65px]"
+                        className="px-2 py-1.5 bg-orange-100 text-orange-700 hover:bg-orange-500 hover:text-white rounded-lg text-[10px] font-bold transition-all shadow-sm shrink-0 flex gap-1 items-center justify-center min-w-[50px]"
                       >
-                        <Plus className="w-3.5 h-3.5" />
+                        <Plus className="w-3 h-3" />
                         {isRtl ? 'دين' : 'Crédit'}
                       </button>
                     )}
@@ -1266,6 +1268,8 @@ export default function ClientsList({
 
         </div>
       )}
+
+      </div>
 
       {/* COMPONENT MODAL: CREATE / EDIT CRM CARD */}
       {isOpenModal && (

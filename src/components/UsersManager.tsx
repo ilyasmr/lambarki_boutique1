@@ -92,7 +92,7 @@ export default function UsersManager({
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 font-sans" dir={isRtl ? 'rtl' : 'ltr'}>
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 font-sans">
       
       {/* LEFT COLUMN: Administrative Access description (5 cols in desktop) */}
       <div className="lg:col-span-4 space-y-6">

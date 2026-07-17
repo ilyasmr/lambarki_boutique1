@@ -195,7 +195,7 @@ export default function ProductsList({
   }, [products, searchTerm, categoryFilter, sortBy, showLowStockOnly]);
 
   return (
-    <div className="space-y-6" dir={isRtl ? 'rtl' : 'ltr'}>
+    <div className="space-y-6">
       
       {/* Search and Filters Layout toolbar */}
       <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4">
@@ -681,7 +681,7 @@ export default function ProductsList({
 
       {/* Manage Rayons Modal */}
       {isManageModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in" dir={isRtl ? 'rtl' : 'ltr'}>
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className="bg-white rounded-2xl border border-slate-100 shadow-2xl max-w-md w-full overflow-hidden transform scale-100 transition-all">
             {/* Modal Header */}
             <div className="bg-slate-50 border-b border-slate-100 p-5 flex items-center justify-between">
@@ -799,7 +799,7 @@ export default function ProductsList({
 
       {/* Category Delete Confirmation Modal */}
       {categoryToDelete !== null && (
-        <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4 z-[60] animate-fade-in" dir={isRtl ? 'rtl' : 'ltr'}>
+        <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4 z-[60] animate-fade-in">
           <div className="bg-white rounded-2xl border border-slate-150 shadow-2xl max-w-sm w-full p-6 space-y-5 transform scale-100 transition-all">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
@@ -842,7 +842,7 @@ export default function ProductsList({
 
       {/* Product Delete Confirmation Modal */}
       {productToDelete !== null && (
-        <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4 z-[60] animate-fade-in" dir={isRtl ? 'rtl' : 'ltr'}>
+        <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4 z-[60] animate-fade-in">
           <div className="bg-white rounded-2xl border border-slate-150 shadow-2xl max-w-sm w-full p-6 space-y-5 transform scale-100 transition-all">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center shrink-0">
@@ -864,7 +864,7 @@ export default function ProductsList({
                 <div className="w-8 h-8 rounded bg-slate-200 flex items-center justify-center text-slate-500 text-[10px] font-black shrink-0">
                   {productToDelete.name.substring(0, 2).toUpperCase()}
                 </div>
-                <div className="text-right flex-1 min-w-0" dir={isRtl ? 'rtl' : 'ltr'}>
+                <div className="text-right flex-1 min-w-0">
                   <p className="text-xs font-extrabold text-slate-800 truncate">{productToDelete.name}</p>
                   <p className="text-[10px] text-slate-500 font-mono truncate">{productToDelete.sku}</p>
                 </div>

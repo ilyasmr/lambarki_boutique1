@@ -206,7 +206,7 @@ export default function Dashboard({
   }, [clients]);
 
   return (
-    <div className="space-y-8" dir={isRtl ? 'rtl' : 'ltr'}>
+    <div className="space-y-8">
 
       {/* Alert Banner for Expired/Expiring Postal Checks */}
       {checkAlerts.length > 0 && (
@@ -623,7 +623,7 @@ export default function Dashboard({
               </button>
             </div>
             
-            <div className="p-6 space-y-5" dir={isRtl ? 'rtl' : 'ltr'}>
+            <div className="p-6 space-y-5">
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3">
                 <div>
                   <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{isRtl ? 'الوصف' : 'Description'}</span>
@@ -699,7 +699,7 @@ export default function Dashboard({
                 setEditingActivity(null);
               }}
               className="p-6 space-y-4 text-xs font-semibold text-left"
-              dir={isRtl ? 'rtl' : 'ltr'}
+             
             >
               <div className="space-y-1">
                 <label className="text-xxs text-gray-400 uppercase tracking-wider block text-start">{isRtl ? 'الوصف بالعربية *' : 'Description en Arabe *'}</label>

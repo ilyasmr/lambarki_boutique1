@@ -799,7 +799,7 @@ export default function Account({
   const potentialStockProfit = totalStockWorthSelling - totalStockWorthBuying;
 
   return (
-    <div className="space-y-8" dir={isRtl ? 'rtl' : 'ltr'}>
+    <div className="space-y-8">
       
       {/* Title Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-4">
@@ -1848,7 +1848,7 @@ export default function Account({
           VIEW C: PROFITABILITY & TREASURY SECURITY CONTROL ROOM
          ======================================================== */}
       {activeTab === 'profits' && (
-        <div className="space-y-8 animate-fade-in text-right animate-once" dir={isRtl ? 'rtl' : 'ltr'}>
+        <div className="space-y-8 animate-fade-in text-right animate-once">
           
           {/* Section description */}
           <div className="p-4 bg-indigo-50/40 border border-indigo-100/50 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -2478,7 +2478,7 @@ export default function Account({
 
       {selectedAudit && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" id="audit-details-overlay">
-          <div className="bg-white rounded-3xl max-w-3xl w-full border border-slate-150 shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-scale-up" id="audit-details-modal" dir={isRtl ? 'rtl' : 'ltr'}>
+          <div className="bg-white rounded-3xl max-w-3xl w-full border border-slate-150 shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-scale-up" id="audit-details-modal">
             
             {/* Header */}
             <div className="p-6 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
@@ -2685,7 +2685,7 @@ export default function Account({
       {/* 4. MANUAL FINANCIAL ADJUSTMENT MODAL */}
       {editingField && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in text-slate-800" id="financial-adj-overlay">
-          <div className="bg-white rounded-3xl max-w-sm w-full border border-slate-150 shadow-2xl overflow-hidden flex flex-col animate-scale-up" id="financial-adj-modal" dir={isRtl ? 'rtl' : 'ltr'}>
+          <div className="bg-white rounded-3xl max-w-sm w-full border border-slate-150 shadow-2xl overflow-hidden flex flex-col animate-scale-up" id="financial-adj-modal">
             
             {/* Header */}
             <div className="p-5 bg-slate-50 border-b border-slate-100 flex items-center justify-between">

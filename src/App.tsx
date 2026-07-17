@@ -47,7 +47,11 @@ export default function App() {
   // Locale state: Defaulting to Arabic as requested in the prompt
   const [lang, setLang] = React.useState<'fr' | 'ar'>('ar');
   const isRtl = lang === 'ar';
-  
+
+  React.useEffect(() => {
+    document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+    document.documentElement.lang = lang;
+  }, [lang, isRtl]);  
   // Tab controller
   const [activeTab, setActiveTab ] = React.useState<string>('dashboard');
 
@@ -999,7 +1003,7 @@ export default function App() {
     return (
       <div 
         className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden font-sans"
-        dir={isRtl ? 'rtl' : 'ltr'}
+       
       >
         {/* Decorative Floating Blobs */}
         <div className="absolute top-0 right-0 transform translate-x-12 -translate-y-12 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -1170,7 +1174,7 @@ export default function App() {
 
   return (
     <div 
-      className="min-h-screen bg-slate-50 flex h-screen overflow-hidden"
+      className="w-full min-h-screen bg-slate-50 flex h-screen overflow-hidden"
       style={{ fontFamily: isRtl ? '"Cairo", sans-serif' : '"Inter", sans-serif' }}
     >
       {/* 1. Sidebar Panel (Handles RTL orientation flow dynamically with responsive Drawer state) */}
@@ -1198,7 +1202,7 @@ export default function App() {
       <div className="flex-1 flex flex-col overflow-hidden">
         
         {/* Top Header matching Professional Polish theme precisely and optimized for Mobile */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-8 no-print shrink-0" dir={isRtl ? 'rtl' : 'ltr'}>
+        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-8 no-print shrink-0">
           {/* Universal Sidebar Toggle Button */}
           <button
             type="button"
@@ -1249,7 +1253,7 @@ export default function App() {
               {showGlobalResults && globalSearchQuery && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowGlobalResults(false)}></div>
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-150 rounded-2xl shadow-xl z-50 py-3.5 max-h-96 overflow-y-auto" dir={isRtl ? 'rtl' : 'ltr'}>
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-150 rounded-2xl shadow-xl z-50 py-3.5 max-h-96 overflow-y-auto">
                     {/* Products group */}
                     {filteredProducts.length > 0 && (
                       <div className="px-3 pb-2.5 border-b border-slate-50 last:border-0">
@@ -1404,7 +1408,7 @@ export default function App() {
 
         <main 
           className="flex-1 p-3 sm:p-6 pb-20 sm:pb-8 overflow-y-auto overflow-x-hidden max-w-full bg-slate-50 relative"
-          dir={isRtl ? 'rtl' : 'ltr'}
+         
         >
           {renderTabContent()}
         </main>

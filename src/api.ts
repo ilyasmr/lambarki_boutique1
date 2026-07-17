@@ -21,8 +21,17 @@ const getApiBase = () => {
 const BASE = getApiBase();
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
+  const isGet = !options || !options.method || options.method === 'GET';
+  const cacheBuster = isGet ? `${path.includes('?') ? '&' : '?'}cb=${Date.now()}` : '';
+  
+  const res = await fetch(`${BASE}${path}${cacheBuster}`, {
+    headers: { 
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    },
+    cache: 'no-store',
     ...options
   });
   if (!res.ok) {

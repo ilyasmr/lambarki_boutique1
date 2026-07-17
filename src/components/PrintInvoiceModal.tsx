@@ -74,7 +74,7 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
   );
 
   return (
-    <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 no-print" dir={isRtl ? 'rtl' : 'ltr'}>
+    <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 no-print">
       <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full flex flex-col max-h-[90vh]">
         
         {/* Modal Header */}
