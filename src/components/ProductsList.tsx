@@ -69,7 +69,13 @@ export default function ProductsList({
   const isCashier = currentUser?.role === 'cashier';
 
   // States
-  const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('database');
+    const [isStockModalOpen, setIsStockModalOpen] = React.useState(false);
+  const [stockFormProduct, setStockFormProduct] = React.useState('');
+  const [stockFormType, setStockFormType] = React.useState<'in' | 'out'>('in');
+  const [stockFormQty, setStockFormQty] = React.useState(1);
+  const [stockFormReason, setStockFormReason] = React.useState('');
+
+const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('database');
   const [filterType, setFilterType] = React.useState<'all' | 'in' | 'out'>('all');
   const [viewMode, setViewMode] = React.useState<'grid' | 'table'>('grid');
   const [searchTerm, setSearchTerm] = React.useState(prefilledSearch);
@@ -195,7 +201,46 @@ export default function ProductsList({
     setIsOpenModal(false);
   };
 
-  const handleInlineStockUpdate = (p: Product, diff: number) => {
+    const handleStockSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if(!stockFormProduct) {
+      alert(isRtl ? 'يرجى تحديد المنتج' : 'Veuillez sélectionner un produit');
+      return;
+    }
+    const p = products.find(x => x.id === stockFormProduct);
+    if(!p) return;
+    
+    const qty = Number(stockFormQty);
+    if(qty <= 0) return;
+    
+    if(stockFormType === 'out' && p.stock - qty < 0) {
+      alert(isRtl ? 'الكمية المسحوبة أكبر من المخزون المتوفر!' : 'Stock insuffisant pour ce retrait!');
+      return;
+    }
+    
+    const newQty = stockFormType === 'in' ? p.stock + qty : p.stock - qty;
+    
+    const movement: StockMovement = {
+      id: `mov-${Date.now()}-${Math.random()}`,
+      productId: p.id,
+      productName: p.name,
+      type: stockFormType,
+      qty: qty,
+      date: new Date().toISOString(),
+      reason: stockFormReason || (isRtl ? 'عملية يدوية' : 'Opération manuelle'),
+      operator: currentUser?.name || 'Admin',
+      batchId: `batch-${Date.now()}`
+    };
+    
+    if (onUpdateStock) {
+      onUpdateStock(p.id, newQty, movement);
+    }
+    setIsStockModalOpen(false);
+    setStockFormQty(1);
+    setStockFormReason('');
+  };
+
+const handleInlineStockUpdate = (p: Product, diff: number) => {
     if (p.stock + diff < 0) return;
     if (!onUpdateStock) return;
     const movement: StockMovement = {
@@ -561,8 +606,18 @@ export default function ProductsList({
           <div className="flex flex-col lg:flex-row gap-4 items-center justify-between border-b border-gray-100 pb-4">
             <h2 className="text-lg font-black text-slate-800 flex items-center gap-2">
               <History className="w-5 h-5 text-emerald-600" />
-              {isRtl ? 'سجل حركة المخزون' : 'Historique des Mouvements'}
-            </h2>
+                {isRtl ? 'سجل حركة المخزون' : 'Historique des Mouvements'}
+              </h2>
+              
+              {!isCashier && (
+                <button
+                  onClick={() => setIsStockModalOpen(true)}
+                  className="hidden lg:flex px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow-md hover:shadow-lg transition-all items-center justify-center gap-1.5"
+                >
+                  <PackageCheck className="w-4 h-4" />
+                  <span>{isRtl ? 'تسجيل دخول/خروج مخزون' : 'Nouveau Mouvement'}</span>
+                </button>
+              )}
             <div className="flex gap-2 w-full lg:w-auto overflow-x-auto no-scrollbar">
               <button
                 onClick={() => setFilterType('all')}
@@ -650,7 +705,100 @@ export default function ProductsList({
         </div>
       )}
 
-      \n\n      {/* MODAL: ADD / EDIT CARD FORM */}
+      \n\n      
+      {/* MODAL: STOCK MOVEMENT */}
+      {isStockModalOpen && (
+        <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-[60]">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full flex flex-col">
+            <div className="flex items-center justify-between px-6 py-4.5 border-b border-gray-100 bg-gray-50 rounded-t-2xl">
+              <h3 className="text-md font-bold text-gray-900 flex items-center gap-2">
+                <PackageCheck className="w-5 h-5 text-emerald-600" />
+                {isRtl ? 'تسجيل حركة مخزون' : 'Mouvement de Stock'}
+              </h3>
+              <button onClick={() => setIsStockModalOpen(false)} className="p-1 hover:bg-gray-200 rounded-lg transition">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleStockSubmit} className="p-6 space-y-5">
+              
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-700 block">{isRtl ? 'المنتج' : 'Produit'}</label>
+                <select
+                  required
+                  value={stockFormProduct}
+                  onChange={(e) => setStockFormProduct(e.target.value)}
+                  className={`w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 block p-3 outline-none transition ${isRtl ? 'text-right' : 'text-left'} font-bold`}
+                >
+                  <option value="" disabled>{isRtl ? '-- اختر المنتج --' : '-- Choisir un produit --'}</option>
+                  {products.map(p => (
+                    <option key={p.id} value={p.id}>{p.name} ({p.stock} units)</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setStockFormType('in')}
+                  className={`py-3 rounded-xl flex items-center justify-center gap-2 font-black transition-all border ${
+                    stockFormType === 'in' ? 'bg-emerald-50 border-emerald-500 text-emerald-700 shadow-sm' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
+                  }`}
+                >
+                  <ArrowDownLeft className="w-4 h-4" />
+                  {isRtl ? 'دخول (+)' : 'Entrée'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStockFormType('out')}
+                  className={`py-3 rounded-xl flex items-center justify-center gap-2 font-black transition-all border ${
+                    stockFormType === 'out' ? 'bg-rose-50 border-rose-500 text-rose-700 shadow-sm' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
+                  }`}
+                >
+                  <ArrowUpRight className="w-4 h-4" />
+                  {isRtl ? 'خروج (-)' : 'Sortie'}
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-700 block">{isRtl ? 'الكمية' : 'Quantité'}</label>
+                <input
+                  type="number"
+                  min="1"
+                  required
+                  value={stockFormQty}
+                  onChange={(e) => setStockFormQty(Number(e.target.value))}
+                  className={`w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 block p-3 outline-none transition ${isRtl ? 'text-right' : 'text-left'} font-black font-mono`}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-700 block">{isRtl ? 'السبب / الملاحظة' : 'Motif'}</label>
+                <input
+                  type="text"
+                  value={stockFormReason}
+                  onChange={(e) => setStockFormReason(e.target.value)}
+                  placeholder={isRtl ? 'مثال: شراء جديد، تلف، الخ...' : 'Ex: Achat, Casse, etc...'}
+                  className={`w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 block p-3 outline-none transition ${isRtl ? 'text-right' : 'text-left'}`}
+                />
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  className={`w-full py-3.5 rounded-xl text-white font-black shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 ${
+                    stockFormType === 'in' ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/30' : 'bg-rose-600 hover:bg-rose-700 shadow-rose-500/30'
+                  }`}
+                >
+                  {isRtl ? 'تأكيد العملية' : 'Confirmer l\'opération'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+{/* MODAL: ADD / EDIT CARD FORM */}
       {isOpenModal && (
         <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl shadow-2xl max-w-xl w-full flex flex-col max-h-[90vh]">
