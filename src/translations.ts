@@ -4,7 +4,7 @@ export const translations: Record<'fr' | 'ar', AppTranslation> = {
   fr: {
     dashboard: "Tableau de Bord",
     pos: "Vente",
-    products: "Produits",
+    products: "Stock & Produits",
     clients: "Clients",
     stock: "Gestion de Stock",
     sales: "Facturation & Ventes",
@@ -51,10 +51,10 @@ export const translations: Record<'fr' | 'ar', AppTranslation> = {
   },
   ar: {
     dashboard: "لوحة التحكم",
-    pos: "البيع",
-    products: "المنتجات",
-    clients: "الزبائن",
-    stock: "إدارة المخزن",
+    pos: "نقطة البيع",
+    products: "المخزون والمنتجات",
+    clients: "الزبناء",
+    stock: "إدارة المخزون",
     sales: "الفواتير والمبيعات",
     users: "المستخدمون والصلاحيات",
     settings: "الإعدادات",

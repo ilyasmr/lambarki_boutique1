@@ -50,7 +50,6 @@ export default function Sidebar({
     { id: 'pos', label: t.pos, icon: ShoppingBag, roles: ['admin', 'cashier'] },
     { id: 'products', label: t.products, icon: ShoppingBasket, roles: ['admin', 'cashier'] },
     { id: 'clients', label: t.clients, icon: Users, roles: ['admin', 'cashier'] },
-    { id: 'stock', label: t.stock, icon: Boxes, roles: ['admin'] },
     { id: 'sales', label: t.sales, icon: FileText, roles: ['admin', 'cashier'] },
     { id: 'account', label: t.account, icon: Coins, roles: ['admin', 'cashier'] },
     { id: 'users', label: t.users, icon: ShieldAlert, roles: ['admin'] },

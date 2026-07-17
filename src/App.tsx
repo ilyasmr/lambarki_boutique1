@@ -909,6 +909,7 @@ export default function App() {
         return (
           <ProductsList
             products={products}
+            movements={stockMovements}
             lang={lang}
             onAddProduct={handleAddProduct}
             onEditProduct={handleEditProduct}
@@ -919,6 +920,10 @@ export default function App() {
             onRenameCategory={handleRenameCategory}
             onDeleteCategory={handleDeleteCategory}
             currentUser={currentUser}
+            onUpdateStock={handleUpdateStock}
+            onUpdateStocksBulk={handleUpdateStocksBulk}
+            onDeleteMovement={handleDeleteMovement}
+            onEditMovement={handleEditMovement}
           />
         );
       case 'clients':
@@ -934,20 +939,7 @@ export default function App() {
             currentUser={currentUser}
           />
         );
-      case 'stock':
-        return (
-          <StocksManager
-            products={products}
-            movements={stockMovements}
-            lang={lang}
-            currentUser={currentUser}
-            onUpdateStock={handleUpdateStock}
-            onUpdateStocksBulk={handleUpdateStocksBulk}
-            onDeleteMovement={handleDeleteMovement}
-            onEditMovement={handleEditMovement}
-          />
-        );
-      case 'sales':
+        case 'sales':
         return (
           <InvoicesList
             invoices={invoices}
