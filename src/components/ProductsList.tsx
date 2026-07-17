@@ -554,10 +554,6 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                       <td className="block md:table-cell py-1 md:py-4 md:px-4">
                         <p className="font-bold text-gray-900 text-[15px] md:text-sm">{p.name}</p>
                       </td>
-                      <td className="flex justify-between md:table-cell py-2 md:py-4 md:px-4 font-mono text-slate-500 border-t border-dashed border-gray-100 md:border-none mt-3 md:mt-0 pt-3 md:pt-4">
-                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'الباركود' : 'Code SKU'}</span>
-                        
-                      </td>
                       <td className="flex justify-between md:table-cell py-2 md:py-4 md:px-4 font-semibold border-t border-dashed border-gray-100 md:border-none">
                         <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'التصنيف' : 'Catégorie'}</span>
                         <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md">
@@ -609,7 +605,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
         </div>
       )}
       </>
-      )}\n\n
+      )}
       {activeTab === 'history' && (
         <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-6 animate-fade-in">
           {/* History Header & Filters */}
@@ -732,7 +728,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
         </div>
       )}
 
-      \n\n      
+      
       {/* MODAL: STOCK MOVEMENT */}
       {isStockModalOpen && (
         <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-[60]">
