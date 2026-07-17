@@ -16,7 +16,11 @@ import {
   PackageCheck,
   Settings,
   Check,
-  Tag
+  Tag,
+  History,
+  Boxes,
+  ArrowDownLeft,
+  ArrowUpRight
 } from 'lucide-react';
 
 interface ProductsListProps {
@@ -31,6 +35,11 @@ interface ProductsListProps {
   onRenameCategory?: (oldName: string, newName: string) => void;
   onDeleteCategory?: (categoryName: string) => void;
   currentUser?: User;
+  movements?: StockMovement[];
+  onUpdateStock?: (productId: string, newQty: number, movement: StockMovement) => void;
+  onUpdateStocksBulk?: (updates: { productId: string; newQty: number; movement: StockMovement }[]) => void;
+  onDeleteMovement?: (id: string) => void;
+  onEditMovement?: (id: string, qty: number, reason: string) => void;
 }
 
 
@@ -46,7 +55,12 @@ export default function ProductsList({
   prefilledSearch = '',
   onRenameCategory,
   onDeleteCategory,
-  currentUser
+  currentUser,
+  movements = [],
+  onUpdateStock,
+  onUpdateStocksBulk,
+  onDeleteMovement,
+  onEditMovement
 }: ProductsListProps) {
 
   const isRtl = lang === 'ar';

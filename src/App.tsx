@@ -26,7 +26,6 @@ import Dashboard from './components/Dashboard';
 import PosCaisse from './components/PosCaisse';
 import ProductsList from './components/ProductsList';
 import ClientsList from './components/ClientsList';
-import StocksManager from './components/StocksManager';
 import UsersManager from './components/UsersManager';
 import Settings from './components/Settings';
 import PrintInvoiceModal from './components/PrintInvoiceModal';
