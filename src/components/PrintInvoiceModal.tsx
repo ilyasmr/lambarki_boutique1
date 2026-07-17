@@ -38,19 +38,19 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
     let msg = `*LAMBARKI - FACTURE ${invoice.invoiceNumber}*\n\n`;
     msg += `👤 *Client :* ${invoice.clientName}\n`;
     msg += `📅 *Date d'émission :* ${new Date(invoice.date).toLocaleString(lang === 'ar' ? 'ar-MA' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}\n`;
-    msg += `💰 *Montant TTC :* ${invoice.total.toFixed(2)} DH\n`;
+    msg += `💰 *Montant TTC :* ${invoice.total.toFixed(2)}\n`;
     
     if (invoice.paymentStatus && invoice.paymentStatus !== 'paid') {
       msg += `💳 *Statut paiement :* ${invoice.paymentStatus === 'unpaid' ? 'À Crédit (Non payée)' : 'Paiement Partiel (Avance)'}\n`;
-      msg += `💰 *Montant Payé d'avance :* ${(invoice.amountPaid || 0).toFixed(2)} DH\n`;
-      msg += `🔴 *Reste Dû :* ${(invoice.amountDue || 0).toFixed(2)} DH\n`;
+      msg += `💰 *Montant Payé d'avance :* ${(invoice.amountPaid || 0).toFixed(2)}\n`;
+      msg += `🔴 *Reste Dû :* ${(invoice.amountDue || 0).toFixed(2)}\n`;
     } else {
       msg += `🟢 *Statut paiement :* Payée entièrement (${(invoice.paymentMethod || 'cash').toUpperCase()})\n`;
     }
 
     msg += `\n📦 *Articles commandés :*\n`;
     invoice.items.forEach(item => {
-      msg += `• _${item.qty}x_ *${item.name}*   [${(item.qty * item.sellPrice).toFixed(2)} DH]\n`;
+      msg += `• _${item.qty}x_ *${item.name}*   [${(item.qty * item.sellPrice).toFixed(2)}]\n`;
     });
     msg += `\n🙏 _Merci pour votre confiance !_`;
 
@@ -247,9 +247,9 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
                             <p className="text-xs text-gray-400 font-mono">ID: {item.productId}</p>
                           </td>
                           <td className="py-4 px-4 text-center font-mono font-medium">{item.qty}</td>
-                          <td className="py-4 px-4 text-right font-mono">{item.sellPrice.toFixed(2)} DH</td>
+                          <td className="py-4 px-4 text-right font-mono">{item.sellPrice.toFixed(2)}</td>
                           <td className="py-4 px-4 text-right font-mono font-bold text-gray-900">
-                            {(item.qty * item.sellPrice).toFixed(2)} DH
+                            {(item.qty * item.sellPrice).toFixed(2)}
                           </td>
                         </tr>
                       ))}
@@ -262,33 +262,33 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
                   <div className="w-64 space-y-3 text-sm">
                     <div className="flex justify-between text-gray-600">
                       <span>{isRtl ? 'المجموع الجزئي :' : 'Sous-total :'}</span>
-                      <span className="font-mono">{(invoice.subtotal).toFixed(2)} DH</span>
+                      <span className="font-mono">{(invoice.subtotal).toFixed(2)}</span>
                     </div>
                     {invoice.discount > 0 && (
                       <div className="flex justify-between text-red-600 font-medium">
                         <span>{isRtl ? 'التخفيض المطبق :' : 'Remise immédiate :'}</span>
-                        <span className="font-mono">-{invoice.discount.toFixed(2)} DH</span>
+                        <span className="font-mono">-{invoice.discount.toFixed(2)}</span>
                       </div>
                     )}
                     {invoice.tax > 0 && (
                       <div className="flex justify-between text-gray-600">
                         <span>{isRtl ? 'الضريبة (TVA) :' : 'Taxes (TVA) :'}</span>
-                        <span className="font-mono">+{invoice.tax.toFixed(2)} DH</span>
+                        <span className="font-mono">+{invoice.tax.toFixed(2)}</span>
                       </div>
                     )}
                     <div className="flex justify-between border-t border-gray-200 pt-3 text-lg font-bold text-blue-900">
                       <span>{isRtl ? 'المبلغ الإجمالي :' : 'Net à payer :'}</span>
-                      <span className="font-mono">{invoice.total.toFixed(2)} DH</span>
+                      <span className="font-mono">{invoice.total.toFixed(2)}</span>
                     </div>
                     {invoice.paymentStatus && invoice.paymentStatus !== 'paid' && (
                       <>
                         <div className="flex justify-between text-emerald-800 font-bold border-t border-dashed border-gray-200 pt-2.5">
                           <span>{isRtl ? 'المؤدى بالصندوق :' : 'Acompte Réglé :'}</span>
-                          <span className="font-mono">{(invoice.amountPaid || 0).toFixed(2)} DH</span>
+                          <span className="font-mono">{(invoice.amountPaid || 0).toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between text-rose-600 font-extrabold text-[15px]">
                           <span>{isRtl ? 'باقي دين مستحق :' : 'Reste dû client :'}</span>
-                          <span className="font-mono">{(invoice.amountDue || 0).toFixed(2)} DH</span>
+                          <span className="font-mono">{(invoice.amountDue || 0).toFixed(2)}</span>
                         </div>
                       </>
                     )}
@@ -337,7 +337,7 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
                       <span className="truncate max-w-[170px]">
                         {item.qty}x {item.name}
                       </span>
-                      <span className="text-right">{(item.qty * item.sellPrice).toFixed(2)} DH</span>
+                      <span className="text-right">{(item.qty * item.sellPrice).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
@@ -346,27 +346,27 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
                 <div className="border-t border-dashed border-gray-300 pt-2 text-xxs text-right space-y-1 font-bold">
                   <div className="flex justify-between">
                     <span>{isRtl ? 'المجموع :' : 'SUBTOTAL:'}</span>
-                    <span>{(invoice.subtotal).toFixed(2)} DH</span>
+                    <span>{(invoice.subtotal).toFixed(2)}</span>
                   </div>
                   {invoice.discount > 0 && (
                     <div className="flex justify-between text-red-600">
                       <span>{isRtl ? 'خصم :' : 'REMISE:'}</span>
-                      <span>-{invoice.discount.toFixed(2)} DH</span>
+                      <span>-{invoice.discount.toFixed(2)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-sm border-t border-dashed border-gray-300 pt-2 text-blue-900">
                     <span>{isRtl ? 'المبلغ الإجمالي :' : 'TOTAL NET:'}</span>
-                    <span>{invoice.total.toFixed(2)} DH</span>
+                    <span>{invoice.total.toFixed(2)}</span>
                   </div>
                   {invoice.paymentStatus && invoice.paymentStatus !== 'paid' && (
                     <div className="text-[11px] font-bold space-y-1 pt-1.5 border-t border-dotted border-gray-300">
                       <div className="flex justify-between text-emerald-800">
                         <span>{isRtl ? 'المؤدى بالصندوق :' : 'AVANCE PAYÉE :' }</span>
-                        <span>{(invoice.amountPaid || 0).toFixed(2)} DH</span>
+                        <span>{(invoice.amountPaid || 0).toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between text-rose-600">
                         <span>{isRtl ? 'المتبقي كدين :' : 'RESTE DU :' }</span>
-                        <span>{(invoice.amountDue || 0).toFixed(2)} DH</span>
+                        <span>{(invoice.amountDue || 0).toFixed(2)}</span>
                       </div>
                     </div>
                   )}

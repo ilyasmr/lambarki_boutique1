@@ -467,7 +467,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                     <span className={`px-2.5 py-0.5 text-[9px] font-bold rounded-md shadow-sm bg-slate-900/80 text-white`}>
                       {p.category}
                     </span>
-                    <span className="text-[9px] font-mono text-slate-400 font-bold">{p.sku}</span>
+                    
                   </div>
 
                   {/* Product name and barcode */}
@@ -499,7 +499,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   {/* Pricing displays ONLY Sale Price to avoid displaying buy sensitive costs here */}
                   <div className="flex items-center justify-between bg-slate-50/70 p-2.5 rounded-xl border border-slate-100">
                     <span className="text-[10px] text-slate-500 font-bold uppercase">{isRtl ? 'ثمن البيع :' : 'Prix Vente :'}:</span>
-                    <span className="font-mono text-xs font-black text-blue-900">{(p.sellPrice || 0).toFixed(2)} DH</span>
+                    <span className="font-mono text-xs font-black text-blue-900">{(p.sellPrice || 0).toFixed(2)}</span>
                   </div>
 
                   {/* Actions (Pencil is "ta3dil" / edit where they inspect everything) */}
@@ -540,7 +540,6 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
               <thead className="hidden md:table-header-group">
                 <tr className="bg-gray-50/60 border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
                   <th className="py-3 px-4">{isRtl ? 'المنتج' : 'Désignation'}</th>
-                  <th className="py-3 px-4">{isRtl ? 'الباركود' : 'Code SKU'}</th>
                   <th className="py-3 px-4">{isRtl ? 'التصنيف' : 'Rayon / Catégorie'}</th>
                   <th className="py-3 px-4 text-right">{isRtl ? 'سعر البيع' : 'P. Vente'}</th>
                   <th className="py-3 px-4 text-center">{isRtl ? 'الكمية' : 'Quantité'}</th>
@@ -557,7 +556,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                       </td>
                       <td className="flex justify-between md:table-cell py-2 md:py-4 md:px-4 font-mono text-slate-500 border-t border-dashed border-gray-100 md:border-none mt-3 md:mt-0 pt-3 md:pt-4">
                         <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'الباركود' : 'Code SKU'}</span>
-                        <span className="text-sm md:text-xs">{p.sku}</span>
+                        
                       </td>
                       <td className="flex justify-between md:table-cell py-2 md:py-4 md:px-4 font-semibold border-t border-dashed border-gray-100 md:border-none">
                         <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'التصنيف' : 'Catégorie'}</span>
@@ -567,7 +566,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                       </td>
                       <td className="flex justify-between md:table-cell py-2 md:py-4 md:px-4 text-right font-mono font-bold text-blue-900 border-t border-dashed border-gray-100 md:border-none">
                         <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'سعر البيع' : 'Prix Vente'}</span>
-                        <span className="text-[14px] md:text-[12px]">{(p.sellPrice || 0).toFixed(2)} DH</span>
+                        <span className="text-[14px] md:text-[12px]">{(p.sellPrice || 0).toFixed(2)}</span>
                       </td>
                       <td className="flex justify-between md:table-cell py-2 md:py-4 md:px-4 text-center border-t border-dashed border-gray-100 md:border-none">
                         <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'الكمية' : 'Qté'}</span>
@@ -1204,7 +1203,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 </div>
                 <div className="text-right flex-1 min-w-0">
                   <p className="text-xs font-extrabold text-slate-800 truncate">{productToDelete.name}</p>
-                  <p className="text-[10px] text-slate-500 font-mono truncate">{productToDelete.sku}</p>
+                  
                 </div>
               </div>
             </div>

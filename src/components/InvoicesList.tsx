@@ -285,7 +285,7 @@ export default function InvoicesList({
               {isRtl ? 'إجمالي المداخيل المغلقة (الفواتير المدفوعة)' : 'Chiffre d\'Affaires Encaissé'}
             </p>
             <h4 className="text-lg font-black text-emerald-600 font-mono mt-1">
-              {stats.totalPaid.toLocaleString(undefined, { minimumFractionDigits: 2 })} DH
+              {stats.totalPaid.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </h4>
             <p className="text-xxs text-emerald-600/80 mt-1">
               {isRtl ? 'مغلقة بالكامل في الصندوق' : 'Encaissé en caisse avec succès'}
@@ -305,11 +305,11 @@ export default function InvoicesList({
             <div className="text-xs space-y-0.5 mt-1 font-semibold text-indigo-100">
               <div className="flex justify-between gap-4 font-mono">
                 <span>{isRtl ? 'النقد (Espèces) :' : 'Espèces :'}</span>
-                <span className="font-extrabold">{stats.cashTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })} DH</span>
+                <span className="font-extrabold">{stats.cashTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
               </div>
               <div className="flex justify-between gap-4 font-mono">
                 <span>{isRtl ? 'الشيكات (Chèques) :' : 'Chèques :'}</span>
-                <span className="font-extrabold">{stats.checkTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })} DH</span>
+                <span className="font-extrabold">{stats.checkTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
               </div>
             </div>
           </div>
@@ -447,12 +447,12 @@ export default function InvoicesList({
                     <td className="flex justify-between md:table-cell py-2 md:py-3.5 md:px-3 text-right font-mono font-bold text-amber-600 md:bg-amber-50/20 border-t border-dashed border-gray-100 md:border-none">
                       <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'قيمة الخصم' : 'Remise'}</span>
                       <span className="bg-amber-50/50 md:bg-transparent px-2 py-0.5 md:p-0 rounded">
-                        {invoice.discount && invoice.discount > 0 ? `-${invoice.discount.toFixed(2)} DH` : '-'}
+                        {invoice.discount && invoice.discount > 0 ? `-${invoice.discount.toFixed(2)}` : '-'}
                       </span>
                     </td>
                     <td className="flex justify-between md:table-cell py-2 md:py-3.5 md:px-3 text-right font-mono font-black text-slate-900 border-t border-dashed border-gray-100 md:border-none">
                       <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{tLabel.invoiceTotal}</span>
-                      <span className="text-[14px] md:text-xs">{invoice.total.toFixed(2)} DH</span>
+                      <span className="text-[14px] md:text-xs">{invoice.total.toFixed(2)}</span>
                     </td>
                     <td className="flex justify-between md:table-cell py-2 md:py-3.5 md:px-3 text-center border-t border-dashed border-gray-100 md:border-none">
                       <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{tLabel.invoiceStatus}</span>
@@ -574,7 +574,7 @@ export default function InvoicesList({
               </div>
               <div className="flex justify-between border-t border-gray-200/60 pt-2 font-black">
                 <span className="text-gray-900">{isRtl ? 'المبلغ الإجمالي :' : 'Montant Total :'}</span>
-                <span className="text-rose-600 font-mono text-sm">{invoiceToDelete.total.toFixed(2)} DH</span>
+                <span className="text-rose-600 font-mono text-sm">{invoiceToDelete.total.toFixed(2)}</span>
               </div>
             </div>
 
@@ -714,7 +714,7 @@ export default function InvoicesList({
                     <thead>
                       <tr className="bg-slate-50/50 border-b border-slate-100 text-[10px] font-bold uppercase text-gray-400">
                         <th className="py-2.5 px-4">{isRtl ? 'المنتج' : 'Article'}</th>
-                        <th className="py-2.5 px-4 w-32 text-center">{isRtl ? 'سعر البيع (DH)' : 'P.U. Vente (DH)'}</th>
+                        <th className="py-2.5 px-4 w-32 text-center">{isRtl ? 'سعر البيع ' : 'P.U. Vente '}</th>
                         <th className="py-2.5 px-4 w-40 text-center">{isRtl ? 'الكمية المباعة' : 'Quantité vendue'}</th>
                         <th className="py-2.5 px-4 w-32 text-right">{isRtl ? 'المجموع الفرعي' : 'Montant Total'}</th>
                         <th className="py-2.5 px-4 w-16 text-center">{t.actions}</th>
@@ -756,7 +756,7 @@ export default function InvoicesList({
                             </div>
                           </td>
                           <td className="py-3 px-4 text-right font-mono font-bold text-slate-800">
-                            {(item.qty * item.sellPrice).toFixed(2)} DH
+                            {(item.qty * item.sellPrice).toFixed(2)}
                           </td>
                           <td className="py-3 px-4 text-center">
                             <button
@@ -819,10 +819,10 @@ export default function InvoicesList({
                 <div className="p-5 bg-slate-50 rounded-2xl space-y-3 font-semibold border border-slate-100">
                   <div className="flex justify-between">
                     <span className="text-slate-500">{isRtl ? 'المجموع الأولي :' : 'Sous-total :'}</span>
-                    <span className="font-mono text-slate-700">{liveTotals.subtotal.toFixed(2)} DH</span>
+                    <span className="font-mono text-slate-700">{liveTotals.subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between items-center py-1 border-y border-gray-150">
-                    <span className="text-slate-500">{isRtl ? 'قيمة الخصم الممنوح (DH) :' : 'Remise à appliquer (DH) :'}</span>
+                    <span className="text-slate-500">{isRtl ? 'قيمة الخصم الممنوح  :' : 'Remise à appliquer  :'}</span>
                     <input
                       type="number"
                       min="0"
@@ -844,15 +844,15 @@ export default function InvoicesList({
                   </div>
                   <div className="flex justify-between text-indigo-700 font-bold">
                     <span>{isRtl ? 'قيمة الضريبة المحسوبة :' : 'Montant TVA calculé :'}</span>
-                    <span className="font-mono">{liveTotals.tax.toFixed(2)} DH</span>
+                    <span className="font-mono">{liveTotals.tax.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between border-t border-gray-250 pt-2 font-black text-sm text-slate-900">
                     <span>{isRtl ? 'مجموع الفاتورة الحالي :' : 'Montant Total Régler :'}</span>
-                    <span className="font-mono text-indigo-600 text-base">{liveTotals.total.toFixed(2)} DH</span>
+                    <span className="font-mono text-indigo-600 text-base">{liveTotals.total.toFixed(2)}</span>
                   </div>
                   <div className="bg-emerald-50 text-emerald-800 p-2.5 rounded-xl text-[10px] font-bold border border-emerald-100/50 flex justify-between">
                     <span>{isRtl ? 'ربح تقديري للعملية :' : 'Marge commerciale brute estimée :'}</span>
-                    <span className="font-mono font-black">{liveTotals.profit.toFixed(2)} DH</span>
+                    <span className="font-mono font-black">{liveTotals.profit.toFixed(2)}</span>
                   </div>
                 </div>
 

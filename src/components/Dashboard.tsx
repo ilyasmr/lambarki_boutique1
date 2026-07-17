@@ -236,7 +236,7 @@ export default function Dashboard({
                 <div className="space-y-1 min-w-0">
                   <p className="text-xs font-black text-gray-900 group-hover:text-blue-700 transition truncate">{client.name}</p>
                   <p className="text-[10px] font-mono text-gray-500 font-bold">
-                    {isRtl ? 'قيمة الشيك:' : 'Montant:'} <span className="font-black text-indigo-700">{check.amount?.toFixed(2)} DH</span>
+                    {isRtl ? 'قيمة الشيك:' : 'Montant:'} <span className="font-black text-indigo-700">{check.amount?.toFixed(2)}</span>
                   </p>
                 </div>
                 <div className="text-right shrink-0">
@@ -406,7 +406,7 @@ export default function Dashboard({
                     </div>
                     
                     <div className="text-right">
-                      <span className="text-xxs font-mono text-gray-400">Total: {p.totalRev.toFixed(0)} DH</span>
+                      <span className="text-xxs font-mono text-gray-400">Total: {(p.totalRev).toFixed(0)}</span>
                     </div>
                   </div>
                 );

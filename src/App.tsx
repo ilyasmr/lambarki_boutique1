@@ -442,8 +442,8 @@ export default function App() {
 
     logActivity(
       'sale',
-      `إصدار فاتورة مبيعات جديدة بقيمة ${newInvoice.total.toFixed(2)} DH للزبون "${newInvoice.clientName}"`,
-      `Création d'une nouvelle facture de ${newInvoice.total.toFixed(2)} DH pour le client "${newInvoice.clientName}"`,
+      `إصدار فاتورة مبيعات جديدة بقيمة ${newInvoice.total.toFixed(2)} للزبون "${newInvoice.clientName}"`,
+      `Création d'une nouvelle facture de ${newInvoice.total.toFixed(2)} pour le client "${newInvoice.clientName}"`,
       newInvoice.invoiceNumber
     );
   };
@@ -569,8 +569,8 @@ export default function App() {
     setProducts(prev => [...prev, p]);
     logActivity(
       'product_add',
-      `إضافة منتج جديد: "${p.name}" في صنف ${p.category} بسعر بيع ${p.sellPrice} DH`,
-      `Ajout d'un nouveau produit: "${p.name}" dans la catégorie ${p.category} au prix de ${p.sellPrice} DH`,
+      `إضافة منتج جديد: "${p.name}" في صنف ${p.category} بسعر بيع ${p.sellPrice}`,
+      `Ajout d'un nouveau produit: "${p.name}" dans la catégorie ${p.category} au prix de ${p.sellPrice}`,
       p.id
     );
   };
@@ -755,8 +755,8 @@ export default function App() {
 
     logActivity(
       'invoice_edit',
-      `تعديل الفاتورة رقم ${updatedInvoice.invoiceNumber} للزبون "${updatedInvoice.clientName}" - المجموع الحالي: ${updatedInvoice.total.toFixed(2)} DH`,
-      `Modification de la facture n° ${updatedInvoice.invoiceNumber} pour le client "${updatedInvoice.clientName}" - Nouveau Total: ${updatedInvoice.total.toFixed(2)} DH`,
+      `تعديل الفاتورة رقم ${updatedInvoice.invoiceNumber} للزبون "${updatedInvoice.clientName}" - المجموع الحالي: ${updatedInvoice.total.toFixed(2)}`,
+      `Modification de la facture n° ${updatedInvoice.invoiceNumber} pour le client "${updatedInvoice.clientName}" - Nouveau Total: ${updatedInvoice.total.toFixed(2)}`,
       updatedInvoice.id
     );
   };
@@ -1265,7 +1265,7 @@ export default function App() {
                               className="w-full text-left flex items-center justify-between px-2.5 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-lg transition-all"
                             >
                               <div className="flex items-center gap-2">
-                                <span className="text-xxs text-slate-450 font-mono">[{p.sku}]</span>
+                                
                                 <span className="text-slate-900">{p.name}</span>
                               </div>
                               <span className="text-[10px] bg-slate-100 text-slate-650 px-2 py-0.5 rounded font-black">{p.category}</span>
@@ -1326,7 +1326,7 @@ export default function App() {
                                 <span className="text-xxs text-slate-450 font-mono">[{i.invoiceNumber}]</span>
                                 <span className="text-slate-900">{i.clientName}</span>
                               </div>
-                              <span className="text-[10px] text-emerald-650 font-black font-mono">{i.total.toFixed(2)} Dhs</span>
+                              <span className="text-[10px] text-emerald-650 font-black font-mono">{i.total.toFixed(2)} </span>
                             </button>
                           ))}
                         </div>

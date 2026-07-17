@@ -242,7 +242,7 @@ export default function PosCaisse({
       paymentStatus: paymentStatusSelect,
       amountPaid: finalAmountPaid,
       amountDue: outstandingDue,
-      notes: orderNotes + (paymentStatusSelect !== 'paid' ? ` (${isRtl ? 'باقي دين:' : 'Reste dû:'} ${outstandingDue.toFixed(2)} DH)` : ''),
+      notes: orderNotes + (paymentStatusSelect !== 'paid' ? ` (${isRtl ? 'باقي دين:' : 'Reste dû:'} ${outstandingDue.toFixed(2)})` : ''),
       cashierName: currentUser.name
     };
 
@@ -397,7 +397,7 @@ export default function PosCaisse({
                     <span className="px-2 py-0.5 text-[9px] font-bold rounded shadow-sm bg-slate-900/80 text-white">
                       {p.category}
                     </span>
-                    <span className="text-[9px] font-mono text-slate-400 font-bold">{p.sku}</span>
+                    
                   </div>
 
                   {/* Product name */}
@@ -429,7 +429,7 @@ export default function PosCaisse({
                   {/* Pricing displays ONLY Sale Price to avoid sensitive buy prices */}
                   <div className="flex items-center justify-between bg-slate-50/70 p-2 rounded-lg border border-slate-100">
                     <span className="text-[10px] text-slate-500 font-bold uppercase">{isRtl ? 'ثمن البيع :' : 'Prix Vente :'}</span>
-                    <span className="font-mono text-xs sm:text-sm font-black text-blue-900">{(p.sellPrice || 0).toFixed(2)} DH</span>
+                    <span className="font-mono text-xs sm:text-sm font-black text-blue-900">{(p.sellPrice || 0).toFixed(2)}</span>
                   </div>
                 </div>
 
@@ -504,7 +504,7 @@ export default function PosCaisse({
                 <div className="flex-1 min-w-0">
                   <h4 className="font-extrabold text-gray-900 truncate">{item.product.name}</h4>
                   <p className="text-xxs text-gray-400 font-mono">
-                    {(item.product.sellPrice || 0).toFixed(2)} DH / unit
+                    {(item.product.sellPrice || 0).toFixed(2)} / unit
                   </p>
                 </div>
 
@@ -529,7 +529,7 @@ export default function PosCaisse({
 
                 <div className="text-right w-24">
                   <span className="font-black text-gray-900 font-mono">
-                    {(item.product.sellPrice * item.qty).toFixed(2)} DH
+                    {(item.product.sellPrice * item.qty).toFixed(2)}
                   </span>
                 </div>
 
@@ -626,7 +626,7 @@ export default function PosCaisse({
                 {paymentStatusSelect === 'partial' && (
                   <div className="pt-2">
                     <label className="text-[10px] text-amber-800 block mb-1 font-bold">
-                      {isRtl ? 'المبلغ المؤدى نقداً مسبقاً (درهم) :' : 'Montant payé d\'avance (DH) :'}
+                      {isRtl ? 'المبلغ المؤدى نقداً مسبقاً (درهم) :' : 'Montant payé d\'avance  :'}
                     </label>
                     <input
                       type="number"
@@ -634,17 +634,17 @@ export default function PosCaisse({
                       max={totalAmount - 1}
                       value={amountPaidUpfront || ''}
                       onChange={(e) => setAmountPaidUpfront(Number(e.target.value))}
-                      placeholder="0.00 DH"
+                      placeholder="0.00"
                       className="w-full px-3 py-1.5 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono font-bold text-xs"
                     />
                     <p className="text-[10px] text-slate-500 mt-1">
-                      {isRtl ? 'الباقي كدين على ذمة الزبون :' : 'Reste dû en crédit :'} <span className="font-extrabold text-blue-950">{(totalAmount - amountPaidUpfront).toFixed(2)} DH</span>
+                      {isRtl ? 'الباقي كدين على ذمة الزبون :' : 'Reste dû en crédit :'} <span className="font-extrabold text-blue-950">{(totalAmount - amountPaidUpfront).toFixed(2)}</span>
                     </p>
                   </div>
                 )}
                 {paymentStatusSelect === 'unpaid' && (
                   <p className="text-[10px] text-rose-700 font-medium mt-1">
-                    {isRtl ? 'سيتم قيد إجمالي المبلغ كدين مستحق :' : 'Totalité portée en ardoise client :'} <span className="font-extrabold font-mono">{totalAmount.toFixed(2)} DH</span>
+                    {isRtl ? 'سيتم قيد إجمالي المبلغ كدين مستحق :' : 'Totalité portée en ardoise client :'} <span className="font-extrabold font-mono">{totalAmount.toFixed(2)}</span>
                   </p>
                 )}
               </div>
@@ -658,7 +658,7 @@ export default function PosCaisse({
                   max={subtotal > 0 ? subtotal : 9999}
                   value={discountValue || ''}
                   onChange={(e) => setDiscountValue(Number(e.target.value))}
-                  placeholder="0.00 DH"
+                  placeholder="0.00"
                   className="w-full px-3 py-2 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#22c55e] font-mono font-bold"
                 />
               </div>
@@ -668,18 +668,18 @@ export default function PosCaisse({
                 {discountValue > 0 && (
                   <div className="flex justify-between text-rose-600 font-medium">
                     <span>{isRtl ? 'تخفيض فوري :' : 'Marge de Remise :'}</span>
-                    <span>-{discountValue.toFixed(2)} DH</span>
+                    <span>-{discountValue.toFixed(2)}</span>
                   </div>
                 )}
                 {taxSum > 0 && (
                   <div className="flex justify-between text-gray-500">
                     <span>TVA :</span>
-                    <span>+{taxSum.toFixed(2)} DH</span>
+                    <span>+{taxSum.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between border-t border-gray-200 pt-2 text-lg font-black text-emerald-700 leading-none">
                   <span>{isRtl ? 'المجموع المستحق :' : 'Net à Payer :'}</span>
-                  <span>{totalAmount.toFixed(2)} DH</span>
+                  <span>{totalAmount.toFixed(2)}</span>
                 </div>
               </div>
 

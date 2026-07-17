@@ -588,7 +588,7 @@ export default function ClientsList({
                       <div className="space-y-1 min-w-0">
                         <p className="text-xs font-black text-gray-950 group-hover:text-amber-855 transition truncate">{client.name}</p>
                         <p className="text-[10px] text-amber-700 font-extrabold font-mono">
-                          {check.amount?.toFixed(2)} DH
+                          {check.amount?.toFixed(2)}
                         </p>
                       </div>
                       <div className="text-right shrink-0">
@@ -635,7 +635,7 @@ export default function ClientsList({
                       <div className="space-y-1 min-w-0">
                         <p className="text-xs font-black text-gray-950 group-hover:text-amber-855 transition truncate">{client.name}</p>
                         <p className="text-[10px] text-rose-700 font-extrabold font-mono">
-                          {client.outstandingDebt?.toFixed(2)} DH
+                          {client.outstandingDebt?.toFixed(2)}
                         </p>
                       </div>
                       <div className="text-right shrink-0">
@@ -787,7 +787,7 @@ export default function ClientsList({
                       const status = getCheckStatus(check.expiryDate);
                       return (
                         <div key={check.id || idx} className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[10px] font-black ${status.className} shadow-xs`} onClick={(e) => e.stopPropagation()}>
-                          <span className="font-mono">{check.amount?.toFixed(0)} DH</span>
+                          <span className="font-mono">{check.amount?.toFixed(0)}</span>
                           <span className="text-[8px] font-bold opacity-80">📅 {check.expiryDate}</span>
                         </div>
                       );
@@ -884,7 +884,7 @@ export default function ClientsList({
                <div className="flex items-center gap-3 border-s border-gray-100 ps-3">
                   <div className={`text-${isRtl ? 'right' : 'left'}`}>
                     <span className="text-[8.5px] text-rose-800 font-bold uppercase tracking-wider block mb-0.5">{isRtl ? 'المديونية :' : 'Dette :'}</span>
-                    <span className="text-[12px] font-black text-rose-600 font-mono">{(selectedClient.outstandingDebt || 0).toFixed(2)} DH</span>
+                    <span className="text-[12px] font-black text-rose-600 font-mono">{(selectedClient.outstandingDebt || 0).toFixed(2)}</span>
                   </div>
                   
                   <div className="flex gap-2 ml-2 w-full sm:w-auto mt-3 sm:mt-0">
@@ -969,7 +969,7 @@ export default function ClientsList({
                     {isRtl ? 'إجمالي المشتريات في هذه الفترة :' : 'Achats cumulés période :'}
                   </span>
                   <span className="px-2 py-1 bg-emerald-50 text-emerald-700 font-black font-mono rounded-lg text-[11px] border border-emerald-100/50">
-                    {clientTotalSpentInPeriod.toFixed(2)} DH
+                    {clientTotalSpentInPeriod.toFixed(2)}
                   </span>
                 </div>
 
@@ -1039,13 +1039,13 @@ export default function ClientsList({
                           <div className="flex items-center gap-6 text-right">
                             <div className="flex flex-col items-end">
                               <span className="block text-[10px] font-bold text-gray-600 bg-white/80 px-2 py-1 rounded-lg border border-gray-200">
-                                {isRtl ? 'الرصيد:' : 'Solde:'} {(item as any).runningDebt.toFixed(2)} DH
+                                {isRtl ? 'الرصيد:' : 'Solde:'} {(item as any).runningDebt.toFixed(2)}
                               </span>
                             </div>
 
                             <div className="flex flex-col items-end w-20">
                               <span className={`font-black text-[13px] font-mono px-2 py-0.5 rounded border ${isBorrow ? 'text-orange-700 bg-orange-100/50 border-orange-200/50' : 'text-emerald-700 bg-emerald-100/50 border-emerald-200/50'}`}>
-                                {isBorrow ? '-' : '+'}{absAmount.toFixed(2)} DH
+                                {isBorrow ? '-' : '+'}{absAmount.toFixed(2)}
                               </span>
                             </div>
 
@@ -1103,14 +1103,14 @@ export default function ClientsList({
                           <div className="flex items-center gap-6 text-right">
                             <div className="flex flex-col items-end">
                               <span className="block text-[10px] font-bold text-gray-600 bg-gray-100 px-2 py-1 rounded-lg border border-gray-200">
-                                {isRtl ? 'الرصيد:' : 'Solde:'} {(item as any).runningDebt.toFixed(2)} DH
+                                {isRtl ? 'الرصيد:' : 'Solde:'} {(item as any).runningDebt.toFixed(2)}
                               </span>
                             </div>
                             
                             <div className="flex flex-col items-end w-20">
                               {hasDebt ? (
                                 <span className="block text-[10px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">
-                                  {isRtl ? 'الباقي:' : 'Reste:'} {invoice.amountDue?.toFixed(2)} DH
+                                  {isRtl ? 'الباقي:' : 'Reste:'} {invoice.amountDue?.toFixed(2)}
                                 </span>
                               ) : (
                                 <span className="block text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
@@ -1130,7 +1130,7 @@ export default function ClientsList({
                           <div className="border-t border-gray-100 bg-gray-50/50 p-3">
                             <div className="mb-3 p-2 bg-white rounded-lg border border-blue-100 flex justify-between items-center shadow-sm">
                               <span className="text-[11px] font-extrabold text-blue-900">{isRtl ? 'قيمة المبيعات (الفاتورة):' : 'Total facture:'}</span>
-                              <span className="text-[13px] font-black text-blue-700 font-mono">{p.total.toFixed(2)} DH</span>
+                              <span className="text-[13px] font-black text-blue-700 font-mono">{p.total.toFixed(2)}</span>
                             </div>
                             
                             {safeItems.length > 0 ? (
@@ -1142,10 +1142,10 @@ export default function ClientsList({
                                   <div key={i} className="flex justify-between items-center bg-white p-2.5 rounded-lg border border-gray-100 shadow-xxs">
                                     <div className="flex flex-col max-w-[65%]">
                                       <span className="text-[11px] font-bold text-gray-800 truncate">{item.name || 'Unknown'}</span>
-                                      <span className="text-[9px] font-mono text-gray-500">{item.qty} x {Number(item.sellPrice || 0).toFixed(2)} DH</span>
+                                      <span className="text-[9px] font-mono text-gray-500">{item.qty} x {Number(item.sellPrice || 0).toFixed(2)}</span>
                                     </div>
                                     <div className="text-[12px] font-black font-mono text-gray-900 bg-gray-50 px-2 py-1 rounded">
-                                      {(Number(item.qty || 0) * Number(item.sellPrice || 0)).toFixed(2)} DH
+                                      {(Number(item.qty || 0) * Number(item.sellPrice || 0)).toFixed(2)}
                                     </div>
                                   </div>
                                 ))}
@@ -1233,7 +1233,7 @@ export default function ClientsList({
                     <div key={check.id || idx} className="bg-white p-3 rounded-xl border border-indigo-100/50 shadow-xxs flex flex-col gap-2">
                       <div className="flex justify-between items-center bg-indigo-50/35 px-2 py-1 rounded-lg">
                         <span className="text-[10px] text-indigo-950 font-black">{isRtl ? `شيك رقم ${idx + 1}` : `Chèque N° ${idx + 1}`}</span>
-                        <span className="font-mono text-xs font-black text-indigo-700">{check.amount?.toFixed(2)} DH</span>
+                        <span className="font-mono text-xs font-black text-indigo-700">{check.amount?.toFixed(2)}</span>
                       </div>
                       <div className="grid grid-cols-2 gap-2 text-xxs">
                         <div>
@@ -1357,7 +1357,7 @@ export default function ClientsList({
                             >
                               <div className="space-y-0.5">
                                 <p className="text-[10.5px] font-black text-indigo-950">
-                                  {isRtl ? `الشيك ${idx + 1}:` : `Chèque ${idx + 1}:`} <span className="font-mono text-indigo-700">{ch.amount?.toFixed(2)} DH</span>
+                                  {isRtl ? `الشيك ${idx + 1}:` : `Chèque ${idx + 1}:`} <span className="font-mono text-indigo-700">{ch.amount?.toFixed(2)}</span>
                                 </p>
                                 <p className="text-[9px] text-gray-400">
                                   📅 {ch.entryDate} • ⏰ <span className="text-rose-600 font-bold">{ch.expiryDate}</span>
@@ -1387,7 +1387,7 @@ export default function ClientsList({
 
                       {/* Check Value / Amount */}
                       <div className="space-y-0.5">
-                        <label className="text-[10px] text-gray-400 font-bold block">{isRtl ? 'مبلغ الشيك (DH) :' : 'Montant du chèque postal (DH) :'}</label>
+                        <label className="text-[10px] text-gray-400 font-bold block">{isRtl ? 'مبلغ الشيك  :' : 'Montant du chèque postal  :'}</label>
                         <input
                           type="number"
                           min="0"
@@ -1482,7 +1482,7 @@ export default function ClientsList({
                   {isRtl ? 'إجمالي الدين الحالي :' : 'Total dette en cours :'}
                 </p>
                 <p className={`text-lg font-black font-mono mt-0.5 ${debtOpType === 'settle' ? 'text-rose-700' : 'text-orange-700'}`}>
-                  {(selectedClient.outstandingDebt || 0).toFixed(2)} DH
+                  {(selectedClient.outstandingDebt || 0).toFixed(2)}
                 </p>
               </div>
 
@@ -1490,8 +1490,8 @@ export default function ClientsList({
               <div className="space-y-1">
                 <label className="text-xxs text-slate-400 uppercase tracking-wide">
                   {debtOpType === 'settle' 
-                    ? (isRtl ? 'المبلغ المستخلص بالدرهم *' : 'Montant à rembourser (DH) *')
-                    : (isRtl ? 'مبلغ الدين المضاف بالدرهم *' : 'Montant du crédit ajouté (DH) *')}
+                    ? (isRtl ? 'المبلغ المستخلص بالدرهم *' : 'Montant à rembourser  *')
+                    : (isRtl ? 'مبلغ الدين المضاف بالدرهم *' : 'Montant du crédit ajouté  *')}
                 </label>
                 <input
                   type="number"

@@ -312,8 +312,8 @@ export const initialActivities: SystemActivity[] = [
     type: "sale",
     date: "2026-06-18T10:15:00Z",
     operator: "Yassine Alami",
-    descriptionAr: "إصدار فاتورة مبيعات جديدة بقيمة 420.00 DH للزبون أحمد العمراني",
-    descriptionFr: "Création d'une nouvelle facture de 420.00 DH pour le client Ahmed El Amrani",
+    descriptionAr: "إصدار فاتورة مبيعات جديدة بقيمة 420.00 للزبون أحمد العمراني",
+    descriptionFr: "Création d'une nouvelle facture de 420.00 pour le client Ahmed El Amrani",
     targetId: "INV-2026-001"
   },
   {
@@ -321,8 +321,8 @@ export const initialActivities: SystemActivity[] = [
     type: "product_add",
     date: "2026-06-17T14:30:00Z",
     operator: "Fouad Lambarki",
-    descriptionAr: "إضافة منتج جديد: \"قميص صيفي إيطالي راقي\" في صنف الملابس بسعر بيع 350 DH",
-    descriptionFr: "Ajout d'un nouveau produit: \"Chemise été italienne haut de gamme\" dans la catégorie Vêtements au prix de 350 DH",
+    descriptionAr: "إضافة منتج جديد: \"قميص صيفي إيطالي راقي\" في صنف الملابس بسعر بيع 350",
+    descriptionFr: "Ajout d'un nouveau produit: \"Chemise été italienne haut de gamme\" dans la catégorie Vêtements au prix de 350",
     targetId: "prod-it-shirt"
   },
   {
