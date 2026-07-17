@@ -803,7 +803,7 @@ export default function Account({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2.5 tracking-tight">
-              <span className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-sm">
+              <span className="p-2 bg-gradient-to-br from-violet-400 to-purple-500 rounded-xl shadow-sm">
                 <Lock className="w-5 h-5 text-white" />
               </span>
               <span>{isRtl ? 'إدارة ومطابقة أرصدة الصندوق' : 'Finances, Caisse & Audit de Caisse'}</span>
@@ -821,7 +821,7 @@ export default function Account({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mt-2">
             
             {/* Drawer Balance - Hero Card */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 p-6 rounded-[2rem] shadow-2xl flex flex-col justify-between group hover:shadow-indigo-500/20 transition-all transform hover:-translate-y-1">
+            <div className="relative overflow-hidden bg-gradient-to-br from-violet-400 via-purple-500 to-indigo-600 p-6 rounded-[2rem] shadow-2xl flex flex-col justify-between group hover:shadow-purple-500/20 transition-all transform hover:-translate-y-1">
               <div className="absolute -right-10 -top-10 w-48 h-48 bg-white opacity-5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
               
               <div className="relative z-10 flex items-center justify-between">

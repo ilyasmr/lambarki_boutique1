@@ -297,7 +297,7 @@ export default function Dashboard({
         </div>
 
         {/* Number of Orders / Tickets Card */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-violet-600 to-purple-800 p-6 rounded-3xl shadow-xl flex items-center justify-between group hover:shadow-purple-500/30 transition-all transform hover:-translate-y-1">
+        <div className="relative overflow-hidden bg-gradient-to-br from-purple-400 to-violet-500 p-6 rounded-3xl shadow-xl flex items-center justify-between group hover:shadow-purple-500/30 transition-all transform hover:-translate-y-1">
           <div className="absolute top-0 right-1/2 w-40 h-40 bg-white opacity-5 rounded-full blur-3xl group-hover:opacity-20 transition-opacity duration-700"></div>
           <div className="space-y-1.5 flex-1 min-w-0 relative z-10">
             <p className="text-[11px] font-bold text-purple-200 uppercase tracking-widest">{t.totalSales}</p>
