@@ -98,7 +98,7 @@ export default function UsersManager({
       <div className="lg:col-span-4 space-y-6">
         
         {/* Switch simulator explanation */}
-        <div className="bg-gradient-to-br from-indigo-900 to-slate-900 rounded-2xl p-6 text-white text-xs border border-indigo-950 shadow-md">
+        <div className="bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl p-6 text-white text-xs border border-purple-400 shadow-lg">
           <ShieldCheck className="w-8 h-8 text-indigo-400 mb-3" />
           <h3 className="text-sm font-black mb-2">{tLabel.adminPower}</h3>
           <p className="text-slate-300 leading-relaxed mb-4">
@@ -108,11 +108,11 @@ export default function UsersManager({
             }
           </p>
           <div className="space-y-2 text-xxs font-mono text-slate-300 leading-normal">
-            <p className="flex items-center gap-1.5 bg-indigo-950/50 p-2 rounded-lg">
+            <p className="flex items-center gap-1.5 bg-white/20 p-2 rounded-lg">
               <span className="w-1.5 h-1.5 rounded-full bg-violet-400"></span>
               <span><strong>{getRoleLabel('admin')}:</strong> {isRtl ? 'حقوق تحكم كاملة بالنظام بالكامل' : 'Accès total sans limites'}</span>
             </p>
-            <p className="flex items-center gap-1.5 bg-indigo-950/50 p-2 rounded-lg">
+            <p className="flex items-center gap-1.5 bg-white/20 p-2 rounded-lg">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
               <span><strong>{getRoleLabel('cashier')}:</strong> {isRtl ? 'فقط عمليات البيع والبحث والزبائن' : 'Uniquement POS, Tiers, Ventes et Dashboard'}</span>
             </p>
