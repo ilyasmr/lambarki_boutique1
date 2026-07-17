@@ -947,47 +947,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 </div>
               </div>
 
-              {/* Initial stock and alarm levels */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'الكمية المتوفرة حالياً بالرف' : 'Quantité Initiale en Stock'}</label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={formStock}
-                    onChange={(e) => setFormStock(Number(e.target.value))}
-                    disabled={editingId !== null || isCashier}
-                    className={`w-full px-3.5 py-2.5 border rounded-xl font-mono font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      (editingId !== null || isCashier) 
-                        ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed opacity-75 font-normal' 
-                        : 'bg-gray-50 border-gray-200 focus:bg-white text-slate-800'
-                    }`}
-                  />
 
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xxs text-amber-600 uppercase tracking-wide">{isRtl ? 'حد التنبيه الأدنى' : 'Seuil d\'Alerte Minimum'}</label>
-                  <input
-                    type="number"
-                    min="1"
-                    disabled={isCashier}
-                    value={formMinStock}
-                    onChange={(e) => setFormMinStock(Number(e.target.value))}
-                    className={`w-full px-3.5 py-2.5 border rounded-xl font-mono font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 ${isCashier ? 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed opacity-75 font-normal' : 'bg-gray-50 border-gray-200 focus:bg-white text-slate-850'}`}
-                  />
-                </div>
-              </div>
-
-              {/* Description */}
-              <div className="space-y-1">
-                <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'وصف تفصيلي للسلعة' : 'Description / Ingrédients'}</label>
-                <textarea
-                  value={formDesc}
-                  onChange={(e) => setFormDesc(e.target.value)}
-                  rows={2}
-                  className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-normal"
-                />
-              </div>
 
               {/* Footer */}
               <div className="pt-4 border-t border-gray-100 flex gap-3 text-sm">
