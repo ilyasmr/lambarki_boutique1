@@ -55,6 +55,8 @@ export default function ProductsList({
   const isCashier = currentUser?.role === 'cashier';
 
   // States
+  const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('database');
+  const [filterType, setFilterType] = React.useState<'all' | 'in' | 'out'>('all');
   const [viewMode, setViewMode] = React.useState<'grid' | 'table'>('grid');
   const [searchTerm, setSearchTerm] = React.useState(prefilledSearch);
 
