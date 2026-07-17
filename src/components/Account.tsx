@@ -105,11 +105,7 @@ export default function Account({
   // --- CORES STATE 1: CASH WITHDRAWALS ---
   const [withdrawals, setWithdrawals] = React.useState<Withdrawal[]>(() => {
     const saved = localStorage.getItem('dolibarr_withdrawals');
-    return saved ? JSON.parse(saved) : [
-      { id: 'w-1', amount: 1500, date: '2026-06-14T17:30:00.000Z', person: 'Fouad Lambarki', responsible: 'rachida', notes: 'سحب مقتطع أرباح للمالك فؤاد لومباركي' },
-      { id: 'w-2', amount: 480, date: '2026-06-15T11:00:00.000Z', person: 'Ilyas Lambarki', responsible: 'rachida', notes: 'سحب مقتطع للمالك إلياس لومباركي' },
-      { id: 'w-3', amount: 200, date: '2026-06-16T08:00:00.000Z', person: 'rachida', responsible: 'rachida', notes: 'مصاريف تسيير المحل اليومية' }
-    ];
+    return saved ? JSON.parse(saved) : [];
   });
 
   // Save changes automatically
