@@ -618,7 +618,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
               {!isCashier && (
                 <button
                   onClick={() => setIsStockModalOpen(true)}
-                  className="hidden lg:flex px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow-md hover:shadow-lg transition-all items-center justify-center gap-1.5"
+                  className="flex w-full lg:w-auto px-4 py-2.5 bg-emerald-600 mt-2 lg:mt-0 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow-md hover:shadow-lg transition-all items-center justify-center gap-1.5"
                 >
                   <PackageCheck className="w-4 h-4" />
                   <span>{isRtl ? 'تسجيل دخول/خروج مخزون' : 'Nouveau Mouvement'}</span>
