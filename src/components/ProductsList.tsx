@@ -70,10 +70,9 @@ export default function ProductsList({
 
   // States
     const [isStockModalOpen, setIsStockModalOpen] = React.useState(false);
-  const [stockFormProduct, setStockFormProduct] = React.useState('');
   const [stockFormType, setStockFormType] = React.useState<'in' | 'out'>('in');
-  const [stockFormQty, setStockFormQty] = React.useState(1);
   const [stockFormReason, setStockFormReason] = React.useState('');
+  const [bulkItems, setBulkItems] = React.useState<{ id: string, productId: string, qty: number }[]>([{ id: 'bulk-0', productId: '', qty: 1 }]);
 
 const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('database');
   const [filterType, setFilterType] = React.useState<'all' | 'in' | 'out'>('all');
@@ -203,42 +202,54 @@ const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('databa
 
     const handleStockSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if(!stockFormProduct) {
-      alert(isRtl ? 'يرجى تحديد المنتج' : 'Veuillez sélectionner un produit');
+    const validItems = bulkItems.filter(i => i.productId && i.qty > 0);
+    if (validItems.length === 0) {
+      alert(isRtl ? 'يرجى تحديد سلعة واحدة على الأقل بكمية صحيحة.' : 'Veuillez sélectionner au moins un article avec quantité valide.');
       return;
     }
-    const p = products.find(x => x.id === stockFormProduct);
-    if(!p) return;
-    
-    const qty = Number(stockFormQty);
-    if(qty <= 0) return;
-    
-    if(stockFormType === 'out' && p.stock - qty < 0) {
-      alert(isRtl ? 'الكمية المسحوبة أكبر من المخزون المتوفر!' : 'Stock insuffisant pour ce retrait!');
-      return;
+
+    if (stockFormType === 'out') {
+      for (const item of validItems) {
+        const p = products.find(x => x.id === item.productId);
+        if (p && p.stock - item.qty < 0) {
+          alert(isRtl ? `الكمية المسحوبة أكبر من المخزون المتوفر للمنتج: ${p.name}!` : `Stock insuffisant pour: ${p.name}!`);
+          return;
+        }
+      }
+    }
+
+    const currentBatchId = `bulk-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+    const updates = validItems.map(item => {
+      const p = products.find(x => x.id === item.productId)!;
+      const newQty = stockFormType === 'in' ? p.stock + item.qty : p.stock - item.qty;
+      const movement: StockMovement = {
+        id: `mov-${Date.now()}-${Math.random()}`,
+        productId: p.id,
+        productName: p.name,
+        type: stockFormType,
+        qty: item.qty,
+        date: new Date().toISOString(),
+        reason: stockFormReason || (stockFormType === 'in' ? (isRtl ? 'واردات متعددة' : 'Entrées groupées') : (isRtl ? 'تسوية مخزون جماعية' : 'Ajustement groupé')),
+        operator: currentUser?.name || 'Admin',
+        batchId: currentBatchId
+      };
+      return { productId: p.id, newQty, movement };
+    });
+
+    if (onUpdateStocksBulk) {
+      onUpdateStocksBulk(updates);
+    } else if (onUpdateStock) {
+      updates.forEach(u => onUpdateStock(u.productId, u.newQty, u.movement));
     }
     
-    const newQty = stockFormType === 'in' ? p.stock + qty : p.stock - qty;
-    
-    const movement: StockMovement = {
-      id: `mov-${Date.now()}-${Math.random()}`,
-      productId: p.id,
-      productName: p.name,
-      type: stockFormType,
-      qty: qty,
-      date: new Date().toISOString(),
-      reason: stockFormReason || (isRtl ? 'عملية يدوية' : 'Opération manuelle'),
-      operator: currentUser?.name || 'Admin',
-      batchId: `batch-${Date.now()}`
-    };
-    
-    if (onUpdateStock) {
-      onUpdateStock(p.id, newQty, movement);
-    }
     setIsStockModalOpen(false);
-    setStockFormQty(1);
+    setBulkItems([{ id: `bulk-${Date.now()}`, productId: '', qty: 1 }]);
     setStockFormReason('');
   };
+
+  const addBulkRow = () => setBulkItems(prev => [...prev, { id: `bulk-${Date.now()}`, productId: '', qty: 1 }]);
+  const updateBulkRow = (id: string, field: 'productId' | 'qty', value: any) => setBulkItems(prev => prev.map(item => item.id === id ? { ...item, [field]: value } : item));
+  const removeBulkRow = (id: string) => setBulkItems(prev => prev.filter(item => item.id !== id));
 
 const handleInlineStockUpdate = (p: Product, diff: number) => {
     if (p.stock + diff < 0) return;
@@ -659,8 +670,23 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 {movements
                   .filter(m => filterType === 'all' || m.type === filterType)
                   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                  .map((m) => (
-                    <tr key={m.id} className="hover:bg-slate-50/50 transition">
+                  .map((m, idx, arr) => {
+                    const prevItem = arr[idx - 1];
+                    const isFirstInBatch = m.batchId && m.batchId.startsWith('bulk-') && (!prevItem || prevItem.batchId !== m.batchId);
+                    
+                    return (
+                      <React.Fragment key={m.id}>
+                        {isFirstInBatch && (
+                          <tr className="bg-blue-50/20 border-y border-blue-100/40">
+                            <td colSpan={6} className="py-2 px-4 text-xs font-black text-blue-700 tracking-wider">
+                              <span className="flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
+                                {isRtl ? 'عملية جماعية (دخول/خروج لعدة سلع)' : 'Opération groupée (Multi-articles)'}
+                              </span>
+                            </td>
+                          </tr>
+                        )}
+                        <tr className={`hover:bg-slate-50/50 transition ${m.batchId?.startsWith('bulk-') ? 'border-l-4 border-l-blue-400 bg-blue-50/5' : ''}`}>
                       <td className="py-3 px-4 font-mono text-xs text-slate-500">
                         {new Date(m.date).toLocaleString(isRtl ? 'ar-MA' : 'fr-FR', {
                           day: '2-digit', month: '2-digit', year: 'numeric',
@@ -690,8 +716,10 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                           {m.operator || 'Admin'}
                         </span>
                       </td>
-                    </tr>
-                ))}
+                        </tr>
+                      </React.Fragment>
+                    )
+                  })}
                 {movements.length === 0 && (
                   <tr>
                     <td colSpan={6} className="py-12 text-center text-slate-400 font-semibold text-sm">
@@ -722,21 +750,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
             
             <form onSubmit={handleStockSubmit} className="p-6 space-y-5">
               
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-700 block">{isRtl ? 'المنتج' : 'Produit'}</label>
-                <select
-                  required
-                  value={stockFormProduct}
-                  onChange={(e) => setStockFormProduct(e.target.value)}
-                  className={`w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 block p-3 outline-none transition ${isRtl ? 'text-right' : 'text-left'} font-bold`}
-                >
-                  <option value="" disabled>{isRtl ? '-- اختر المنتج --' : '-- Choisir un produit --'}</option>
-                  {products.map(p => (
-                    <option key={p.id} value={p.id}>{p.name} ({p.stock} units)</option>
-                  ))}
-                </select>
-              </div>
-
+              
               <div className="grid grid-cols-2 gap-4">
                 <button
                   type="button"
@@ -760,17 +774,53 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 </button>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-700 block">{isRtl ? 'الكمية' : 'Quantité'}</label>
-                <input
-                  type="number"
-                  min="1"
-                  required
-                  value={stockFormQty}
-                  onChange={(e) => setStockFormQty(Number(e.target.value))}
-                  className={`w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 block p-3 outline-none transition ${isRtl ? 'text-right' : 'text-left'} font-black font-mono`}
-                />
+              <div className="space-y-2.5 max-h-[250px] overflow-y-auto pr-1">
+                <div className="flex items-center justify-between text-xxs uppercase text-gray-400 font-bold tracking-wider mb-2">
+                  <span>{isRtl ? 'المنتجات' : 'Produits'}</span>
+                  <span className="w-20 text-center">{isRtl ? 'الكمية' : 'Quantité'}</span>
+                </div>
+                
+                {bulkItems.map((item) => (
+                  <div key={item.id} className="flex gap-2 items-center bg-slate-50 p-2 rounded-xl border border-slate-100">
+                    <select
+                      required
+                      value={item.productId}
+                      onChange={(e) => updateBulkRow(item.id, 'productId', e.target.value)}
+                      className={`flex-1 min-w-0 px-2 py-2 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs font-bold text-slate-800 ${isRtl ? 'text-right' : 'text-left'}`}
+                    >
+                      <option value="">-- {isRtl ? 'اختر المنتج' : 'Choisir produit'} --</option>
+                      {products.map(p => (
+                        <option key={p.id} value={p.id}>{p.name} ({p.stock})</option>
+                      ))}
+                    </select>
+                    <input
+                      type="number"
+                      min="1"
+                      required
+                      value={item.qty || ''}
+                      onChange={(e) => updateBulkRow(item.id, 'qty', Number(e.target.value))}
+                      className="w-16 px-1.5 py-2 bg-white rounded-lg border border-gray-200 text-center font-mono font-bold text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    />
+                    <button
+                      type="button"
+                      disabled={bulkItems.length <= 1}
+                      onClick={() => removeBulkRow(item.id)}
+                      className={`p-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg transition-all ${bulkItems.length <= 1 ? 'opacity-30 cursor-not-allowed' : ''}`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
               </div>
+
+              <button
+                type="button"
+                onClick={addBulkRow}
+                className="w-full py-2 bg-slate-50 border border-dashed border-slate-200 text-emerald-600 text-xs font-black rounded-xl hover:bg-emerald-50 hover:border-emerald-200 transition-all flex items-center justify-center gap-1.5"
+              >
+                <Plus className="w-4 h-4" />
+                <span>{isRtl ? 'إضافة سلعة أخرى للقائمة' : 'Ajouter un autre article'}</span>
+              </button>
 
               <div className="space-y-2">
                 <label className="text-xs font-bold text-gray-700 block">{isRtl ? 'السبب / الملاحظة' : 'Motif'}</label>
@@ -779,7 +829,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   value={stockFormReason}
                   onChange={(e) => setStockFormReason(e.target.value)}
                   placeholder={isRtl ? 'مثال: شراء جديد، تلف، الخ...' : 'Ex: Achat, Casse, etc...'}
-                  className={`w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 block p-3 outline-none transition ${isRtl ? 'text-right' : 'text-left'}`}
+                  className={`w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500 block p-3 outline-none transition ${isRtl ? 'text-right' : 'text-left'}`}
                 />
               </div>
 
@@ -790,7 +840,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                     stockFormType === 'in' ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/30' : 'bg-rose-600 hover:bg-rose-700 shadow-rose-500/30'
                   }`}
                 >
-                  {isRtl ? 'تأكيد العملية' : 'Confirmer l\'opération'}
+                  {isRtl ? 'تأكيد العملية لكافة السلع' : 'Confirmer l\'opération groupée'}
                 </button>
               </div>
             </form>
