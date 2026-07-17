@@ -1,7 +1,6 @@
 {
   "appId": "lambarki.boutique.erp",
-  "appName": "Lambarki Boutique",
+  "appName": "المباركي دارالكداري",
   "webDir": "dist",
   "bundledWebRuntime": false
 }
-
