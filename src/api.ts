@@ -86,6 +86,19 @@ export const api = {
     delete: (id: string) => request(`/activities/${id}`, { method: 'DELETE' }),
   },
 
+  withdrawals: {
+    getAll: () => request<any[]>('/withdrawals'),
+    create: (data: any) => request('/withdrawals', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id: string, data: any) => request(`/withdrawals/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    delete: (id: string) => request(`/withdrawals/${id}`, { method: 'DELETE' }),
+  },
+
+  drawerState: {
+    get: () => request<any>('/drawer_state'),
+    update: (data: any) => request('/drawer_state', { method: 'PUT', body: JSON.stringify(data) }),
+    clear: () => request<{ status: string }>('/drawer_state/clear', { method: 'POST' }),
+  },
+
   system: {
     clearAll: () => request<{ status: string; message: string }>('/system/clear', { method: 'POST' }),
   },

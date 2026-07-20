@@ -851,7 +851,10 @@ export default function App() {
   };
 
   // Reset cash drawer ledger completely (tassfir al-sunduq)
-  const handleResetCashDrawer = () => {
+  const handleResetCashDrawer = async () => {
+    try {
+      await api.drawerState.clear();
+    } catch(e) { console.error('Error clearing drawer state in database', e); }
     localStorage.setItem('dolibarr_withdrawals', JSON.stringify([]));
     localStorage.setItem('dolibarr_adj_cash_income', '0');
     localStorage.setItem('dolibarr_adj_withdrawals', '0');

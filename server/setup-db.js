@@ -89,6 +89,22 @@ async function setupDatabase() {
         batch_id TEXT
       );
 
+      CREATE TABLE IF NOT EXISTS withdrawals (
+        id TEXT PRIMARY KEY,
+        amount NUMERIC DEFAULT 0,
+        date TEXT,
+        person TEXT,
+        responsible TEXT,
+        notes TEXT
+      );
+
+      CREATE TABLE IF NOT EXISTS drawer_state (
+        id TEXT PRIMARY KEY DEFAULT 'singleton',
+        withdrawals_adjustment NUMERIC DEFAULT 0,
+        cash_income_adjustment NUMERIC DEFAULT 0,
+        drawer_balance_adjustment NUMERIC DEFAULT 0
+      );
+
       CREATE TABLE IF NOT EXISTS activities (
         id TEXT PRIMARY KEY,
         type TEXT,

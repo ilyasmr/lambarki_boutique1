@@ -1,4 +1,5 @@
 import React from 'react';
+import { api } from '../api';
 import { Invoice, User, Product, StockMovement, Client } from '../types';
 import { translations, arabicDashboardLabels, resolveUserName } from '../translations';
 import { 
@@ -103,15 +104,66 @@ export default function Account({
   const [printWithdrawal, setPrintWithdrawal] = React.useState<Withdrawal | null>(null);
 
   // --- CORES STATE 1: CASH WITHDRAWALS ---
-  const [withdrawals, setWithdrawals] = React.useState<Withdrawal[]>(() => {
-    const saved = localStorage.getItem('dolibarr_withdrawals');
-    return saved ? JSON.parse(saved) : [];
+  const [withdrawals, setWithdrawals] = React.useState<Withdrawal[]>([]);
+  const [drawerState, setDrawerState] = React.useState({
+    withdrawals_adjustment: 0,
+    cash_income_adjustment: 0,
+    drawer_balance_adjustment: 0
   });
 
-  // Save changes automatically
+  // Fetch from database on mount
   React.useEffect(() => {
-    localStorage.setItem('dolibarr_withdrawals', JSON.stringify(withdrawals));
-  }, [withdrawals]);
+    const fetchWithdrawalsAndState = async () => {
+      try {
+        const [wData, sData] = await Promise.all([
+          api.withdrawals.getAll(),
+          api.drawerState.get()
+        ]);
+        
+        let loadedWithdrawals = wData || [];
+        
+        // One-time migration from localStorage
+        const localSaved = localStorage.getItem('dolibarr_withdrawals');
+        if (localSaved && localSaved !== '[]') {
+          try {
+            const localW = JSON.parse(localSaved);
+            if (Array.isArray(localW) && localW.length > 0) {
+              console.log('Migrating local withdrawals to database...');
+              for (const w of localW) {
+                // If it doesn't already exist in database, create it
+                if (!loadedWithdrawals.find(dw => dw.id === w.id)) {
+                  await api.withdrawals.create(w);
+                  loadedWithdrawals.push(w);
+                }
+              }
+              // Clear local storage after successful migration
+              localStorage.setItem('dolibarr_withdrawals', '[]');
+            }
+          } catch(e) { console.error('Migration error', e); }
+        }
+        
+        setWithdrawals(loadedWithdrawals);
+        if (sData) {
+          setDrawerState(sData);
+          setWithdrawalsAdjustment(Number(sData.withdrawals_adjustment));
+          setCashIncomeAdjustment(Number(sData.cash_income_adjustment));
+          setDrawerBalanceAdjustment(Number(sData.drawer_balance_adjustment));
+        }
+      } catch (err) {
+        console.error('Failed to fetch withdrawals:', err);
+      }
+    };
+    fetchWithdrawalsAndState();
+  }, []);
+
+  const syncDrawerState = async (updates: Partial<typeof drawerState>) => {
+    const newState = { ...drawerState, ...updates };
+    setDrawerState(newState);
+    try {
+      await api.drawerState.update(newState);
+    } catch (err) { console.error('Failed to update drawer state', err); }
+  };
+
 
   // Withdrawal form state
   const [withdrawAmount, setWithdrawAmount] = React.useState('');
@@ -128,33 +180,18 @@ export default function Account({
   const [editNotes, setEditNotes] = React.useState('');
 
   // Manual adjustments saved in local storage
-  const [cashIncomeAdjustment, setCashIncomeAdjustment] = React.useState<number>(() => {
-    const saved = localStorage.getItem('dolibarr_adj_cash_income');
-    return saved ? parseFloat(saved) : 0;
-  });
+  const [cashIncomeAdjustment, setCashIncomeAdjustment] = React.useState<number>(0);
 
-  const [withdrawalsAdjustment, setWithdrawalsAdjustment] = React.useState<number>(() => {
-    const saved = localStorage.getItem('dolibarr_adj_withdrawals');
-    return saved ? parseFloat(saved) : 0;
-  });
+  const [withdrawalsAdjustment, setWithdrawalsAdjustment] = React.useState<number>(0);
 
-  const [drawerBalanceAdjustment, setDrawerBalanceAdjustment] = React.useState<number>(() => {
-    const saved = localStorage.getItem('dolibarr_adj_drawer_balance');
-    return saved ? parseFloat(saved) : 0;
-  });
+  const [drawerBalanceAdjustment, setDrawerBalanceAdjustment] = React.useState<number>(0);
 
   // Keep state updated in localStorage
-  React.useEffect(() => {
-    localStorage.setItem('dolibarr_adj_cash_income', cashIncomeAdjustment.toString());
-  }, [cashIncomeAdjustment]);
 
-  React.useEffect(() => {
-    localStorage.setItem('dolibarr_adj_withdrawals', withdrawalsAdjustment.toString());
-  }, [withdrawalsAdjustment]);
 
-  React.useEffect(() => {
-    localStorage.setItem('dolibarr_adj_drawer_balance', drawerBalanceAdjustment.toString());
-  }, [drawerBalanceAdjustment]);
+
+
+
 
   // Adjustments edit Modal state
   const [editingField, setEditingField] = React.useState<'drawer_balance' | 'withdrawals' | 'cash_income' | null>(null);
@@ -247,6 +284,7 @@ export default function Account({
     };
 
     setWithdrawals(prev => [newWithdrawal, ...prev]);
+    api.withdrawals.create(newWithdrawal).catch(e => console.error('Error saving withdrawal', e));
     
     if (onLogActivity) {
       onLogActivity(
@@ -269,6 +307,7 @@ export default function Account({
     if (!w) return;
     if (confirm(isRtl ? 'هل أنت متأكد من حذف هذا السند؟' : 'Êtes-vous sûr de vouloir supprimer ce bon ?')) {
       setWithdrawals(prev => prev.filter(x => x.id !== id));
+      api.withdrawals.delete(id).catch(e => console.error('Error deleting withdrawal', e));
       if (onLogActivity) {
         onLogActivity(
           'withdraw_delete',
@@ -342,17 +381,17 @@ export default function Account({
       previousVal = totalCashIncome;
       fieldAr = 'المداخيل النقدية التراكمية في الصندوق';
       fieldFr = 'Entrées de caisse cumulées';
-      setCashIncomeAdjustment(val - baseCashIncome);
+      const newAdj = val - baseCashIncome; setCashIncomeAdjustment(newAdj); syncDrawerState({ cash_income_adjustment: newAdj });
     } else if (editingField === 'withdrawals') {
       previousVal = totalWithdrawnAmount;
       fieldAr = 'مجموع السحوبات ومقتطعات المالك';
       fieldFr = 'Total des prélèvements';
-      setWithdrawalsAdjustment(val - baseWithdrawnAmount);
+      const newAdj = val - baseWithdrawnAmount; setWithdrawalsAdjustment(newAdj); syncDrawerState({ withdrawals_adjustment: newAdj });
     } else if (editingField === 'drawer_balance') {
       previousVal = currentDrawerBalance;
       fieldAr = 'رصيد الصندوق الحالي المتوفر';
       fieldFr = 'Solde direct du coffre';
-      setDrawerBalanceAdjustment(val - (totalCashIncome - totalWithdrawnAmount));
+      const newAdj = val - (totalCashIncome - totalWithdrawnAmount); setDrawerBalanceAdjustment(newAdj); syncDrawerState({ drawer_balance_adjustment: newAdj });
     }
 
     if (onLogActivity) {
