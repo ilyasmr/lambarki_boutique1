@@ -72,7 +72,7 @@ export default function ProductsList({
     const [isStockModalOpen, setIsStockModalOpen] = React.useState(false);
   const [stockFormType, setStockFormType] = React.useState<'in' | 'out'>('in');
   const [stockFormReason, setStockFormReason] = React.useState('');
-  const [bulkItems, setBulkItems] = React.useState<{ id: string, productId: string, qty: number }[]>([{ id: 'bulk-0', productId: '', qty: 1 }]);
+  const [bulkItems, setBulkItems] = React.useState<{ id: string, productId: string, qty: number }[]>([{ id: 'bulk-0', productId: '', qty: 0 }]);
 
 const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('database');
   const [filterType, setFilterType] = React.useState<'all' | 'in' | 'out'>('all');
@@ -138,7 +138,7 @@ const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('databa
     setFormBuyPrice(10);
     setFormSellPrice(18);
     setFormCategory(categories[0] || 'Alimentation');
-    setFormStock(20);
+    setFormStock(0);
     setFormMinStock(5);
     setFormDesc('');
     setIsOpenModal(true);
@@ -243,11 +243,11 @@ const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('databa
     }
     
     setIsStockModalOpen(false);
-    setBulkItems([{ id: `bulk-${Date.now()}`, productId: '', qty: 1 }]);
+    setBulkItems([{ id: `bulk-${Date.now()}`, productId: '', qty: 0 }]);
     setStockFormReason('');
   };
 
-  const addBulkRow = () => setBulkItems(prev => [...prev, { id: `bulk-${Date.now()}`, productId: '', qty: 1 }]);
+  const addBulkRow = () => setBulkItems(prev => [...prev, { id: `bulk-${Date.now()}`, productId: '', qty: 0 }]);
   const updateBulkRow = (id: string, field: 'productId' | 'qty', value: any) => setBulkItems(prev => prev.map(item => item.id === id ? { ...item, [field]: value } : item));
   const removeBulkRow = (id: string) => setBulkItems(prev => prev.filter(item => item.id !== id));
 
@@ -732,7 +732,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
       {/* MODAL: STOCK MOVEMENT */}
       {isStockModalOpen && (
         <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-[60]">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full flex flex-col">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full flex flex-col max-h-[90vh]"><div className="flex-1 overflow-y-auto">
             <div className="flex items-center justify-between px-6 py-4.5 border-b border-gray-100 bg-gray-50 rounded-t-2xl">
               <h3 className="text-md font-bold text-gray-900 flex items-center gap-2">
                 <PackageCheck className="w-5 h-5 text-emerald-600" />
@@ -838,10 +838,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   {isRtl ? 'تأكيد العملية لكافة السلع' : 'Confirmer l\'opération groupée'}
                 </button>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+            </form></div></div></div>)}
 
 {/* MODAL: ADD / EDIT CARD FORM */}
       {isOpenModal && (
@@ -979,11 +976,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 </button>
               </div>
 
-            </form>
-
-          </div>
-        </div>
-      )}
+            </form></div></div></div>)}
 
       {/* Manage Rayons Modal */}
       {isManageModalOpen && (

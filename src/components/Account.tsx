@@ -242,7 +242,7 @@ export default function Account({
       amount,
       date: new Date().toISOString(),
       person: finalPerson || (isRtl ? 'غير محدد' : 'Non spécifié'),
-      responsible: currentUser.name || 'System Operator',
+      responsible: currentUser?.name || (isRtl ? 'حساب النظام' : 'Système'),
       notes: withdrawNotes.trim() || (isRtl ? 'سحب نقدي من الصندوق' : 'Prélèvement de caisse')
     };
 
@@ -388,29 +388,7 @@ export default function Account({
   const [selectedAudit, setSelectedAudit] = React.useState<AuditSession | null>(null);
   const [auditHistory, setAuditHistory] = React.useState<AuditSession[]>(() => {
     const saved = localStorage.getItem('dolibarr_audits');
-    return saved ? JSON.parse(saved) : [
-      { 
-        id: 'aud-1', 
-        date: '2026-05-30T10:15:00.000Z', 
-        auditor: 'Fouad Lambarki', 
-        type: 'monthly', 
-        totalDeficitQty: 3, 
-        totalDeficitValue: 850, 
-        notes: 'تفتيش نهاية شهر ماي - تم تدوين مطابقة تامة لكل الأصناف الكبرى عدا عجز بسيط في الأكياس المخزنة.',
-        items: [
-          {
-            productId: 'p-mock-1',
-            productName: 'Sac d\'emballage Premium',
-            sku: 'EMB-SAC-01',
-            category: 'Emballage',
-            expected: 150,
-            actual: 147,
-            diff: -3,
-            buyPrice: 283.33
-          }
-        ]
-      }
-    ];
+    return saved ? JSON.parse(saved) : [];
   });
 
   React.useEffect(() => {
