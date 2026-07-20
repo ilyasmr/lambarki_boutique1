@@ -186,7 +186,7 @@ const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('databa
       buyPrice: Number(formBuyPrice),
       sellPrice: Number(formSellPrice),
       category: formCategory,
-      stock: Number(formStock),
+      stock: editingId ? Number(formStock) : 0,
       minStockAlert: Number(formMinStock),
       description: formDesc,
       image: ''
@@ -769,7 +769,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 </button>
               </div>
 
-              <div className="space-y-2.5 max-h-[250px] overflow-y-auto pr-1">
+              <div className="space-y-2.5 max-h-[400px] overflow-y-auto pr-1">
                 <div className="flex items-center justify-between text-xxs uppercase text-gray-400 font-bold tracking-wider mb-2">
                   <span>{isRtl ? 'المنتجات' : 'Produits'}</span>
                   <span className="w-20 text-center">{isRtl ? 'الكمية' : 'Quantité'}</span>
@@ -790,9 +790,9 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                     </select>
                     <input
                       type="number"
-                      min="1"
+                      min="0"
                       required
-                      value={item.qty || ''}
+                      value={item.qty}
                       onChange={(e) => updateBulkRow(item.id, 'qty', Number(e.target.value))}
                       className="w-16 px-1.5 py-2 bg-white rounded-lg border border-gray-200 text-center font-mono font-bold text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500"
                     />

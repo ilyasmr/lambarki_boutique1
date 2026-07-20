@@ -232,7 +232,7 @@ export default function Account({
 
   const handleAddWithdrawal = (e: React.FormEvent) => {
     e.preventDefault();
-    const amount = parseFloat(withdrawAmount);
+    const amount = parseFloat(withdrawAmount.replace(",", "."));
     if (isNaN(amount) || amount <= 0) return;
 
     const finalPerson = withdrawPerson === 'autre' ? customPerson.trim() : withdrawPerson;
@@ -1111,9 +1111,9 @@ export default function Account({
                 </div>
               </div>
 
-              <div className="overflow-x-hidden md:overflow-x-auto max-h-[320px] pr-1">
-                <table className="w-full text-left block md:table">
-                  <thead className="hidden md:table-header-group">
+              <div className="overflow-x-auto no-scrollbar max-h-[320px] pr-1">
+                <table className="w-full text-left whitespace-nowrap">
+                  <thead className="bg-white">
                     <tr className="border-b border-gray-100 text-[10px] font-bold uppercase text-gray-400">
                       <th className="py-2.5 px-2">{isRtl ? 'المرجع' : 'Réf'}</th>
                       <th className="py-2.5 px-2">{isRtl ? 'التاريخ' : 'Date'}</th>
@@ -1612,9 +1612,9 @@ export default function Account({
             )}
 
             {/* Product verification list table */}
-            <div className="overflow-x-hidden md:overflow-x-auto">
-              <table className="w-full text-left block md:table">
-                <thead className="hidden md:table-header-group">
+            <div className="overflow-x-auto no-scrollbar">
+              <table className="w-full text-left whitespace-nowrap">
+                <thead className="bg-white">
                   <tr className="border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
                     <th className="py-2.5 px-2">{isRtl ? 'المنتج والصنف' : 'Désignation de l\'article'}</th>
                     <th className="py-2.5 px-2 text-center">{isRtl ? 'سعر الشراء' : 'P. Achat'}</th>
@@ -1803,9 +1803,9 @@ export default function Account({
               </p>
             </div>
 
-            <div className="overflow-x-hidden md:overflow-x-auto">
-              <table className="w-full text-left block md:table">
-                <thead className="hidden md:table-header-group">
+            <div className="overflow-x-auto no-scrollbar">
+              <table className="w-full text-left whitespace-nowrap">
+                <thead className="bg-white">
                   <tr className="border-b border-gray-100 text-[10px] font-bold uppercase text-gray-400">
                     <th className="py-2 px-2">{isRtl ? 'معرف التفتيش' : 'Session ID'}</th>
                     <th className="py-2 px-2">{isRtl ? 'تاريخ الجرد' : 'Date d\'Audit'}</th>
