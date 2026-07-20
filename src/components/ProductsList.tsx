@@ -972,11 +972,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   onClick={() => setIsOpenModal(false)}
                   className="px-5 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-xl font-semibold"
                 >
-                  {t.cancel}
-                </button>
-              </div>
-
-            </form></div></div></div>)}
+                  {t.cancel}\n                </button>\n              </div>\n\n            </form></div></div>)}
 
       {/* Manage Rayons Modal */}
       {isManageModalOpen && (
