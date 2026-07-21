@@ -276,8 +276,8 @@ export default function Dashboard({
                     : 'Suivi instantané des ventes, ajouts, modifications, suppressions et stocks.'}
                 </p>
               </div>
-              <div className="flex flex-wrap items-center gap-2 shrink-0 self-start sm:self-center">
-                <div className="flex items-center bg-gray-100/50 p-1 rounded-xl">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0 self-start sm:self-center w-full sm:w-auto overflow-hidden">
+                <div className="flex items-center bg-gray-100/50 p-1 rounded-xl max-w-full overflow-x-auto whitespace-nowrap scrollbar-hide">
                   {['all', 'sales', 'clients', 'products', 'cash'].map((filter) => {
                     const labelsAr: Record<string, string> = { all: 'الكل', sales: 'المبيعات', clients: 'الزبائن', products: 'المنتجات', cash: 'الصندوق' };
                     const labelsFr: Record<string, string> = { all: 'Tout', sales: 'Ventes', clients: 'Clients', products: 'Produits', cash: 'Caisse' };
@@ -285,7 +285,7 @@ export default function Dashboard({
                       <button
                         key={filter}
                         onClick={() => setActivityFilter(filter)}
-                        className={`px-3 py-1.5 rounded-lg text-xxs font-bold transition-all ${
+                        className={`px-3 py-1.5 rounded-lg text-xxs font-bold transition-all shrink-0 ${
                           activityFilter === filter 
                             ? 'bg-white text-emerald-600 shadow-sm border border-emerald-100' 
                             : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200/50'
@@ -297,7 +297,7 @@ export default function Dashboard({
                   })}
                 </div>
                 
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 shrink-0">
                   <input
                     type="date"
                     value={filterDate}

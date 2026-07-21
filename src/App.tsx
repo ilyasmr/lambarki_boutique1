@@ -10,6 +10,7 @@ import {
 } from './types';
 import { api } from './api';
 import { Capacitor } from '@capacitor/core';
+import { App as CapApp } from '@capacitor/app';
 import { 
   initialUsers, 
   initialClients, 
@@ -43,6 +44,18 @@ interface SyncItem {
 }
 
 export default function App() {
+  React.useEffect(() => {
+    const handleBackButton = () => {
+      const isArabic = localStorage.getItem('dolibarr_lang') !== 'fr';
+      const msg = isArabic ? 'هل أنت متأكد أنك تريد الخروج من التطبيق؟' : 'Voulez-vous vraiment quitter l\'application ?';
+      if (window.confirm(msg)) {
+        CapApp.exitApp();
+      }
+    };
+    
+    CapApp.addListener('backButton', handleBackButton);
+    return () => { CapApp.removeAllListeners(); };
+  }, []);
   // Locale state: Defaulting to Arabic as requested in the prompt
   const [lang, setLang] = React.useState<'fr' | 'ar'>('ar');
   const isRtl = lang === 'ar';
