@@ -349,17 +349,18 @@ export default function Account({
 
     const finalPerson = editPerson === 'autre' ? editCustomPerson.trim() : editPerson;
 
-    setWithdrawals(prev => prev.map(w => {
-      if (w.id === editingWithdrawal.id) {
-        return {
-          ...w,
-          amount,
-          person: finalPerson || (isRtl ? 'غير محدد' : 'Non spécifié'),
-          notes: editNotes.trim() || (isRtl ? 'سحب نقدي من الصندوق' : 'Prélèvement de caisse')
-        };
-      }
-      return w;
-    }));
+    const updatedW = {
+      ...editingWithdrawal,
+      amount,
+      person: finalPerson || (isRtl ? 'غير محدد' : 'Non spécifié'),
+      notes: editNotes.trim() || (isRtl ? 'سحب نقدي من الصندوق' : 'Prélèvement de caisse')
+    };
+
+    setWithdrawals(prev => prev.map(w => w.id === editingWithdrawal.id ? updatedW : w));
+    
+    // Save to server
+    api.withdrawals.update(editingWithdrawal.id, updatedW).catch(e => console.error('Error updating withdrawal', e));
+
 
     if (onLogActivity) {
       onLogActivity(
