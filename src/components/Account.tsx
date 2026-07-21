@@ -120,7 +120,7 @@ export default function Account({
           api.drawerState.get()
         ]);
         
-        let loadedWithdrawals = wData || [];
+        let loadedWithdrawals = (wData || []).map((w: any) => ({ ...w, amount: Number(w.amount) }));
         
         // One-time migration from localStorage
         const localSaved = localStorage.getItem('dolibarr_withdrawals');
