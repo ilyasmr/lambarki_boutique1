@@ -257,169 +257,6 @@ export default function Dashboard({
         </div>
       )}
       
-      {/* Top 4 Key Indicator Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        
-        {/* Revenue Card */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-3xl shadow-xl flex items-center justify-between group hover:shadow-indigo-500/30 transition-all transform hover:-translate-y-1">
-          <div className="absolute -right-6 -top-6 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
-          <div className="space-y-1.5 flex-1 min-w-0 relative z-10">
-            <p className="text-[11px] font-bold text-blue-100 uppercase tracking-widest">{t.revenue}</p>
-            <h3 className="text-3xl font-black text-white font-mono tracking-tight truncate drop-shadow-md">
-              {revenueTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })} <span className="text-sm font-bold opacity-80">DH</span>
-            </h3>
-            <span className="inline-flex items-center gap-1.5 text-[10px] text-white font-bold bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-lg mt-2 shadow-sm border border-white/10">
-              <TrendingUp className="w-3.5 h-3.5 text-blue-200" />
-              <span>+14.2%</span>
-            </span>
-          </div>
-          <div className="relative z-10 p-4 bg-white/10 backdrop-blur-md text-white rounded-2xl border border-white/20 shadow-inner group-hover:rotate-12 transition-transform duration-300">
-            <Coins className="w-7 h-7" />
-          </div>
-        </div>
-
-        {/* Profit Margin Card */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-700 p-6 rounded-3xl shadow-xl flex items-center justify-between group hover:shadow-emerald-500/30 transition-all transform hover:-translate-y-1">
-          <div className="absolute -left-6 -bottom-6 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
-          <div className="space-y-1.5 flex-1 min-w-0 relative z-10">
-            <p className="text-[11px] font-bold text-emerald-100 uppercase tracking-widest">{t.profit}</p>
-            <h3 className="text-3xl font-black text-white font-mono tracking-tight truncate drop-shadow-md">
-              {profitTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })} <span className="text-sm font-bold opacity-80">DH</span>
-            </h3>
-            <span className="inline-flex items-center gap-1.5 text-[10px] text-white font-bold bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-lg mt-2 shadow-sm border border-white/10">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-200" />
-              <span>{revenueTotal > 0 ? ((profitTotal / revenueTotal) * 100).toFixed(1) : 0}% net</span>
-            </span>
-          </div>
-          <div className="relative z-10 p-4 bg-white/10 backdrop-blur-md text-white rounded-2xl border border-white/20 shadow-inner group-hover:rotate-12 transition-transform duration-300">
-            <TrendingUp className="w-7 h-7" />
-          </div>
-        </div>
-
-        {/* Number of Orders / Tickets Card */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-purple-400 to-violet-500 p-6 rounded-3xl shadow-xl flex items-center justify-between group hover:shadow-purple-500/30 transition-all transform hover:-translate-y-1">
-          <div className="absolute top-0 right-1/2 w-40 h-40 bg-white opacity-5 rounded-full blur-3xl group-hover:opacity-20 transition-opacity duration-700"></div>
-          <div className="space-y-1.5 flex-1 min-w-0 relative z-10">
-            <p className="text-[11px] font-bold text-purple-200 uppercase tracking-widest">{t.totalSales}</p>
-            <h3 className="text-3xl font-black text-white font-mono tracking-tight truncate drop-shadow-md">
-              {salesCount} <span className="text-sm font-bold opacity-70">({isRtl ? 'فاتورة' : 'Factures'})</span>
-            </h3>
-            <span className="inline-flex items-center gap-1.5 text-[10px] text-white font-bold bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-lg mt-2 shadow-sm border border-white/10">
-              <ShoppingBag className="w-3.5 h-3.5 text-purple-200" />
-              <span>{isRtl ? 'نشط اليوم' : 'Commandes actives'}</span>
-            </span>
-          </div>
-          <div className="relative z-10 p-4 bg-white/10 backdrop-blur-md text-white rounded-2xl border border-white/20 shadow-inner group-hover:rotate-12 transition-transform duration-300">
-            <ShoppingBag className="w-7 h-7" />
-          </div>
-        </div>
-
-        {/* Active Clients Card */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-amber-500 to-orange-600 p-6 rounded-3xl shadow-xl flex items-center justify-between group hover:shadow-orange-500/30 transition-all transform hover:-translate-y-1">
-          <div className="absolute -right-6 bottom-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
-          <div className="space-y-1.5 flex-1 min-w-0 relative z-10">
-            <p className="text-[11px] font-bold text-amber-100 uppercase tracking-widest">{t.activeClients}</p>
-            <h3 className="text-3xl font-black text-white font-mono tracking-tight truncate drop-shadow-md">
-              {activeClientsCount} <span className="text-sm font-bold opacity-70">/ {clients.length}</span>
-            </h3>
-            <span className="inline-flex items-center gap-1.5 text-[10px] text-white font-bold bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-lg mt-2 shadow-sm border border-white/10">
-              <Users2 className="w-3.5 h-3.5 text-amber-200" />
-              <span>{isRtl ? 'ولاء عالي' : 'Portefeuille Tiers'}</span>
-            </span>
-          </div>
-          <div className="relative z-10 p-4 bg-white/10 backdrop-blur-md text-white rounded-2xl border border-white/20 shadow-inner group-hover:-rotate-12 transition-transform duration-300">
-            <Users2 className="w-7 h-7" />
-          </div>
-        </div>
-
-      </div>
-
-      {/* Main Charts area */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Sales Area Chart (2/3 width) */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-md font-bold text-gray-900">
-                {isRtl ? 'مخطط سير العمليات وإجمالي الأرباح' : 'Évolution des Recettes & Chiffre d\'Affaires'}
-              </h3>
-              <p className="text-xs text-gray-500">{isRtl ? 'مقارنة بين إجمالي المبيعات مقابل صافي الأرباح المحصلة' : 'Suivi des revenus contre la marge bénéficière générée'}</p>
-            </div>
-          </div>
-
-          <div className="h-[280px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="displayDate" stroke="#9ca3af" fontSize={11} tickLine={false} />
-                <YAxis stroke="#9ca3af" fontSize={11} tickLine={false} />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#ffffff', borderRadius: '12px', border: '1px solid #f3f4f6', shadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
-                  labelStyle={{ fontWeight: 'bold', color: '#1f2937' }}
-                />
-                <Area type="monotone" dataKey="total" name={isRtl ? 'المبيعات' : 'Ventes'} stroke="#3b82f6" strokeWidth={2.5} fillOpacity={1} fill="url(#colorTotal)" />
-                <Area type="monotone" dataKey="profit" name={isRtl ? 'الأرباح' : 'Marges'} stroke="#10b981" strokeWidth={2.5} fillOpacity={1} fill="url(#colorProfit)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Top-Selling Products Bar Stats (1/3 width) */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex flex-col justify-between">
-          <div>
-            <h3 className="text-md font-bold text-gray-900 mb-1">
-              {t.topSellingProducts}
-            </h3>
-            <p className="text-xs text-gray-500 mb-6">{isRtl ? 'المنتجات الدارجة بالأرقام والكميات' : 'Classement par quantité vendue'}</p>
-          </div>
-
-          {topProducts.length === 0 ? (
-            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-gray-400">
-              <ShoppingBag className="w-10 h-10 mb-2 stroke-1" />
-              <p className="text-xs font-medium">{isRtl ? 'لا توجد بيانات مبيعات حالية' : 'Aucune vente enregistrée'}</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {topProducts.map((p, idx) => {
-                const colors = ['bg-blue-600', 'bg-emerald-600', 'bg-indigo-600', 'bg-amber-600', 'bg-purple-600'];
-                return (
-                  <div key={idx} className="space-y-1">
-                    <div className="flex justify-between text-xs font-semibold">
-                      <span className="text-gray-900 truncate max-w-[160px]">{p.name}</span>
-                      <span className="text-slate-500 font-mono">
-                        {p.qty} {isRtl ? 'وحدات' : 'unités'}
-                      </span>
-                    </div>
-                    
-                    {/* Progress Bar emulation */}
-                    <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full rounded-full ${colors[idx % colors.length]}`} 
-                        style={{ width: `${Math.min(100, (p.qty / topProducts[0].qty) * 100)}%` }}
-                      ></div>
-                    </div>
-                    
-                    <div className="text-right">
-                      <span className="text-xxs font-mono text-gray-400">Total: {(p.totalRev).toFixed(0)}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-
-      </div>
 
       {/* Unified Recent Activity Log */}
       <div className="grid grid-cols-1 gap-6 pb-6">
@@ -737,6 +574,169 @@ export default function Dashboard({
           </div>
         </div>
       )}
+      {/* Top 4 Key Indicator Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        {/* Revenue Card */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 p-6 rounded-3xl shadow-xl flex items-center justify-between group hover:shadow-indigo-500/30 transition-all transform hover:-translate-y-1">
+          <div className="absolute -right-6 -top-6 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+          <div className="space-y-1.5 flex-1 min-w-0 relative z-10">
+            <p className="text-[11px] font-bold text-blue-100 uppercase tracking-widest">{t.revenue}</p>
+            <h3 className="text-3xl font-black text-white font-mono tracking-tight truncate drop-shadow-md">
+              {revenueTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })} <span className="text-sm font-bold opacity-80">DH</span>
+            </h3>
+            <span className="inline-flex items-center gap-1.5 text-[10px] text-white font-bold bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-lg mt-2 shadow-sm border border-white/10">
+              <TrendingUp className="w-3.5 h-3.5 text-blue-200" />
+              <span>+14.2%</span>
+            </span>
+          </div>
+          <div className="relative z-10 p-4 bg-white/10 backdrop-blur-md text-white rounded-2xl border border-white/20 shadow-inner group-hover:rotate-12 transition-transform duration-300">
+            <Coins className="w-7 h-7" />
+          </div>
+        </div>
+
+        {/* Profit Margin Card */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-700 p-6 rounded-3xl shadow-xl flex items-center justify-between group hover:shadow-emerald-500/30 transition-all transform hover:-translate-y-1">
+          <div className="absolute -left-6 -bottom-6 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+          <div className="space-y-1.5 flex-1 min-w-0 relative z-10">
+            <p className="text-[11px] font-bold text-emerald-100 uppercase tracking-widest">{t.profit}</p>
+            <h3 className="text-3xl font-black text-white font-mono tracking-tight truncate drop-shadow-md">
+              {profitTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })} <span className="text-sm font-bold opacity-80">DH</span>
+            </h3>
+            <span className="inline-flex items-center gap-1.5 text-[10px] text-white font-bold bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-lg mt-2 shadow-sm border border-white/10">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-200" />
+              <span>{revenueTotal > 0 ? ((profitTotal / revenueTotal) * 100).toFixed(1) : 0}% net</span>
+            </span>
+          </div>
+          <div className="relative z-10 p-4 bg-white/10 backdrop-blur-md text-white rounded-2xl border border-white/20 shadow-inner group-hover:rotate-12 transition-transform duration-300">
+            <TrendingUp className="w-7 h-7" />
+          </div>
+        </div>
+
+        {/* Number of Orders / Tickets Card */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-purple-400 to-violet-500 p-6 rounded-3xl shadow-xl flex items-center justify-between group hover:shadow-purple-500/30 transition-all transform hover:-translate-y-1">
+          <div className="absolute top-0 right-1/2 w-40 h-40 bg-white opacity-5 rounded-full blur-3xl group-hover:opacity-20 transition-opacity duration-700"></div>
+          <div className="space-y-1.5 flex-1 min-w-0 relative z-10">
+            <p className="text-[11px] font-bold text-purple-200 uppercase tracking-widest">{t.totalSales}</p>
+            <h3 className="text-3xl font-black text-white font-mono tracking-tight truncate drop-shadow-md">
+              {salesCount} <span className="text-sm font-bold opacity-70">({isRtl ? 'فاتورة' : 'Factures'})</span>
+            </h3>
+            <span className="inline-flex items-center gap-1.5 text-[10px] text-white font-bold bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-lg mt-2 shadow-sm border border-white/10">
+              <ShoppingBag className="w-3.5 h-3.5 text-purple-200" />
+              <span>{isRtl ? 'نشط اليوم' : 'Commandes actives'}</span>
+            </span>
+          </div>
+          <div className="relative z-10 p-4 bg-white/10 backdrop-blur-md text-white rounded-2xl border border-white/20 shadow-inner group-hover:rotate-12 transition-transform duration-300">
+            <ShoppingBag className="w-7 h-7" />
+          </div>
+        </div>
+
+        {/* Active Clients Card */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-amber-500 to-orange-600 p-6 rounded-3xl shadow-xl flex items-center justify-between group hover:shadow-orange-500/30 transition-all transform hover:-translate-y-1">
+          <div className="absolute -right-6 bottom-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+          <div className="space-y-1.5 flex-1 min-w-0 relative z-10">
+            <p className="text-[11px] font-bold text-amber-100 uppercase tracking-widest">{t.activeClients}</p>
+            <h3 className="text-3xl font-black text-white font-mono tracking-tight truncate drop-shadow-md">
+              {activeClientsCount} <span className="text-sm font-bold opacity-70">/ {clients.length}</span>
+            </h3>
+            <span className="inline-flex items-center gap-1.5 text-[10px] text-white font-bold bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-lg mt-2 shadow-sm border border-white/10">
+              <Users2 className="w-3.5 h-3.5 text-amber-200" />
+              <span>{isRtl ? 'ولاء عالي' : 'Portefeuille Tiers'}</span>
+            </span>
+          </div>
+          <div className="relative z-10 p-4 bg-white/10 backdrop-blur-md text-white rounded-2xl border border-white/20 shadow-inner group-hover:-rotate-12 transition-transform duration-300">
+            <Users2 className="w-7 h-7" />
+          </div>
+        </div>
+
+      </div>
+
+      {/* Main Charts area */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* Sales Area Chart (2/3 width) */}
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-md font-bold text-gray-900">
+                {isRtl ? 'مخطط سير العمليات وإجمالي الأرباح' : 'Évolution des Recettes & Chiffre d\'Affaires'}
+              </h3>
+              <p className="text-xs text-gray-500">{isRtl ? 'مقارنة بين إجمالي المبيعات مقابل صافي الأرباح المحصلة' : 'Suivi des revenus contre la marge bénéficière générée'}</p>
+            </div>
+          </div>
+
+          <div className="h-[280px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2}/>
+                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="displayDate" stroke="#9ca3af" fontSize={11} tickLine={false} />
+                <YAxis stroke="#9ca3af" fontSize={11} tickLine={false} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#ffffff', borderRadius: '12px', border: '1px solid #f3f4f6', shadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                  labelStyle={{ fontWeight: 'bold', color: '#1f2937' }}
+                />
+                <Area type="monotone" dataKey="total" name={isRtl ? 'المبيعات' : 'Ventes'} stroke="#3b82f6" strokeWidth={2.5} fillOpacity={1} fill="url(#colorTotal)" />
+                <Area type="monotone" dataKey="profit" name={isRtl ? 'الأرباح' : 'Marges'} stroke="#10b981" strokeWidth={2.5} fillOpacity={1} fill="url(#colorProfit)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Top-Selling Products Bar Stats (1/3 width) */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 className="text-md font-bold text-gray-900 mb-1">
+              {t.topSellingProducts}
+            </h3>
+            <p className="text-xs text-gray-500 mb-6">{isRtl ? 'المنتجات الدارجة بالأرقام والكميات' : 'Classement par quantité vendue'}</p>
+          </div>
+
+          {topProducts.length === 0 ? (
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-gray-400">
+              <ShoppingBag className="w-10 h-10 mb-2 stroke-1" />
+              <p className="text-xs font-medium">{isRtl ? 'لا توجد بيانات مبيعات حالية' : 'Aucune vente enregistrée'}</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {topProducts.map((p, idx) => {
+                const colors = ['bg-blue-600', 'bg-emerald-600', 'bg-indigo-600', 'bg-amber-600', 'bg-purple-600'];
+                return (
+                  <div key={idx} className="space-y-1">
+                    <div className="flex justify-between text-xs font-semibold">
+                      <span className="text-gray-900 truncate max-w-[160px]">{p.name}</span>
+                      <span className="text-slate-500 font-mono">
+                        {p.qty} {isRtl ? 'وحدات' : 'unités'}
+                      </span>
+                    </div>
+                    
+                    {/* Progress Bar emulation */}
+                    <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full ${colors[idx % colors.length]}`} 
+                        style={{ width: `${Math.min(100, (p.qty / topProducts[0].qty) * 100)}%` }}
+                      ></div>
+                    </div>
+                    
+                    <div className="text-right">
+                      <span className="text-xxs font-mono text-gray-400">Total: {(p.totalRev).toFixed(0)}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+      </div>
     </div>
   );
 }
