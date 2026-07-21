@@ -792,7 +792,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                       type="number"
                       min="0"
                       required
-                      value={item.qty}
+                      value={item.qty || ''}
                       onChange={(e) => updateBulkRow(item.id, 'qty', Number(e.target.value))}
                       className="w-16 px-1.5 py-2 bg-white rounded-lg border border-gray-200 text-center font-mono font-bold text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500"
                     />
