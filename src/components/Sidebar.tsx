@@ -88,7 +88,7 @@ export default function Sidebar({
 
         <div className="flex items-center gap-2.5 mt-2 lg:mt-0 text-center justify-center">
           <div className="text-center">
-            <h1 className="text-[24px] font-bold text-emerald-600 leading-none font-trad" style={{ fontFamily: 'Amiri, serif' }}>محل المباركي</h1>
+            <h1 className="text-[24px] font-bold text-emerald-600 leading-none font-trad" style={{ fontFamily: '"Amiri Quran", serif' }}>المباركي دار الكداري</h1>
             <p className="text-[11px] text-slate-500 font-semibold italic tracking-wide mt-1.5 lowercase">lambarki boutique</p>
           </div>
         </div>
