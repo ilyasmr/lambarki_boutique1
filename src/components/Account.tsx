@@ -834,7 +834,7 @@ export default function Account({
               </span>
               <span>{isRtl ? 'إدارة ومطابقة أرصدة الصندوق' : 'Finances, Caisse & Audit de Caisse'}</span>
             </h2>
-            <p className="text-sm font-semibold text-slate-500 mt-2 max-w-2xl">
+            <p className="hidden md:block text-sm font-semibold text-slate-500 mt-2 max-w-2xl">
               {isRtl 
                 ? (currentUser?.role === 'cashier' ? 'تتبع زمني دقيق لكل السحوبات المسجلة ومجموع المقتطعات من الصندوق.' : 'سحب الأموال والعمولات اليومية من الصندوق، والمطابقة الدورية الشاملة للمخزن ومراجعة فروقات الصندوق والاستحقاق.')
                 : (currentUser?.role === 'cashier' ? 'Suivi des prélèvements de caisse nets.' : 'Gérez les retraits de caisse quotidiens et réalisez l\'audit périodique d\'inventaire.')}
