@@ -17,7 +17,7 @@ export const initialUsers: User[] = [
     role: "cashier",
     email: "yassine.alami@lambarki.ma",
     active: true,
-    password: "yassine123"
+    password: "12346789"
   },
   {
     id: "usr-3",
