@@ -308,8 +308,15 @@ export default function App() {
         }
       }
     };
-    loadAll();
-  }, []);
+      loadAll();
+
+      // Auto-refresh every 15 seconds to sync changes across devices (Phone <-> PC)
+      const interval = setInterval(() => {
+        loadAll();
+      }, 15000);
+
+      return () => clearInterval(interval);
+    }, []);
 
   const logActivity = (
     type: 'sale' | 'product_add' | 'product_edit' | 'product_delete' | 'client_add' | 'client_edit' | 'client_delete' | 'stock_edit' | 'withdraw_add' | 'withdraw_edit' | 'withdraw_delete' | 'invoice_edit' | 'invoice_delete',

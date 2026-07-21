@@ -153,7 +153,15 @@ export default function Account({
         console.error('Failed to fetch withdrawals:', err);
       }
     };
+    
     fetchWithdrawalsAndState();
+    
+    // Auto-refresh every 10 seconds to sync changes across devices (Phone <-> PC)
+    const interval = setInterval(() => {
+      fetchWithdrawalsAndState();
+    }, 10000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const syncDrawerState = async (updates: Partial<typeof drawerState>) => {
