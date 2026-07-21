@@ -2056,141 +2056,143 @@ export default function Account({
 
           </div>
 
-          {/* Consolidated Treasury Indicator Cards (Grouped in 3 distinct boxes as requested) */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            {/* Box 1: Transactions & Revenue Audit */}
-            <div className="bg-white p-6 rounded-2xl border border-slate-150 shadow-sm flex flex-col justify-between space-y-4">
-              <div>
-                <span className="text-[10px] uppercase font-black text-slate-400 tracking-wider block mb-3 font-semibold">
-                  {isRtl ? '💼 معاملات وأرباح النشاط الحسابي' : 'Transactions & Revenu Fiscal'}
-                </span>
-                <div className="space-y-3.5">
-                  {/* Brut sales */}
-                  <div className="flex justify-between items-center border-b border-slate-50 pb-2.5">
-                    <span className="text-xs font-semibold text-slate-600">
-                      {isRtl ? 'إجمالي المعاملات الخام (قبل الخصم)' : 'Chiffre d\'Affaires Brut'}
-                    </span>
-                    <span className="font-mono text-sm font-extrabold text-slate-800">
-                      {totalChiffreAffaireBrut.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                    </span>
-                  </div>
-                  {/* Discounts applied */}
-                  <div className="flex justify-between items-center border-b border-slate-50 pb-2.5">
-                    <span className="text-xs font-semibold text-slate-600">
-                      {isRtl ? 'مجموع التخفيضات والخصومات الممنوحة' : 'Total Remises & Réductions'}
-                    </span>
-                    <span className="font-mono text-sm font-extrabold text-amber-600">
-                      {totalDiscountsApplied.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                    </span>
-                  </div>
-                  {/* Net turnover */}
-                  <div className="flex justify-between items-center border-b border-slate-50 pb-2.5">
-                    <span className="text-xs font-semibold text-slate-600">
-                      {isRtl ? 'إجمالي رقم المعاملات الصافي للحساب' : 'Chiffre d\'Affaires Net'}
-                    </span>
-                    <span className="font-mono text-xs font-black text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100">
-                      {totalChiffreAffaireNet.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                    </span>
-                  </div>
-                  {/* Net Profits */}
-                  <div className="flex justify-between items-center bg-emerald-50/50 p-3 rounded-xl border border-emerald-100 mt-2">
-                    <span className="text-xs font-black text-emerald-800">
-                      {isRtl ? 'صافي أرباح الخزينة وسهام الهوامش' : 'Bénéfice Net Réel'}
-                    </span>
-                    <span className="font-mono text-sm font-black text-emerald-700">
-                      {totalNetProfit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Box 2: Store Physical Sales & Desk Receipts */}
-            <div className="bg-white p-6 rounded-2xl border border-slate-150 shadow-sm flex flex-col justify-between space-y-4">
-              <div>
-                <span className="text-[10px] uppercase font-black text-slate-400 tracking-wider block mb-3 font-semibold">
-                  {isRtl ? '🛒 مبيعات وعائدات المحل المباشرة' : 'Ventes du Magasin & Encaissements'}
-                </span>
-                <div className="space-y-3.5">
-                  {/* Overall Sales */}
-                  <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
-                    <span className="text-xs font-bold text-slate-700">
-                      {isRtl ? '🛍️ إجمالي مبيعات المحل :' : 'Ventes globales du magasin :'}
-                    </span>
-                    <span className="font-mono text-xs font-black text-slate-900">
-                      {totalOverallSales.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                    </span>
-                  </div>
-                  {/* Cash Income received */}
-                  <div className="flex justify-between items-center border-b border-slate-50 pb-2.5 px-1 pt-1">
-                    <span className="text-xs font-semibold text-emerald-700 flex items-center gap-1">
-                      <span>💵</span> {isRtl ? 'نقد (مقبض نقدي) :' : 'Espèces de caisse :'}
-                    </span>
-                    <span className="font-mono text-sm font-extrabold text-emerald-600">
-                      {cumulativeCashSum.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                    </span>
-                  </div>
-                  {/* Debts outstanding */}
-                  <div className="flex justify-between items-center border-b border-slate-50 pb-2.5 px-1">
-                    <span className="text-xs font-semibold text-rose-700 flex items-center gap-1">
-                      <span>💸</span> {isRtl ? 'سلف (ديون العملاء) :' : 'Dettes clients / Crédit :'}
-                    </span>
-                    <span className="font-mono text-sm font-extrabold text-rose-600">
-                      {cumulativeDebtSum.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                    </span>
-                  </div>
-                  {/* Client checks (postal checks as guarantee) */}
-                  <div className="flex justify-between items-center border-b border-slate-50 pb-2.5 px-1">
-                    <span className="text-xs font-semibold text-indigo-700 flex items-center gap-1">
-                      <span>📩</span> {isRtl ? 'شيكات الضمان (المستلمة) :' : 'Chèques de garantie / Effets :'}
-                    </span>
-                    <span className="font-mono text-sm font-extrabold text-indigo-600">
-                      {cumulativeChecksSum.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                    </span>
+          {/* Consolidated Treasury Indicator Cards (Merged into 1 compact box as requested) */}
+          <div className="bg-white rounded-2xl border border-slate-150 shadow-sm overflow-hidden mb-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x lg:divide-x-reverse divide-slate-100">
+              
+              {/* Section 1: Transactions & Revenue Audit */}
+              <div className="p-4 sm:p-6 flex flex-col justify-between space-y-4 bg-slate-50/30">
+                <div>
+                  <span className="text-[10px] uppercase font-black text-slate-400 tracking-wider block mb-3 font-semibold">
+                    {isRtl ? '💼 معاملات وأرباح النشاط الحسابي' : 'Transactions & Revenu Fiscal'}
+                  </span>
+                  <div className="space-y-3.5">
+                    {/* Brut sales */}
+                    <div className="flex justify-between items-center border-b border-slate-100/50 pb-2.5">
+                      <span className="text-xs font-semibold text-slate-600">
+                        {isRtl ? 'إجمالي المعاملات الخام' : 'Chiffre d\'Affaires Brut'}
+                      </span>
+                      <span className="font-mono text-sm font-extrabold text-slate-800">
+                        {totalChiffreAffaireBrut.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                    {/* Discounts applied */}
+                    <div className="flex justify-between items-center border-b border-slate-100/50 pb-2.5">
+                      <span className="text-xs font-semibold text-slate-600">
+                        {isRtl ? 'الخصومات الممنوحة' : 'Total Remises'}
+                      </span>
+                      <span className="font-mono text-sm font-extrabold text-amber-600">
+                        {totalDiscountsApplied.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                    {/* Net turnover */}
+                    <div className="flex justify-between items-center border-b border-slate-100/50 pb-2.5">
+                      <span className="text-xs font-semibold text-slate-600">
+                        {isRtl ? 'صافي رقم المعاملات' : 'Chiffre d\'Affaires Net'}
+                      </span>
+                      <span className="font-mono text-xs font-black text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
+                        {totalChiffreAffaireNet.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                    {/* Net Profits */}
+                    <div className="flex justify-between items-center bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100 mt-2">
+                      <span className="text-xs font-black text-emerald-800">
+                        {isRtl ? 'صافي أرباح الخزينة' : 'Bénéfice Net Réel'}
+                      </span>
+                      <span className="font-mono text-sm font-black text-emerald-700">
+                        {totalNetProfit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Box 3: Inventory Valuation & Latent Profit */}
-            <div className="bg-white p-6 rounded-2xl border border-slate-150 shadow-sm flex flex-col justify-between space-y-4">
-              <div>
-                <span className="text-[10px] uppercase font-black text-slate-400 tracking-wider block mb-3 font-semibold">
-                  {isRtl ? '📦 مستودع السلع وتقييم المخازن' : 'Valorisation du Stock & Profit Latent'}
-                </span>
-                <div className="space-y-3.5">
-                  {/* Purchase/Buying price worth */}
-                  <div className="flex justify-between items-center border-b border-slate-50 pb-2.5">
-                    <span className="text-xs font-semibold text-slate-600">
-                      {isRtl ? 'قيمة شراء مخزن السلع الكلي' : 'Valeur d\'Achat (Stock) :'}
-                    </span>
-                    <span className="font-mono text-sm font-extrabold text-slate-800">
-                      {totalStockWorthBuying.toLocaleString(undefined, { maximumFractionDigits: 1 })}
-                    </span>
-                  </div>
-                  {/* Estimated Selling worth */}
-                  <div className="flex justify-between items-center border-b border-slate-50 pb-2.5">
-                    <span className="text-xs font-semibold text-slate-600">
-                      {isRtl ? 'تقدير بيع مخزن السلع المتوقع' : 'Estimation de Vente (Stock) :'}
-                    </span>
-                    <span className="font-mono text-sm font-extrabold text-slate-800">
-                      {totalStockWorthSelling.toLocaleString(undefined, { maximumFractionDigits: 1 })}
-                    </span>
-                  </div>
-                  {/* Potential Stock Profit / Margin in warehouse */}
-                  <div className="flex justify-between items-center bg-indigo-950 text-white p-3 rounded-xl shadow-xs mt-2">
-                    <span className="text-xs font-bold text-indigo-100">
-                      {isRtl ? 'هامش الربح المتوقع بالمخزن' : 'Profit Latent au Stock :'}
-                    </span>
-                    <span className="font-mono text-sm font-black text-emerald-400">
-                      +{potentialStockProfit.toLocaleString(undefined, { maximumFractionDigits: 1 })}
-                    </span>
+              {/* Section 2: Store Physical Sales & Desk Receipts */}
+              <div className="p-4 sm:p-6 flex flex-col justify-between space-y-4">
+                <div>
+                  <span className="text-[10px] uppercase font-black text-slate-400 tracking-wider block mb-3 font-semibold">
+                    {isRtl ? '🛒 مبيعات وعائدات المحل المباشرة' : 'Ventes du Magasin & Encaissements'}
+                  </span>
+                  <div className="space-y-3.5">
+                    {/* Overall Sales */}
+                    <div className="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                      <span className="text-xs font-bold text-slate-700">
+                        {isRtl ? '🛍️ إجمالي مبيعات المحل :' : 'Ventes globales du magasin :'}
+                      </span>
+                      <span className="font-mono text-xs font-black text-slate-900">
+                        {totalOverallSales.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                    {/* Cash Income received */}
+                    <div className="flex justify-between items-center border-b border-slate-50 pb-2.5 px-1 pt-1">
+                      <span className="text-xs font-semibold text-emerald-700 flex items-center gap-1">
+                        <span>💵</span> {isRtl ? 'نقد (مقبض نقدي) :' : 'Espèces de caisse :'}
+                      </span>
+                      <span className="font-mono text-sm font-extrabold text-emerald-600">
+                        {cumulativeCashSum.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                    {/* Debts outstanding */}
+                    <div className="flex justify-between items-center border-b border-slate-50 pb-2.5 px-1">
+                      <span className="text-xs font-semibold text-rose-700 flex items-center gap-1">
+                        <span>💸</span> {isRtl ? 'سلف (ديون العملاء) :' : 'Dettes clients :'}
+                      </span>
+                      <span className="font-mono text-sm font-extrabold text-rose-600">
+                        {cumulativeDebtSum.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                    {/* Client checks (postal checks as guarantee) */}
+                    <div className="flex justify-between items-center pb-1 px-1">
+                      <span className="text-xs font-semibold text-indigo-700 flex items-center gap-1">
+                        <span>📩</span> {isRtl ? 'شيكات الضمان :' : 'Chèques de garantie :'}
+                      </span>
+                      <span className="font-mono text-sm font-extrabold text-indigo-600">
+                        {cumulativeChecksSum.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
+              {/* Section 3: Inventory Valuation & Latent Profit */}
+              <div className="p-4 sm:p-6 flex flex-col justify-between space-y-4 bg-slate-50/30">
+                <div>
+                  <span className="text-[10px] uppercase font-black text-slate-400 tracking-wider block mb-3 font-semibold">
+                    {isRtl ? '📦 مستودع السلع وتقييم المخازن' : 'Valorisation du Stock & Profit Latent'}
+                  </span>
+                  <div className="space-y-3.5">
+                    {/* Purchase/Buying price worth */}
+                    <div className="flex justify-between items-center border-b border-slate-100/50 pb-2.5">
+                      <span className="text-xs font-semibold text-slate-600">
+                        {isRtl ? 'قيمة شراء السلع الكلي' : 'Valeur d\'Achat (Stock) :'}
+                      </span>
+                      <span className="font-mono text-sm font-extrabold text-slate-800">
+                        {totalStockWorthBuying.toLocaleString(undefined, { maximumFractionDigits: 1 })}
+                      </span>
+                    </div>
+                    {/* Estimated Selling worth */}
+                    <div className="flex justify-between items-center border-b border-slate-100/50 pb-2.5">
+                      <span className="text-xs font-semibold text-slate-600">
+                        {isRtl ? 'تقدير بيع السلع المتوقع' : 'Estimation de Vente (Stock) :'}
+                      </span>
+                      <span className="font-mono text-sm font-extrabold text-slate-800">
+                        {totalStockWorthSelling.toLocaleString(undefined, { maximumFractionDigits: 1 })}
+                      </span>
+                    </div>
+                    {/* Potential Stock Profit / Margin in warehouse */}
+                    <div className="flex justify-between items-center bg-indigo-950 text-white p-2.5 rounded-xl shadow-xs mt-2">
+                      <span className="text-xs font-bold text-indigo-100">
+                        {isRtl ? 'هامش الربح المتوقع' : 'Profit Latent au Stock :'}
+                      </span>
+                      <span className="font-mono text-sm font-black text-emerald-400">
+                        +{potentialStockProfit.toLocaleString(undefined, { maximumFractionDigits: 1 })}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
 
           {/* Main profits list details card */}
