@@ -245,7 +245,7 @@ export default function App() {
 
   // Load all data with caching
   React.useEffect(() => {
-    const loadAll = async () => {
+    const loadAll = async (isInitialLoad: boolean = false) => {
       try {
         const [loadedUsers, loadedClients, loadedProducts, loadedInvoices, loadedMovements, loadedActivities] = await Promise.all([
           api.users.getAll(),
@@ -277,7 +277,9 @@ export default function App() {
             const matched = loadedUsers.find((u: User) => u.id === parsedUser.id);
             const resolvedUser = matched || parsedUser;
             setCurrentUser(resolvedUser);
-            setActiveTab(resolvedUser.role === 'cashier' ? 'pos' : 'dashboard');
+            if (isInitialLoad) {
+              setActiveTab(resolvedUser.role === 'cashier' ? 'pos' : 'dashboard');
+            }
           } catch(e) { console.error(e); }
         }
       } catch (err) {
@@ -303,16 +305,18 @@ export default function App() {
             const matched = cachedUsers.find((u: User) => u.id === parsedUser.id);
             const resolvedUser = matched || parsedUser;
             setCurrentUser(resolvedUser);
-            setActiveTab(resolvedUser.role === 'cashier' ? 'pos' : 'dashboard');
+            if (isInitialLoad) {
+              setActiveTab(resolvedUser.role === 'cashier' ? 'pos' : 'dashboard');
+            }
           } catch(e) { console.error(e); }
         }
       }
     };
-      loadAll();
+      loadAll(true);
 
       // Auto-refresh every 15 seconds to sync changes across devices (Phone <-> PC)
       const interval = setInterval(() => {
-        loadAll();
+        loadAll(false);
       }, 15000);
 
       return () => clearInterval(interval);
