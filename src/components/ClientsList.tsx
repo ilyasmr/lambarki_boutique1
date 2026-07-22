@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Client, User, PostalCheck, Invoice } from '../types';
 import { translations, arabicDashboardLabels } from '../translations';
 import { 
@@ -99,17 +99,17 @@ export default function ClientsList({
     
     if (days < 0) {
       return { 
-        label: isRtl ? `منتهي` : `Expiré`, 
+        label: isRtl ? `Ù…Ù†ØªÙ‡ÙŠ` : `ExpirÃ©`, 
         className: 'bg-rose-50 text-rose-700 border-rose-200' 
       };
     } else if (days <= 5) {
       return { 
-        label: isRtl ? `قريب` : `Proche`, 
+        label: isRtl ? `Ù‚Ø±ÙŠØ¨` : `Proche`, 
         className: 'bg-amber-50 text-amber-700 border-amber-200 animate-pulse' 
       };
     } else {
       return { 
-        label: isRtl ? `ساري` : `Valide`, 
+        label: isRtl ? `Ø³Ø§Ø±ÙŠ` : `Valide`, 
         className: 'bg-indigo-50 text-indigo-700 border-indigo-150' 
       };
     }
@@ -163,7 +163,7 @@ export default function ClientsList({
 
     const currentDebt = selectedClient.outstandingDebt || 0;
     if (settlementAmount <= 0) {
-      alert(isRtl ? 'المبلغ يجب أن يكون أكبر من 0.' : 'Le montant doit être supérieur à 0.');
+      alert(isRtl ? 'Ø§Ù„Ù…Ø¨Ù„Øº ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ø£ÙƒØ¨Ø± Ù…Ù† 0.' : 'Le montant doit Ãªtre supÃ©rieur Ã  0.');
       return;
     }
     
@@ -172,7 +172,7 @@ export default function ClientsList({
     
     if (debtOpType === 'settle') {
       if (settlementAmount > currentDebt) {
-        alert(isRtl ? 'خطأ: مبلغ التسديد أكبر من الدين المترتب على الزبون !' : 'Erreur: Le montant dépasse la dette restante !');
+        alert(isRtl ? 'Ø®Ø·Ø£: Ù…Ø¨Ù„Øº Ø§Ù„ØªØ³Ø¯ÙŠØ¯ Ø£ÙƒØ¨Ø± Ù…Ù† Ø§Ù„Ø¯ÙŠÙ† Ø§Ù„Ù…ØªØ±ØªØ¨ Ø¹Ù„Ù‰ Ø§Ù„Ø²Ø¨ÙˆÙ† !' : 'Erreur: Le montant dÃ©passe la dette restante !');
         return;
       }
       finalDebt = Math.max(0, currentDebt - settlementAmount);
@@ -187,8 +187,8 @@ export default function ClientsList({
       amount: paymentAmount,
       paymentMethod: settlementMethod,
       notes: settlementNote || (debtOpType === 'settle' 
-        ? (isRtl ? 'تسديد دفعة من الحساب' : 'Repaiement partiel/Intégral de dette')
-        : (isRtl ? 'إضافة دين / سلف جديد' : 'Nouveau crédit / Dette')),
+        ? (isRtl ? 'ØªØ³Ø¯ÙŠØ¯ Ø¯ÙØ¹Ø© Ù…Ù† Ø§Ù„Ø­Ø³Ø§Ø¨' : 'Repaiement partiel/IntÃ©gral de dette')
+        : (isRtl ? 'Ø¥Ø¶Ø§ÙØ© Ø¯ÙŠÙ† / Ø³Ù„Ù Ø¬Ø¯ÙŠØ¯' : 'Nouveau crÃ©dit / Dette')),
       operator: 'Caisse POS'
     };
 
@@ -210,11 +210,11 @@ export default function ClientsList({
   const handleAddCheck = () => {
     const amt = parseFloat(tempAmount);
     if (isNaN(amt) || amt <= 0) {
-      alert(isRtl ? '⚠️ يرجى إدخال مبلغ صحيح للشيك!' : '⚠️ Veuillez entrer un montant de chèque valide !');
+      alert(isRtl ? 'âš ï¸ ÙŠØ±Ø¬Ù‰ Ø¥Ø¯Ø®Ø§Ù„ Ù…Ø¨Ù„Øº ØµØ­ÙŠØ­ Ù„Ù„Ø´ÙŠÙƒ!' : 'âš ï¸ Veuillez entrer un montant de chÃ¨que valide !');
       return;
     }
     if (!tempExpiryDate) {
-      alert(isRtl ? '⚠️ تاريخ نهاية الصلاحية ضروري!' : "⚠️ L'échéance est obligatoire !");
+      alert(isRtl ? 'âš ï¸ ØªØ§Ø±ÙŠØ® Ù†Ù‡Ø§ÙŠØ© Ø§Ù„ØµÙ„Ø§Ø­ÙŠØ© Ø¶Ø±ÙˆØ±ÙŠ!' : "âš ï¸ L'Ã©chÃ©ance est obligatoire !");
       return;
     }
 
@@ -270,13 +270,13 @@ export default function ClientsList({
     e.preventDefault();
 
     if (!formName.trim()) {
-      alert(isRtl ? 'اسم الزبون حقل ضروري.' : 'Le nom complet est obligatoire.');
+      alert(isRtl ? 'Ø§Ø³Ù… Ø§Ù„Ø²Ø¨ÙˆÙ† Ø­Ù‚Ù„ Ø¶Ø±ÙˆØ±ÙŠ.' : 'Le nom complet est obligatoire.');
       return;
     }
 
     const isDuplicate = clients.some(c => c.name.trim().toLowerCase() === formName.trim().toLowerCase() && c.id !== editingId);
     if (isDuplicate) {
-      alert(isRtl ? 'هذا الزبون مسجل مسبقاً بنفس الاسم!' : 'Ce client est déjà enregistré avec ce nom !');
+      alert(isRtl ? 'Ù‡Ø°Ø§ Ø§Ù„Ø²Ø¨ÙˆÙ† Ù…Ø³Ø¬Ù„ Ù…Ø³Ø¨Ù‚Ø§Ù‹ Ø¨Ù†ÙØ³ Ø§Ù„Ø§Ø³Ù…!' : 'Ce client est dÃ©jÃ  enregistrÃ© avec ce nom !');
       return;
     }
 
@@ -287,7 +287,7 @@ export default function ClientsList({
       name: formName,
       email: '',
       phone: formPhone,
-      address: formAddress || (isRtl ? 'العنوان غير محدد' : 'Adresse non spécifiée'),
+      address: formAddress || (isRtl ? 'Ø§Ù„Ø¹Ù†ÙˆØ§Ù† ØºÙŠØ± Ù…Ø­Ø¯Ø¯' : 'Adresse non spÃ©cifiÃ©e'),
       joinDate: matchedClient?.joinDate || new Date().toISOString().split('T')[0],
       totalSpent: matchedClient?.totalSpent || 0,
       purchases: matchedClient?.purchases || [],
@@ -553,12 +553,12 @@ export default function ClientsList({
             <ShieldAlert className="w-6 h-6 text-amber-600 animate-bounce shrink-0" />
             <div>
               <h4 className="text-sm font-black text-amber-955 leading-none">
-                {isRtl ? 'بوابة التنبيهات العاجلة (شيكات ومستحقات متبقية خلال يومين أو أقل)' : 'Portail des alertes urgentes (Chèques & Dettes ≤ 2 jours)'}
+                {isRtl ? 'Ø¨ÙˆØ§Ø¨Ø© Ø§Ù„ØªÙ†Ø¨ÙŠÙ‡Ø§Øª Ø§Ù„Ø¹Ø§Ø¬Ù„Ø© (Ø´ÙŠÙƒØ§Øª ÙˆÙ…Ø³ØªØ­Ù‚Ø§Øª Ù…ØªØ¨Ù‚ÙŠØ© Ø®Ù„Ø§Ù„ ÙŠÙˆÙ…ÙŠÙ† Ø£Ùˆ Ø£Ù‚Ù„)' : 'Portail des alertes urgentes (ChÃ¨ques & Dettes â‰¤ 2 jours)'}
               </h4>
               <p className="text-xs text-amber-700/90 mt-1 font-bold">
                 {isRtl 
-                  ? 'يرجى متابعة الزبناء المعنيين لتفادي تراكم المستحقات وضمان استلام المبالغ بالشيكات أو الديون المفتوحة.'
-                  : 'Veuillez faire le suivi avec ces clients pour encaisser les chèques ou les créances proches.'
+                  ? 'ÙŠØ±Ø¬Ù‰ Ù…ØªØ§Ø¨Ø¹Ø© Ø§Ù„Ø²Ø¨Ù†Ø§Ø¡ Ø§Ù„Ù…Ø¹Ù†ÙŠÙŠÙ† Ù„ØªÙØ§Ø¯ÙŠ ØªØ±Ø§ÙƒÙ… Ø§Ù„Ù…Ø³ØªØ­Ù‚Ø§Øª ÙˆØ¶Ù…Ø§Ù† Ø§Ø³ØªÙ„Ø§Ù… Ø§Ù„Ù…Ø¨Ø§Ù„Øº Ø¨Ø§Ù„Ø´ÙŠÙƒØ§Øª Ø£Ùˆ Ø§Ù„Ø¯ÙŠÙˆÙ† Ø§Ù„Ù…ÙØªÙˆØ­Ø©.'
+                  : 'Veuillez faire le suivi avec ces clients pour encaisser les chÃ¨ques ou les crÃ©ances proches.'
                 }
               </p>
             </div>
@@ -569,7 +569,7 @@ export default function ClientsList({
             {/* Column 1: Postal Checks Expiry Alerts (within 2 days or past) */}
             <div className="space-y-2.5">
               <h5 className="text-xs font-black text-amber-900 border-b border-amber-200/60 pb-1.5 flex items-center gap-1.5">
-                <span>✉️</span> {isRtl ? 'شيكات ضمان مستحقة الصرف أو منتهية الصلاحية :' : 'Garanties chèques urgentes :'}
+                <span>âœ‰ï¸</span> {isRtl ? 'Ø´ÙŠÙƒØ§Øª Ø¶Ù…Ø§Ù† Ù…Ø³ØªØ­Ù‚Ø© Ø§Ù„ØµØ±Ù Ø£Ùˆ Ù…Ù†ØªÙ‡ÙŠØ© Ø§Ù„ØµÙ„Ø§Ø­ÙŠØ© :' : 'Garanties chÃ¨ques urgentes :'}
                 <span className="bg-amber-650 text-white font-mono px-2 py-0.5 rounded-md text-[10px]">
                   {checkAlerts.length}
                 </span>
@@ -594,11 +594,11 @@ export default function ClientsList({
                       <div className="text-right shrink-0">
                         {isExpired ? (
                           <span className="inline-block px-1.5 py-0.5 rounded bg-rose-50 border border-rose-155 text-[8.5px] font-black text-rose-700 uppercase animate-pulse">
-                            {isRtl ? 'منتهي ⚠️' : 'Expiré ⚠️'}
+                            {isRtl ? 'Ù…Ù†ØªÙ‡ÙŠ âš ï¸' : 'ExpirÃ© âš ï¸'}
                           </span>
                         ) : (
                           <span className="inline-block px-1.5 py-0.5 rounded bg-amber-100 border border-amber-200 text-[8.5px] font-black text-amber-800">
-                            {isRtl ? `خلال ${daysLeft} يوم` : `Dans ${daysLeft} j`}
+                            {isRtl ? `Ø®Ù„Ø§Ù„ ${daysLeft} ÙŠÙˆÙ…` : `Dans ${daysLeft} j`}
                           </span>
                         )}
                         <p className="text-[8.5px] text-gray-400 font-bold mt-1 font-mono">{check.expiryDate}</p>
@@ -608,7 +608,7 @@ export default function ClientsList({
                 </div>
               ) : (
                 <p className="text-[11px] text-amber-750 font-bold bg-amber-100/30 p-2.5 rounded-xl border border-dashed border-amber-250 text-center">
-                  {isRtl ? '✖ لا توجد أي شيكات في حالة استعجال حالياً.' : 'Aucun chèque échu pour le moment.'}
+                  {isRtl ? 'âœ– Ù„Ø§ ØªÙˆØ¬Ø¯ Ø£ÙŠ Ø´ÙŠÙƒØ§Øª ÙÙŠ Ø­Ø§Ù„Ø© Ø§Ø³ØªØ¹Ø¬Ø§Ù„ Ø­Ø§Ù„ÙŠØ§Ù‹.' : 'Aucun chÃ¨que Ã©chu pour le moment.'}
                 </p>
               )}
             </div>
@@ -616,7 +616,7 @@ export default function ClientsList({
             {/* Column 2: Outstanding Debts Due Alerts (within 2 days or past) */}
             <div className="space-y-2.5">
               <h5 className="text-xs font-black text-amber-900 border-b border-amber-200/60 pb-1.5 flex items-center gap-1.5">
-                <span>⏰</span> {isRtl ? 'ديون مستحقة ومجدولة للتحصيل العاجل :' : 'Créances de dettes planifiées :'}
+                <span>â°</span> {isRtl ? 'Ø¯ÙŠÙˆÙ† Ù…Ø³ØªØ­Ù‚Ø© ÙˆÙ…Ø¬Ø¯ÙˆÙ„Ø© Ù„Ù„ØªØ­ØµÙŠÙ„ Ø§Ù„Ø¹Ø§Ø¬Ù„ :' : 'CrÃ©ances de dettes planifiÃ©es :'}
                 <span className="bg-amber-650 text-white font-mono px-2 py-0.5 rounded-md text-[10px]">
                   {debtAlerts.length}
                 </span>
@@ -641,11 +641,11 @@ export default function ClientsList({
                       <div className="text-right shrink-0">
                         {isExpired ? (
                           <span className="inline-block px-1.5 py-0.5 rounded bg-rose-50 border border-rose-155 text-[8.5px] font-black text-rose-700 uppercase animate-pulse">
-                            {isRtl ? 'مستحق ⚠️' : 'Échu ⚠️'}
+                            {isRtl ? 'Ù…Ø³ØªØ­Ù‚ âš ï¸' : 'Ã‰chu âš ï¸'}
                           </span>
                         ) : (
                           <span className="inline-block px-1.5 py-0.5 rounded bg-amber-150 border border-amber-250 text-[8.5px] font-black text-amber-900">
-                            {isRtl ? `خلال ${daysLeft} يوم` : `Dans ${daysLeft} j`}
+                            {isRtl ? `Ø®Ù„Ø§Ù„ ${daysLeft} ÙŠÙˆÙ…` : `Dans ${daysLeft} j`}
                           </span>
                         )}
                         <p className="text-[8.5px] text-rose-500 font-bold mt-1 font-mono">{client.debtDueDate}</p>
@@ -655,7 +655,7 @@ export default function ClientsList({
                 </div>
               ) : (
                 <p className="text-[11px] text-amber-750 font-bold bg-amber-100/30 p-2.5 rounded-xl border border-dashed border-amber-250 text-center">
-                  {isRtl ? '✖ لا توجد ديون بآجال منتهية أو قاربت على الحلول.' : 'Aucune échéance de dette urgente proche.'}
+                  {isRtl ? 'âœ– Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¯ÙŠÙˆÙ† Ø¨Ø¢Ø¬Ø§Ù„ Ù…Ù†ØªÙ‡ÙŠØ© Ø£Ùˆ Ù‚Ø§Ø±Ø¨Øª Ø¹Ù„Ù‰ Ø§Ù„Ø­Ù„ÙˆÙ„.' : 'Aucune Ã©chÃ©ance de dette urgente proche.'}
                 </p>
               )}
             </div>
@@ -679,7 +679,7 @@ export default function ClientsList({
               </span>
               <input
                 type="text"
-                placeholder={isRtl ? 'ابحث عن زبون...' : 'Rechercher par nom, téléphone, email...'}
+                placeholder={isRtl ? 'Ø§Ø¨Ø­Ø« Ø¹Ù† Ø²Ø¨ÙˆÙ†...' : 'Rechercher par nom, tÃ©lÃ©phone, email...'}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className={`w-full py-3 md:py-2.5 pl-10 pr-10 bg-slate-50 text-sm md:text-xs text-slate-800 font-bold rounded-xl border border-slate-200/80 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all shadow-sm ${
@@ -691,9 +691,9 @@ export default function ClientsList({
                   type="button"
                   onClick={() => setSearchTerm('')}
                   className="absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 hover:text-slate-650 transition-all"
-                  title={isRtl ? 'مسح البحث' : 'Effacer la recherche'}
+                  title={isRtl ? 'Ù…Ø³Ø­ Ø§Ù„Ø¨Ø­Ø«' : 'Effacer la recherche'}
                 >
-                  <span className="text-[12px] font-black bg-slate-200/60 text-slate-500 hover:text-slate-700 w-5 h-5 md:w-4.5 md:h-4.5 rounded-full flex items-center justify-center">✕</span>
+                  <span className="text-[12px] font-black bg-slate-200/60 text-slate-500 hover:text-slate-700 w-5 h-5 md:w-4.5 md:h-4.5 rounded-full flex items-center justify-center">âœ•</span>
                 </button>
               )}
             </div>
@@ -707,15 +707,15 @@ export default function ClientsList({
                   isRtl ? 'text-right pr-3 pl-8' : 'text-left pl-3 pr-8'
                 }`}
               >
-                <option value="default">{isRtl ? '🔍 الترتيب التلقائي' : 'Tri automatique'}</option>
-                <option value="debt_desc">{isRtl ? '📈 الديون: من الأعلى للأقل' : 'Dettes : Plus de dettes'}</option>
-                <option value="debt_asc">{isRtl ? '📉 الديون: من الأقل للأعلى' : 'Dettes : Moins de dettes'}</option>
-                <option value="debt_date_desc">{isRtl ? '📅 تاريخ الدين: الأحدث أولاً' : 'Date de dette : Récente d\'abord'}</option>
-                <option value="debt_date_asc">{isRtl ? '📅 تاريخ الدين: الأقدم أولاً' : 'Date de dette : Ancienne d\'abord'}</option>
-                <option value="debt_duedate_asc">{isRtl ? '⏰ تاريخ التحصيل: الأقرب أولاً' : 'Échéance recouvrement : Proche d\'abord'}</option>
-                <option value="spent_desc">{isRtl ? '💎 مجموع المشتريات (الأعلى)' : 'Fidélité : Plus dépensé'}</option>
-                <option value="check_expiry">{isRtl ? '📅 الشيكات: تاريخ الاستحقاق الأقرب' : 'Chèques : Échéance proche'}</option>
-                <option value="check_amount_desc">{isRtl ? '💰 الشيكات: القيمة الأعلى أولاً' : 'Chèques : Montant élevé first'}</option>
+                <option value="default">{isRtl ? 'ðŸ” Ø§Ù„ØªØ±ØªÙŠØ¨ Ø§Ù„ØªÙ„Ù‚Ø§Ø¦ÙŠ' : 'Tri automatique'}</option>
+                <option value="debt_desc">{isRtl ? 'ðŸ“ˆ Ø§Ù„Ø¯ÙŠÙˆÙ†: Ù…Ù† Ø§Ù„Ø£Ø¹Ù„Ù‰ Ù„Ù„Ø£Ù‚Ù„' : 'Dettes : Plus de dettes'}</option>
+                <option value="debt_asc">{isRtl ? 'ðŸ“‰ Ø§Ù„Ø¯ÙŠÙˆÙ†: Ù…Ù† Ø§Ù„Ø£Ù‚Ù„ Ù„Ù„Ø£Ø¹Ù„Ù‰' : 'Dettes : Moins de dettes'}</option>
+                <option value="debt_date_desc">{isRtl ? 'ðŸ“… ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¯ÙŠÙ†: Ø§Ù„Ø£Ø­Ø¯Ø« Ø£ÙˆÙ„Ø§Ù‹' : 'Date de dette : RÃ©cente d\'abord'}</option>
+                <option value="debt_date_asc">{isRtl ? 'ðŸ“… ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¯ÙŠÙ†: Ø§Ù„Ø£Ù‚Ø¯Ù… Ø£ÙˆÙ„Ø§Ù‹' : 'Date de dette : Ancienne d\'abord'}</option>
+                <option value="debt_duedate_asc">{isRtl ? 'â° ØªØ§Ø±ÙŠØ® Ø§Ù„ØªØ­ØµÙŠÙ„: Ø§Ù„Ø£Ù‚Ø±Ø¨ Ø£ÙˆÙ„Ø§Ù‹' : 'Ã‰chÃ©ance recouvrement : Proche d\'abord'}</option>
+                <option value="spent_desc">{isRtl ? 'ðŸ’Ž Ù…Ø¬Ù…ÙˆØ¹ Ø§Ù„Ù…Ø´ØªØ±ÙŠØ§Øª (Ø§Ù„Ø£Ø¹Ù„Ù‰)' : 'FidÃ©litÃ© : Plus dÃ©pensÃ©'}</option>
+                <option value="check_expiry">{isRtl ? 'ðŸ“… Ø§Ù„Ø´ÙŠÙƒØ§Øª: ØªØ§Ø±ÙŠØ® Ø§Ù„Ø§Ø³ØªØ­Ù‚Ø§Ù‚ Ø§Ù„Ø£Ù‚Ø±Ø¨' : 'ChÃ¨ques : Ã‰chÃ©ance proche'}</option>
+                <option value="check_amount_desc">{isRtl ? 'ðŸ’° Ø§Ù„Ø´ÙŠÙƒØ§Øª: Ø§Ù„Ù‚ÙŠÙ…Ø© Ø§Ù„Ø£Ø¹Ù„Ù‰ Ø£ÙˆÙ„Ø§Ù‹' : 'ChÃ¨ques : Montant Ã©levÃ© first'}</option>
               </select>
             </div>
           </div>
@@ -725,7 +725,7 @@ export default function ClientsList({
             className="px-5 py-3 md:py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm md:text-xs font-black shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 w-full md:w-auto shrink-0"
           >
             <UserPlus className="w-5 h-5 md:w-4 md:h-4" />
-            <span>{isRtl ? 'فتح حساب زبون جديد' : 'Nouveau Client'}</span>
+            <span>{isRtl ? 'ÙØªØ­ Ø­Ø³Ø§Ø¨ Ø²Ø¨ÙˆÙ† Ø¬Ø¯ÙŠØ¯' : 'Nouveau Client'}</span>
           </button>
 
         </div>
@@ -760,10 +760,10 @@ export default function ClientsList({
                     </div>
                     <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                       <span className="text-[9px] sm:text-[10px] text-gray-400 font-mono bg-gray-50 px-1.5 py-0.5 rounded-md border border-gray-100">#{String(getSequentialNumber(c)).padStart(2, '0')}</span>
-                      {c.phone && <span className="text-[9px] sm:text-[10px] text-gray-500 font-mono">📞 {c.phone}</span>}
+                      {c.phone && <span className="text-[9px] sm:text-[10px] text-gray-500 font-mono">ðŸ“ž {c.phone}</span>}
                       {hasChecks && (
                         <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8.5px] sm:text-[9px] font-black bg-indigo-50 text-indigo-700 border border-indigo-100">
-                          ✉️ {c.postalChecks!.length}
+                          âœ‰ï¸ {c.postalChecks!.length}
                         </span>
                       )}
                     </div>
@@ -774,8 +774,8 @@ export default function ClientsList({
                 {hasDebt && (
                   <div className="flex flex-wrap items-center justify-between gap-2 bg-rose-50/40 px-3 py-2 rounded-xl border border-rose-100/60 mt-0.5">
                     <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[9.5px] sm:text-[10px] text-gray-500 font-semibold font-mono w-full">
-                      <span className="shrink-0">📅 {isRtl ? 'بدء:' : 'Crédit:'} {c.debtDate || c.joinDate}</span>
-                      {c.debtDueDate && <span className="shrink-0">⏰ {isRtl ? 'أجل:' : 'Éch:'} {c.debtDueDate}</span>}
+                      <span className="shrink-0">ðŸ“… {isRtl ? 'Ø¨Ø¯Ø¡:' : 'CrÃ©dit:'} {c.debtDate || c.joinDate}</span>
+                      {c.debtDueDate && <span className="shrink-0">â° {isRtl ? 'Ø£Ø¬Ù„:' : 'Ã‰ch:'} {c.debtDueDate}</span>}
                     </div>
                   </div>
                 )}
@@ -788,7 +788,7 @@ export default function ClientsList({
                       return (
                         <div key={check.id || idx} className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[10px] font-black ${status.className} shadow-xs`} onClick={(e) => e.stopPropagation()}>
                           <span className="font-mono">{check.amount?.toFixed(0)}</span>
-                          <span className="text-[8px] font-bold opacity-80">📅 {check.expiryDate}</span>
+                          <span className="text-[8px] font-bold opacity-80">ðŸ“… {check.expiryDate}</span>
                         </div>
                       );
                     })}
@@ -819,8 +819,8 @@ export default function ClientsList({
           })}
           {filteredClients.length === 0 && (
             <div className="text-center py-16 px-6 bg-white rounded-2xl border border-gray-100">
-              <div className="text-4xl mb-3">👥</div>
-              <p className="text-gray-400 font-semibold text-sm">{isRtl ? 'لا يوجد زبائن.' : 'Aucun client trouvé.'}</p>
+              <div className="text-4xl mb-3">ðŸ‘¥</div>
+              <p className="text-gray-400 font-semibold text-sm">{isRtl ? 'Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø²Ø¨Ø§Ø¦Ù†.' : 'Aucun client trouvÃ©.'}</p>
             </div>
           )}
         </div>
@@ -839,13 +839,13 @@ export default function ClientsList({
           <div className="px-5 py-4.5 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
             <h3 className="text-sm font-black text-gray-900 flex items-center gap-2">
               <History className="w-4 h-4 text-blue-600" />
-              <span>{isRtl ? 'ملف وفواتير الزبون' : 'Historique & Fiches Client'}</span>
+              <span>{isRtl ? 'Ù…Ù„Ù ÙˆÙÙˆØ§ØªÙŠØ± Ø§Ù„Ø²Ø¨ÙˆÙ†' : 'Historique & Fiches Client'}</span>
             </h3>
             <div className="flex items-center gap-1.5">
               <button 
                 onClick={() => setIsMaximized(!isMaximized)} 
                 className="p-1 hover:bg-gray-200 text-gray-400 hover:text-gray-700 rounded-lg transition"
-                title={isRtl ? 'تكبير / تصغير' : 'Agrandir / Réduire'}
+                title={isRtl ? 'ØªÙƒØ¨ÙŠØ± / ØªØµØºÙŠØ±' : 'Agrandir / RÃ©duire'}
               >
                 {isMaximized ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
               </button>
@@ -883,7 +883,7 @@ export default function ClientsList({
                {/* Right: Debt summary & Action */}
                <div className="flex items-center gap-3 border-s border-gray-100 ps-3">
                   <div className={`text-${isRtl ? 'right' : 'left'}`}>
-                    <span className="text-[8.5px] text-rose-800 font-bold uppercase tracking-wider block mb-0.5">{isRtl ? 'المديونية :' : 'Dette :'}</span>
+                    <span className="text-[8.5px] text-rose-800 font-bold uppercase tracking-wider block mb-0.5">{isRtl ? 'Ø§Ù„Ù…Ø¯ÙŠÙˆÙ†ÙŠØ© :' : 'Dette :'}</span>
                     <span className="text-[12px] font-black text-rose-600 font-mono">{(selectedClient.outstandingDebt || 0).toFixed(2)}</span>
                   </div>
                   
@@ -897,7 +897,7 @@ export default function ClientsList({
                         }}
                         className="flex-1 sm:flex-none px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-lg font-black transition-all shadow-lg shrink-0 flex items-center justify-center min-w-[120px] ring-2 ring-rose-500/30"
                       >
-                        {isRtl ? 'دفع' : 'Régler'}
+                        {isRtl ? 'Ø¯ÙØ¹' : 'RÃ©gler'}
                       </button>
                     )}
                     {currentUser?.role === 'admin' && (
@@ -910,7 +910,7 @@ export default function ClientsList({
                         className="px-2 py-1.5 bg-orange-100 text-orange-700 hover:bg-orange-500 hover:text-white rounded-lg text-[10px] font-bold transition-all shadow-sm shrink-0 flex gap-1 items-center justify-center min-w-[50px]"
                       >
                         <Plus className="w-3 h-3" />
-                        {isRtl ? 'دين' : 'Crédit'}
+                        {isRtl ? 'Ø¯ÙŠÙ†' : 'CrÃ©dit'}
                       </button>
                     )}
                   </div>
@@ -922,14 +922,14 @@ export default function ClientsList({
             <div className="space-y-3.5">
               <div className="flex flex-wrap gap-2 items-center justify-between">
                 <h4 className="text-xxs text-slate-400 font-bold uppercase tracking-wider">
-                  {isRtl ? 'سجل المعاملات والعمليات' : 'Historique d\'achats'}
+                  {isRtl ? 'Ø³Ø¬Ù„ Ø§Ù„Ù…Ø¹Ø§Ù…Ù„Ø§Øª ÙˆØ§Ù„Ø¹Ù…Ù„ÙŠØ§Øª' : 'Historique d\'achats'}
                 </h4>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setSortAscending(!sortAscending)}
                     className="text-[10px] font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-2 py-1 rounded transition-colors flex items-center gap-1"
                   >
-                    {sortAscending ? (isRtl ? '⬇️ الأقدم أولاً' : '⬇️ Plus ancien d\'abord') : (isRtl ? '⬆️ الأحدث أولاً' : '⬆️ Plus récent d\'abord')}
+                    {sortAscending ? (isRtl ? 'â¬‡ï¸ Ø§Ù„Ø£Ù‚Ø¯Ù… Ø£ÙˆÙ„Ø§Ù‹' : 'â¬‡ï¸ Plus ancien d\'abord') : (isRtl ? 'â¬†ï¸ Ø§Ù„Ø£Ø­Ø¯Ø« Ø£ÙˆÙ„Ø§Ù‹' : 'â¬†ï¸ Plus rÃ©cent d\'abord')}
                   </button>
                   <span className="px-2 py-0.5 bg-emerald-50 text-emerald-800 text-[10px] uppercase font-black font-semibold rounded-md">
                     {clientPurchasesInPeriod.length} / {(selectedClient.purchases || []).length} invoices
@@ -940,11 +940,11 @@ export default function ClientsList({
               {/* Period selection inputs */}
               <div className="bg-slate-50 p-3 rounded-xl border border-slate-150 space-y-2">
                 <p className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wide">
-                  {isRtl ? 'تحديد فترة حساب مجموع المشتريات :' : 'Calculer les achats sur une période :'}
+                  {isRtl ? 'ØªØ­Ø¯ÙŠØ¯ ÙØªØ±Ø© Ø­Ø³Ø§Ø¨ Ù…Ø¬Ù…ÙˆØ¹ Ø§Ù„Ù…Ø´ØªØ±ÙŠØ§Øª :' : 'Calculer les achats sur une pÃ©riode :'}
                 </p>
                 <div className="grid grid-cols-2 gap-2 text-xxs font-bold text-slate-700">
                   <div>
-                    <label className="block text-[9px] text-slate-400 mb-0.5">{isRtl ? 'من تاريخ :' : 'Du :'}</label>
+                    <label className="block text-[9px] text-slate-400 mb-0.5">{isRtl ? 'Ù…Ù† ØªØ§Ø±ÙŠØ® :' : 'Du :'}</label>
                     <input
                       type="date"
                       value={purchaseDateFrom}
@@ -953,7 +953,7 @@ export default function ClientsList({
                     />
                   </div>
                   <div>
-                    <label className="block text-[9px] text-slate-400 mb-0.5">{isRtl ? 'إلى تاريخ :' : 'Au :'}</label>
+                    <label className="block text-[9px] text-slate-400 mb-0.5">{isRtl ? 'Ø¥Ù„Ù‰ ØªØ§Ø±ÙŠØ® :' : 'Au :'}</label>
                     <input
                       type="date"
                       value={purchaseDateTo}
@@ -966,7 +966,7 @@ export default function ClientsList({
                 {/* Display calculated result */}
                 <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between">
                   <span className="text-[10px] font-extrabold text-slate-600">
-                    {isRtl ? 'إجمالي المشتريات في هذه الفترة :' : 'Achats cumulés période :'}
+                    {isRtl ? 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ù…Ø´ØªØ±ÙŠØ§Øª ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„ÙØªØ±Ø© :' : 'Achats cumulÃ©s pÃ©riode :'}
                   </span>
                   <span className="px-2 py-1 bg-emerald-50 text-emerald-700 font-black font-mono rounded-lg text-[11px] border border-emerald-100/50">
                     {clientTotalSpentInPeriod.toFixed(2)}
@@ -984,7 +984,7 @@ export default function ClientsList({
                       className="w-3.5 h-3.5 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
                     />
                     <label htmlFor="showOnlyDebtInvoices" className="text-[10px] font-extrabold text-slate-700 cursor-pointer">
-                      {isRtl ? 'عرض فواتير الديون فقط' : 'Afficher uniquement les factures impayées'}
+                      {isRtl ? 'Ø¹Ø±Ø¶ ÙÙˆØ§ØªÙŠØ± Ø§Ù„Ø¯ÙŠÙˆÙ† ÙÙ‚Ø·' : 'Afficher uniquement les factures impayÃ©es'}
                     </label>
                   </div>
                 </div>
@@ -999,7 +999,7 @@ export default function ClientsList({
                     }}
                     className="w-full text-center text-[10px] font-black text-rose-600 hover:text-rose-700 hover:underline pt-2 border-t border-slate-200/60 block transition-colors"
                   >
-                    {isRtl ? '🔄 العودة للأرشيف (عرض جميع المشتريات)' : '🔄 Retour aux archives (tout afficher)'}
+                    {isRtl ? 'ðŸ”„ Ø§Ù„Ø¹ÙˆØ¯Ø© Ù„Ù„Ø£Ø±Ø´ÙŠÙ (Ø¹Ø±Ø¶ Ø¬Ù…ÙŠØ¹ Ø§Ù„Ù…Ø´ØªØ±ÙŠØ§Øª)' : 'ðŸ”„ Retour aux archives (tout afficher)'}
                   </button>
                 )}
               </div>
@@ -1008,7 +1008,7 @@ export default function ClientsList({
                 {combinedHistory.length === 0 ? (
                   <div className="p-8 text-center text-gray-400 border border-dashed border-gray-200 rounded-xl bg-gray-50/50">
                     <ShoppingBag className="w-8 h-8 mx-auto stroke-1 text-gray-300 mb-1.5" />
-                    <p className="text-[10px] font-semibold">{isRtl ? 'لا توجد عمليات تطابق الفترة الحالية.' : 'Aucun événement durant cette période.'}</p>
+                    <p className="text-[10px] font-semibold">{isRtl ? 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¹Ù…Ù„ÙŠØ§Øª ØªØ·Ø§Ø¨Ù‚ Ø§Ù„ÙØªØ±Ø© Ø§Ù„Ø­Ø§Ù„ÙŠØ©.' : 'Aucun Ã©vÃ©nement durant cette pÃ©riode.'}</p>
                   </div>
                 ) : (
                   (() => {
@@ -1029,7 +1029,7 @@ export default function ClientsList({
                              </div>
                              <div>
                                <p className={`text-[10px] font-bold uppercase tracking-wider ${isBorrow ? 'text-orange-900' : 'text-emerald-900'}`}>
-                                 {isBorrow ? (isRtl ? 'إضافة دين / سلف' : 'Nouveau Crédit') : (isRtl ? 'تسديد دين / استخلاص' : 'Règlement de dette')}
+                                 {isBorrow ? (isRtl ? 'Ø¥Ø¶Ø§ÙØ© Ø¯ÙŠÙ† / Ø³Ù„Ù' : 'Nouveau CrÃ©dit') : (isRtl ? 'ØªØ³Ø¯ÙŠØ¯ Ø¯ÙŠÙ† / Ø§Ø³ØªØ®Ù„Ø§Øµ' : 'RÃ¨glement de dette')}
                                </p>
                                <p className={`text-[9px] font-medium ${isBorrow ? 'text-orange-700/80' : 'text-emerald-700/80'}`}>
                                  {new Date(pay.date).toLocaleString(isRtl ? 'ar-MA' : 'fr', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })} - {pay.notes}
@@ -1039,7 +1039,7 @@ export default function ClientsList({
                           <div className="flex items-center gap-6 text-right">
                             <div className="flex flex-col items-end">
                               <span className="block text-[10px] font-bold text-gray-600 bg-white/80 px-2 py-1 rounded-lg border border-gray-200">
-                                {isRtl ? 'الرصيد:' : 'Solde:'} {(item as any).runningDebt.toFixed(2)}
+                                {isRtl ? 'Ø§Ù„Ø±ØµÙŠØ¯:' : 'Solde:'} {(item as any).runningDebt.toFixed(2)}
                               </span>
                             </div>
 
@@ -1092,7 +1092,7 @@ export default function ClientsList({
                                 {p.invoiceId}
                                 {hasDebt && (
                                   <span className="px-1.5 py-0.5 rounded text-[8px] font-black bg-rose-100 text-rose-700 uppercase tracking-widest border border-rose-200">
-                                    {isRtl ? 'بها دين' : 'Crédit'}
+                                    {isRtl ? 'Ø¨Ù‡Ø§ Ø¯ÙŠÙ†' : 'CrÃ©dit'}
                                   </span>
                                 )}
                               </p>
@@ -1103,18 +1103,18 @@ export default function ClientsList({
                           <div className="flex items-center gap-6 text-right">
                             <div className="flex flex-col items-end">
                               <span className="block text-[10px] font-bold text-gray-600 bg-gray-100 px-2 py-1 rounded-lg border border-gray-200">
-                                {isRtl ? 'الرصيد:' : 'Solde:'} {(item as any).runningDebt.toFixed(2)}
+                                {isRtl ? 'Ø§Ù„Ø±ØµÙŠØ¯:' : 'Solde:'} {(item as any).runningDebt.toFixed(2)}
                               </span>
                             </div>
                             
                             <div className="flex flex-col items-end w-20">
                               {hasDebt ? (
                                 <span className="block text-[10px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">
-                                  {isRtl ? 'الباقي:' : 'Reste:'} {invoice.amountDue?.toFixed(2)}
+                                  {isRtl ? 'Ø§Ù„Ø¨Ø§Ù‚ÙŠ:' : 'Reste:'} {invoice.amountDue?.toFixed(2)}
                                 </span>
                               ) : (
                                 <span className="block text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
-                                  {isRtl ? 'خالص' : 'Réglé'}
+                                  {isRtl ? 'Ø®Ø§Ù„Øµ' : 'RÃ©glÃ©'}
                                 </span>
                               )}
                             </div>
@@ -1129,7 +1129,7 @@ export default function ClientsList({
                         {isExpanded && (
                           <div className="border-t border-gray-100 bg-gray-50/50 p-3">
                             <div className="mb-3 p-2 bg-white rounded-lg border border-blue-100 flex justify-between items-center shadow-sm">
-                              <span className="text-[11px] font-extrabold text-blue-900">{isRtl ? 'قيمة المبيعات (الفاتورة):' : 'Total facture:'}</span>
+                              <span className="text-[11px] font-extrabold text-blue-900">{isRtl ? 'Ù‚ÙŠÙ…Ø© Ø§Ù„Ù…Ø¨ÙŠØ¹Ø§Øª (Ø§Ù„ÙØ§ØªÙˆØ±Ø©):' : 'Total facture:'}</span>
                               <span className="text-[13px] font-black text-blue-700 font-mono">{p.total.toFixed(2)}</span>
                             </div>
                             
@@ -1151,13 +1151,13 @@ export default function ClientsList({
                                 ))}
                               </div>
 
-<table className="w-full text-left border-collapse hidden lg:table">
+<table className={`w-full ${isRtl ? 'text-right' : 'text-left'} border-collapse hidden lg:table">
                                 <thead>
                                   <tr className="border-b border-gray-200 text-[9px] font-bold text-gray-400 uppercase tracking-wider">
-                                    <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'السلعة' : 'Produit'}</th>
-                                    <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'الكمية' : 'Qté'}</th>
-                                    <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'السعر' : 'Prix'}</th>
-                                    <th className={`pb-2 text-right font-medium`}>{isRtl ? 'المجموع' : 'Total'}</th>
+                                    <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'Ø§Ù„Ø³Ù„Ø¹Ø©' : 'Produit'}</th>
+                                    <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'Ø§Ù„ÙƒÙ…ÙŠØ©' : 'QtÃ©'}</th>
+                                    <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'Ø§Ù„Ø³Ø¹Ø±' : 'Prix'}</th>
+                                    <th className={`pb-2 text-right font-medium`}>{isRtl ? 'Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹' : 'Total'}</th>
                                   </tr>
                                 </thead>
                                 <tbody className="text-[10px] font-mono">
@@ -1175,8 +1175,8 @@ export default function ClientsList({
                             ) : (
                               <div className="text-center text-gray-400 py-3 text-xs font-medium">
                                 {invoice 
-                                  ? (isRtl ? 'لا توجد تفاصيل سلع لهذه الفاتورة' : 'Aucun produit trouvé') 
-                                  : (isRtl ? 'تعذر العثور على الفاتورة لتفاصيل السلع' : 'Facture introuvable')}
+                                  ? (isRtl ? 'Ù„Ø§ ØªÙˆØ¬Ø¯ ØªÙØ§ØµÙŠÙ„ Ø³Ù„Ø¹ Ù„Ù‡Ø°Ù‡ Ø§Ù„ÙØ§ØªÙˆØ±Ø©' : 'Aucun produit trouvÃ©') 
+                                  : (isRtl ? 'ØªØ¹Ø°Ø± Ø§Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ Ø§Ù„ÙØ§ØªÙˆØ±Ø© Ù„ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ø³Ù„Ø¹' : 'Facture introuvable')}
                               </div>
                             )}
                           </div>
@@ -1195,7 +1195,7 @@ export default function ClientsList({
                     disabled={historyPage === 1}
                     className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-[10px] font-bold text-gray-600 disabled:opacity-50 hover:bg-gray-50"
                   >
-                    {isRtl ? 'السابق' : 'Précédent'}
+                    {isRtl ? 'Ø§Ù„Ø³Ø§Ø¨Ù‚' : 'PrÃ©cÃ©dent'}
                   </button>
                   <span className="text-[10px] font-bold text-gray-500">
                     {historyPage} / {Math.ceil(combinedHistory.length / 10)}
@@ -1205,7 +1205,7 @@ export default function ClientsList({
                     disabled={historyPage >= Math.ceil(combinedHistory.length / 10)}
                     className="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-[10px] font-bold text-gray-600 disabled:opacity-50 hover:bg-gray-50"
                   >
-                    {isRtl ? 'التالي' : 'Suivant'}
+                    {isRtl ? 'Ø§Ù„ØªØ§Ù„ÙŠ' : 'Suivant'}
                   </button>
                 </div>
               )}
@@ -1215,14 +1215,14 @@ export default function ClientsList({
             <div className={`p-3 rounded-xl border ${selectedClient.postalChecks && selectedClient.postalChecks.length > 0 ? 'bg-indigo-50/40 border-indigo-100' : 'bg-slate-50 border-slate-200'} space-y-2`}>
               <div className="flex items-center justify-between">
                 <h4 className={`text-[10px] font-black uppercase tracking-wide ${selectedClient.postalChecks && selectedClient.postalChecks.length > 0 ? 'text-indigo-800' : 'text-slate-500'}`}>
-                  {isRtl ? 'حالة الشيكات البريدية كضمان مالي' : 'Garanties de Chèques Postaux'}
+                  {isRtl ? 'Ø­Ø§Ù„Ø© Ø§Ù„Ø´ÙŠÙƒØ§Øª Ø§Ù„Ø¨Ø±ÙŠØ¯ÙŠØ© ÙƒØ¶Ù…Ø§Ù† Ù…Ø§Ù„ÙŠ' : 'Garanties de ChÃ¨ques Postaux'}
                 </h4>
                 <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase ${
                   selectedClient.postalChecks && selectedClient.postalChecks.length > 0 ? 'bg-indigo-100 text-indigo-800' : 'bg-slate-200 text-slate-600'
                 }`}>
                   {selectedClient.postalChecks && selectedClient.postalChecks.length > 0 
-                    ? (isRtl ? `📩 متوفر (${selectedClient.postalChecks.length})` : `📩 Enregistré (${selectedClient.postalChecks.length})`) 
-                    : (isRtl ? '⚠️ لا يوجد' : '⚠️ Aucun')
+                    ? (isRtl ? `ðŸ“© Ù…ØªÙˆÙØ± (${selectedClient.postalChecks.length})` : `ðŸ“© EnregistrÃ© (${selectedClient.postalChecks.length})`) 
+                    : (isRtl ? 'âš ï¸ Ù„Ø§ ÙŠÙˆØ¬Ø¯' : 'âš ï¸ Aucun')
                   }
                 </span>
               </div>
@@ -1232,17 +1232,17 @@ export default function ClientsList({
                   {selectedClient.postalChecks.map((check, idx) => (
                     <div key={check.id || idx} className="bg-white p-3 rounded-xl border border-indigo-100/50 shadow-xxs flex flex-col gap-2">
                       <div className="flex justify-between items-center bg-indigo-50/35 px-2 py-1 rounded-lg">
-                        <span className="text-[10px] text-indigo-950 font-black">{isRtl ? `شيك رقم ${idx + 1}` : `Chèque N° ${idx + 1}`}</span>
+                        <span className="text-[10px] text-indigo-950 font-black">{isRtl ? `Ø´ÙŠÙƒ Ø±Ù‚Ù… ${idx + 1}` : `ChÃ¨que NÂ° ${idx + 1}`}</span>
                         <span className="font-mono text-xs font-black text-indigo-700">{check.amount?.toFixed(2)}</span>
                       </div>
                       <div className="grid grid-cols-2 gap-2 text-xxs">
                         <div>
-                          <span className="text-[9px] text-gray-400 block mb-0.5">{isRtl ? 'تاريخ الدخول :' : 'Date dépôt :'}</span>
-                          <span className="font-mono text-slate-800 font-bold">{check.entryDate || (isRtl ? 'غير محدد' : 'N/A')}</span>
+                          <span className="text-[9px] text-gray-400 block mb-0.5">{isRtl ? 'ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¯Ø®ÙˆÙ„ :' : 'Date dÃ©pÃ´t :'}</span>
+                          <span className="font-mono text-slate-800 font-bold">{check.entryDate || (isRtl ? 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯' : 'N/A')}</span>
                         </div>
                         <div>
-                          <span className="text-[9px] text-gray-400 block mb-0.5">{isRtl ? 'تاريخ النهاية :' : 'Date échéance :'}</span>
-                          <span className="font-mono text-rose-700 font-black">{check.expiryDate || (isRtl ? 'غير محدد' : 'N/A')}</span>
+                          <span className="text-[9px] text-gray-400 block mb-0.5">{isRtl ? 'ØªØ§Ø±ÙŠØ® Ø§Ù„Ù†Ù‡Ø§ÙŠØ© :' : 'Date Ã©chÃ©ance :'}</span>
+                          <span className="font-mono text-rose-700 font-black">{check.expiryDate || (isRtl ? 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯' : 'N/A')}</span>
                         </div>
                       </div>
                     </div>
@@ -1251,8 +1251,8 @@ export default function ClientsList({
               ) : (
                 <p className="text-[9.5px] text-slate-400 font-bold leading-relaxed italic">
                   {isRtl 
-                    ? '💡 لا يوجد شيك بريدي مسجل كضمان مالي لهذا الزبون حالياً.' 
-                    : "Aucun chèque de garantie postal n'est configuré pour ce client."
+                    ? 'ðŸ’¡ Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø´ÙŠÙƒ Ø¨Ø±ÙŠØ¯ÙŠ Ù…Ø³Ø¬Ù„ ÙƒØ¶Ù…Ø§Ù† Ù…Ø§Ù„ÙŠ Ù„Ù‡Ø°Ø§ Ø§Ù„Ø²Ø¨ÙˆÙ† Ø­Ø§Ù„ÙŠØ§Ù‹.' 
+                    : "Aucun chÃ¨que de garantie postal n'est configurÃ© pour ce client."
                   }
                 </p>
               )}
@@ -1278,7 +1278,7 @@ export default function ClientsList({
             
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50 rounded-t-2xl shrink-0">
               <h3 className="text-sm font-bold text-gray-900">
-                {editingId ? (isRtl ? 'تعديل بيانات الزبون' : 'Mise à Jour Tiers Client') : (isRtl ? 'تسجيل زبون دائم جديد' : 'Enregistrer un Nouveau Client')}
+                {editingId ? (isRtl ? 'ØªØ¹Ø¯ÙŠÙ„ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø²Ø¨ÙˆÙ†' : 'Mise Ã  Jour Tiers Client') : (isRtl ? 'ØªØ³Ø¬ÙŠÙ„ Ø²Ø¨ÙˆÙ† Ø¯Ø§Ø¦Ù… Ø¬Ø¯ÙŠØ¯' : 'Enregistrer un Nouveau Client')}
               </h3>
               <button onClick={() => setIsOpenModal(false)} className="p-1 hover:bg-gray-200 rounded-lg transition">
                 <X className="w-5 h-5" />
@@ -1289,7 +1289,7 @@ export default function ClientsList({
               
               {/* Name */}
               <div className="space-y-1">
-                <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'الاسم الكامل للزبون *' : 'Nom Complet *'}</label>
+                <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'Ø§Ù„Ø§Ø³Ù… Ø§Ù„ÙƒØ§Ù…Ù„ Ù„Ù„Ø²Ø¨ÙˆÙ† *' : 'Nom Complet *'}</label>
                 <input
                   type="text"
                   required
@@ -1301,7 +1301,7 @@ export default function ClientsList({
 
               {/* Phone */}
               <div className="space-y-1">
-                <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'رقم الهاتف المحمول' : 'Numéro de Téléphone'}</label>
+                <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'Ø±Ù‚Ù… Ø§Ù„Ù‡Ø§ØªÙ Ø§Ù„Ù…Ø­Ù…ÙˆÙ„' : 'NumÃ©ro de TÃ©lÃ©phone'}</label>
                 <input
                   type="text"
                   value={formPhone}
@@ -1335,7 +1335,7 @@ export default function ClientsList({
                       onChange={(e) => setFormHasPostalCheck(e.target.checked)}
                       className="w-4.5 h-4.5 rounded text-blue-600 focus:ring-blue-500 border-gray-300"
                     />
-                    <span>{isRtl ? 'تسجيل شيكات بريدية كضمان مالى' : 'Garanties de chèques postaux ?'}</span>
+                    <span>{isRtl ? 'ØªØ³Ø¬ÙŠÙ„ Ø´ÙŠÙƒØ§Øª Ø¨Ø±ÙŠØ¯ÙŠØ© ÙƒØ¶Ù…Ø§Ù† Ù…Ø§Ù„Ù‰' : 'Garanties de chÃ¨ques postaux ?'}</span>
                   </label>
                 </div>
 
@@ -1346,7 +1346,7 @@ export default function ClientsList({
                     {formPostalChecks.length > 0 && (
                       <div className="space-y-1.5">
                         <span className="text-[10px] text-gray-400 font-black uppercase tracking-wider block">
-                          {isRtl ? 'الشيكات المضافة حاليا:' : 'Chèques ajoutés :'}
+                          {isRtl ? 'Ø§Ù„Ø´ÙŠÙƒØ§Øª Ø§Ù„Ù…Ø¶Ø§ÙØ© Ø­Ø§Ù„ÙŠØ§:' : 'ChÃ¨ques ajoutÃ©s :'}
                         </span>
                         
                         <div className="space-y-1 max-h-[150px] overflow-y-auto bg-white p-2.5 rounded-xl border border-gray-100">
@@ -1357,10 +1357,10 @@ export default function ClientsList({
                             >
                               <div className="space-y-0.5">
                                 <p className="text-[10.5px] font-black text-indigo-950">
-                                  {isRtl ? `الشيك ${idx + 1}:` : `Chèque ${idx + 1}:`} <span className="font-mono text-indigo-700">{ch.amount?.toFixed(2)}</span>
+                                  {isRtl ? `Ø§Ù„Ø´ÙŠÙƒ ${idx + 1}:` : `ChÃ¨que ${idx + 1}:`} <span className="font-mono text-indigo-700">{ch.amount?.toFixed(2)}</span>
                                 </p>
                                 <p className="text-[9px] text-gray-400">
-                                  📅 {ch.entryDate} • ⏰ <span className="text-rose-600 font-bold">{ch.expiryDate}</span>
+                                  ðŸ“… {ch.entryDate} â€¢ â° <span className="text-rose-600 font-bold">{ch.expiryDate}</span>
                                 </p>
                               </div>
                               
@@ -1369,9 +1369,9 @@ export default function ClientsList({
                                 type="button"
                                 onClick={() => handleRemoveCheck(ch.id)}
                                 className="p-1 px-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-150 rounded text-[10px] font-black"
-                                title={isRtl ? 'حذف الشيك' : 'Supprimer le chèque'}
+                                title={isRtl ? 'Ø­Ø°Ù Ø§Ù„Ø´ÙŠÙƒ' : 'Supprimer le chÃ¨que'}
                               >
-                                {isRtl ? 'حذف' : 'Supprimer'}
+                                {isRtl ? 'Ø­Ø°Ù' : 'Supprimer'}
                               </button>
                             </div>
                           ))}
@@ -1382,12 +1382,12 @@ export default function ClientsList({
                     {/* Add another check sub-form */}
                     <div className="bg-white/80 p-3 rounded-xl border border-gray-200/80 space-y-2 mt-2 shadow-xxs animate-fade-in">
                       <span className="text-[10px] font-black text-gray-600 block mb-1">
-                        ➕ {isRtl ? 'إضافة شيك جديد إلى القائمة:' : 'Ajouter un nouveau chèque à la liste :'}
+                        âž• {isRtl ? 'Ø¥Ø¶Ø§ÙØ© Ø´ÙŠÙƒ Ø¬Ø¯ÙŠØ¯ Ø¥Ù„Ù‰ Ø§Ù„Ù‚Ø§Ø¦Ù…Ø©:' : 'Ajouter un nouveau chÃ¨que Ã  la liste :'}
                       </span>
 
                       {/* Check Value / Amount */}
                       <div className="space-y-0.5">
-                        <label className="text-[10px] text-gray-400 font-bold block">{isRtl ? 'مبلغ الشيك  :' : 'Montant du chèque postal  :'}</label>
+                        <label className="text-[10px] text-gray-400 font-bold block">{isRtl ? 'Ù…Ø¨Ù„Øº Ø§Ù„Ø´ÙŠÙƒ  :' : 'Montant du chÃ¨que postal  :'}</label>
                         <input
                           type="number"
                           min="0"
@@ -1402,7 +1402,7 @@ export default function ClientsList({
                       {/* Dates */}
                       <div className="grid grid-cols-2 gap-2 pb-1">
                         <div className="space-y-0.5">
-                          <label className="text-[10px] text-gray-400 font-bold block">{isRtl ? 'تاريخ الدخول :' : 'Date de dépôt :'}</label>
+                          <label className="text-[10px] text-gray-400 font-bold block">{isRtl ? 'ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¯Ø®ÙˆÙ„ :' : 'Date de dÃ©pÃ´t :'}</label>
                           <input
                             type="date"
                             value={tempEntryDate}
@@ -1412,7 +1412,7 @@ export default function ClientsList({
                         </div>
 
                         <div className="space-y-0.5">
-                          <label className="text-[10px] text-gray-400 font-bold block">{isRtl ? 'تاريخ النهاية :' : 'Date d\'échéance :'}</label>
+                          <label className="text-[10px] text-gray-400 font-bold block">{isRtl ? 'ØªØ§Ø±ÙŠØ® Ø§Ù„Ù†Ù‡Ø§ÙŠØ© :' : 'Date d\'Ã©chÃ©ance :'}</label>
                           <input
                             type="date"
                             value={tempExpiryDate}
@@ -1428,7 +1428,7 @@ export default function ClientsList({
                         onClick={handleAddCheck}
                         className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold font-sans tracking-wide shadow-xxs transition-all"
                       >
-                        {isRtl ? '⚙️ إدراج الشيك في القائمة' : '⚙️ Insérer ce chèque dans la liste'}
+                        {isRtl ? 'âš™ï¸ Ø¥Ø¯Ø±Ø§Ø¬ Ø§Ù„Ø´ÙŠÙƒ ÙÙŠ Ø§Ù„Ù‚Ø§Ø¦Ù…Ø©' : 'âš™ï¸ InsÃ©rer ce chÃ¨que dans la liste'}
                       </button>
                     </div>
 
@@ -1467,8 +1467,8 @@ export default function ClientsList({
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50 rounded-t-2xl shrink-0">
               <h3 className="text-sm font-bold text-gray-900">
                 {debtOpType === 'settle' 
-                  ? (isRtl ? 'تسجيل دفعة استخلاص الدين' : 'Enregistrer un remboursement de dette')
-                  : (isRtl ? 'تسجيل دين / سلف جديد' : 'Enregistrer un nouveau crédit')}
+                  ? (isRtl ? 'ØªØ³Ø¬ÙŠÙ„ Ø¯ÙØ¹Ø© Ø§Ø³ØªØ®Ù„Ø§Øµ Ø§Ù„Ø¯ÙŠÙ†' : 'Enregistrer un remboursement de dette')
+                  : (isRtl ? 'ØªØ³Ø¬ÙŠÙ„ Ø¯ÙŠÙ† / Ø³Ù„Ù Ø¬Ø¯ÙŠØ¯' : 'Enregistrer un nouveau crÃ©dit')}
               </h3>
               <button onClick={() => setIsOpenSettleModal(false)} className="p-1 hover:bg-gray-200 rounded-lg transition">
                 <X className="w-5 h-5" />
@@ -1479,7 +1479,7 @@ export default function ClientsList({
               
               <div className={`p-3 rounded-xl border text-center ${debtOpType === 'settle' ? 'bg-rose-50/50 border-rose-100' : 'bg-orange-50/50 border-orange-100'}`}>
                 <p className={`text-xxs uppercase tracking-wide ${debtOpType === 'settle' ? 'text-rose-800' : 'text-orange-800'}`}>
-                  {isRtl ? 'إجمالي الدين الحالي :' : 'Total dette en cours :'}
+                  {isRtl ? 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ø¯ÙŠÙ† Ø§Ù„Ø­Ø§Ù„ÙŠ :' : 'Total dette en cours :'}
                 </p>
                 <p className={`text-lg font-black font-mono mt-0.5 ${debtOpType === 'settle' ? 'text-rose-700' : 'text-orange-700'}`}>
                   {(selectedClient.outstandingDebt || 0).toFixed(2)}
@@ -1490,8 +1490,8 @@ export default function ClientsList({
               <div className="space-y-1">
                 <label className="text-xxs text-slate-400 uppercase tracking-wide">
                   {debtOpType === 'settle' 
-                    ? (isRtl ? 'المبلغ المستخلص بالدرهم *' : 'Montant à rembourser  *')
-                    : (isRtl ? 'مبلغ الدين المضاف بالدرهم *' : 'Montant du crédit ajouté  *')}
+                    ? (isRtl ? 'Ø§Ù„Ù…Ø¨Ù„Øº Ø§Ù„Ù…Ø³ØªØ®Ù„Øµ Ø¨Ø§Ù„Ø¯Ø±Ù‡Ù… *' : 'Montant Ã  rembourser  *')
+                    : (isRtl ? 'Ù…Ø¨Ù„Øº Ø§Ù„Ø¯ÙŠÙ† Ø§Ù„Ù…Ø¶Ø§Ù Ø¨Ø§Ù„Ø¯Ø±Ù‡Ù… *' : 'Montant du crÃ©dit ajoutÃ©  *')}
                 </label>
                 <input
                   type="number"
@@ -1506,12 +1506,12 @@ export default function ClientsList({
 
               {/* Notes */}
               <div className="space-y-1">
-                <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'ملاحظات / تفاصيل المعاملة :' : 'Notes / Motif :'}</label>
+                <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'Ù…Ù„Ø§Ø­Ø¸Ø§Øª / ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ù…Ø¹Ø§Ù…Ù„Ø© :' : 'Notes / Motif :'}</label>
                 <input
                   type="text"
                   value={settlementNote}
                   onChange={(e) => setSettlementNote(e.target.value)}
-                  placeholder={isRtl ? 'مثال: سداد الدفعة الثانية من الفاتورة...' : 'Ex: Paiement acompte n°2...'}
+                  placeholder={isRtl ? 'Ù…Ø«Ø§Ù„: Ø³Ø¯Ø§Ø¯ Ø§Ù„Ø¯ÙØ¹Ø© Ø§Ù„Ø«Ø§Ù†ÙŠØ© Ù…Ù† Ø§Ù„ÙØ§ØªÙˆØ±Ø©...' : 'Ex: Paiement acompte nÂ°2...'}
                   className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -1522,7 +1522,7 @@ export default function ClientsList({
                   type="submit"
                   className={`flex-1 py-3 text-white rounded-xl font-bold font-sans shadow-md ${debtOpType === 'settle' ? 'bg-green-600 hover:bg-green-700' : 'bg-orange-600 hover:bg-orange-700'}`}
                 >
-                  {debtOpType === 'settle' ? (isRtl ? 'تأكيد وقيد الاستلام' : 'Solder & Confirmer') : (isRtl ? 'تأكيد وإضافة الدين' : 'Ajouter le crédit')}
+                  {debtOpType === 'settle' ? (isRtl ? 'ØªØ£ÙƒÙŠØ¯ ÙˆÙ‚ÙŠØ¯ Ø§Ù„Ø§Ø³ØªÙ„Ø§Ù…' : 'Solder & Confirmer') : (isRtl ? 'ØªØ£ÙƒÙŠØ¯ ÙˆØ¥Ø¶Ø§ÙØ© Ø§Ù„Ø¯ÙŠÙ†' : 'Ajouter le crÃ©dit')}
                 </button>
                 <button
                   type="button"
@@ -1548,12 +1548,12 @@ export default function ClientsList({
                 <Trash2 className="w-8 h-8" />
               </div>
               <h3 className="text-md font-black text-gray-900">
-                {isRtl ? 'هل أنت متأكد من حذف هذا الزبون؟' : 'Confirmer la suppression ?'}
+                {isRtl ? 'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ù…Ù† Ø­Ø°Ù Ù‡Ø°Ø§ Ø§Ù„Ø²Ø¨ÙˆÙ†ØŸ' : 'Confirmer la suppression ?'}
               </h3>
               <p className="text-xs text-gray-500 leading-relaxed">
                 {isRtl 
-                  ? `سيتم حذف ملف الزبون "${clientToDelete.name}" نهائياً من قاعدة البيانات مع كافة سجلات المعاملات الخاصة به.` 
-                  : `Le profil du client "${clientToDelete.name}" sera définitivement supprimé, y compris l'historique complet de ses transactions.`}
+                  ? `Ø³ÙŠØªÙ… Ø­Ø°Ù Ù…Ù„Ù Ø§Ù„Ø²Ø¨ÙˆÙ† "${clientToDelete.name}" Ù†Ù‡Ø§Ø¦ÙŠØ§Ù‹ Ù…Ù† Ù‚Ø§Ø¹Ø¯Ø© Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ù…Ø¹ ÙƒØ§ÙØ© Ø³Ø¬Ù„Ø§Øª Ø§Ù„Ù…Ø¹Ø§Ù…Ù„Ø§Øª Ø§Ù„Ø®Ø§ØµØ© Ø¨Ù‡.` 
+                  : `Le profil du client "${clientToDelete.name}" sera dÃ©finitivement supprimÃ©, y compris l'historique complet de ses transactions.`}
               </p>
             </div>
 
@@ -1569,14 +1569,14 @@ export default function ClientsList({
                 }}
                 className="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold font-sans transition-all"
               >
-                {isRtl ? 'حذف الزبون' : 'Supprimer'}
+                {isRtl ? 'Ø­Ø°Ù Ø§Ù„Ø²Ø¨ÙˆÙ†' : 'Supprimer'}
               </button>
               <button
                 type="button"
                 onClick={() => setClientToDelete(null)}
                 className="flex-1 py-2.5 bg-gray-100 hover:bg-gray-205 text-gray-800 rounded-xl font-bold transition-all"
               >
-                {isRtl ? 'إلغاء' : 'Annuler'}
+                {isRtl ? 'Ø¥Ù„ØºØ§Ø¡' : 'Annuler'}
               </button>
             </div>
           </div>
@@ -1586,3 +1586,4 @@ export default function ClientsList({
     </div>
   );
 }
+

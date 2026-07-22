@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { api } from '../api';
 import { Invoice, User, Product, StockMovement, Client } from '../types';
 import { translations, arabicDashboardLabels, resolveUserName } from '../translations';
@@ -91,7 +91,7 @@ export default function Account({
   const t = translations[lang];
   const tLabel = arabicDashboardLabels[lang];
 
-  // Tab controller: 'withdrawals' (سحوبات) vs 'audit' (مسائلة وتدقيق الصندوق والمطابقة) vs 'profits' (تحقيق الأرباح والخصومات)
+  // Tab controller: 'withdrawals' (Ø³Ø­ÙˆØ¨Ø§Øª) vs 'audit' (Ù…Ø³Ø§Ø¦Ù„Ø© ÙˆØªØ¯Ù‚ÙŠÙ‚ Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚ ÙˆØ§Ù„Ù…Ø·Ø§Ø¨Ù‚Ø©) vs 'profits' (ØªØ­Ù‚ÙŠÙ‚ Ø§Ù„Ø£Ø±Ø¨Ø§Ø­ ÙˆØ§Ù„Ø®ØµÙˆÙ…Ø§Øª)
   const [activeTab, setActiveTab] = React.useState<'withdrawals' | 'audit' | 'profits'>('withdrawals');
 
   React.useEffect(() => {
@@ -175,7 +175,7 @@ export default function Account({
 
   // Withdrawal form state
   const [withdrawAmount, setWithdrawAmount] = React.useState('');
-  const [withdrawPerson, setWithdrawPerson] = React.useState('الياس المباركي');
+  const [withdrawPerson, setWithdrawPerson] = React.useState('Ø§Ù„ÙŠØ§Ø³ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ');
   const [customPerson, setCustomPerson] = React.useState('');
   const [withdrawNotes, setWithdrawNotes] = React.useState('');
   const [withdrawalSuccess, setWithdrawalSuccess] = React.useState(false);
@@ -183,7 +183,7 @@ export default function Account({
   // Edit withdrawal states
   const [editingWithdrawal, setEditingWithdrawal] = React.useState<Withdrawal | null>(null);
   const [editAmount, setEditAmount] = React.useState('');
-  const [editPerson, setEditPerson] = React.useState('الياس المباركي');
+  const [editPerson, setEditPerson] = React.useState('Ø§Ù„ÙŠØ§Ø³ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ');
   const [editCustomPerson, setEditCustomPerson] = React.useState('');
   const [editNotes, setEditNotes] = React.useState('');
 
@@ -286,9 +286,9 @@ export default function Account({
       id: `w-${Date.now()}`,
       amount,
       date: new Date().toISOString(),
-      person: finalPerson || (isRtl ? 'غير محدد' : 'Non spécifié'),
-      responsible: currentUser?.name || (isRtl ? 'حساب النظام' : 'Système'),
-      notes: withdrawNotes.trim() || (isRtl ? 'سحب نقدي من الصندوق' : 'Prélèvement de caisse')
+      person: finalPerson || (isRtl ? 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯' : 'Non spÃ©cifiÃ©'),
+      responsible: currentUser?.name || (isRtl ? 'Ø­Ø³Ø§Ø¨ Ø§Ù„Ù†Ø¸Ø§Ù…' : 'SystÃ¨me'),
+      notes: withdrawNotes.trim() || (isRtl ? 'Ø³Ø­Ø¨ Ù†Ù‚Ø¯ÙŠ Ù…Ù† Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚' : 'PrÃ©lÃ¨vement de caisse')
     };
 
     setWithdrawals(prev => [newWithdrawal, ...prev]);
@@ -297,7 +297,7 @@ export default function Account({
     if (onLogActivity) {
       onLogActivity(
         'withdraw_add',
-        `عملية سحب نقدي جديدة بقيمة ${amount.toFixed(2)} لفائدة "${newWithdrawal.person}" (السبب الداعي: ${newWithdrawal.notes})`,
+        `Ø¹Ù…Ù„ÙŠØ© Ø³Ø­Ø¨ Ù†Ù‚Ø¯ÙŠ Ø¬Ø¯ÙŠØ¯Ø© Ø¨Ù‚ÙŠÙ…Ø© ${amount.toFixed(2)} Ù„ÙØ§Ø¦Ø¯Ø© "${newWithdrawal.person}" (Ø§Ù„Ø³Ø¨Ø¨ Ø§Ù„Ø¯Ø§Ø¹ÙŠ: ${newWithdrawal.notes})`,
         `Nouveau retrait de caisse de ${amount.toFixed(2)} pour "${newWithdrawal.person}" (Motif: ${newWithdrawal.notes})`,
         newWithdrawal.id
       );
@@ -313,13 +313,13 @@ export default function Account({
   const handleDeleteWithdrawal = (id: string) => {
     const w = withdrawals.find(x => x.id === id);
     if (!w) return;
-    if (confirm(isRtl ? 'هل أنت متأكد من حذف هذا السند؟' : 'Êtes-vous sûr de vouloir supprimer ce bon ?')) {
+    if (confirm(isRtl ? 'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ù…Ù† Ø­Ø°Ù Ù‡Ø°Ø§ Ø§Ù„Ø³Ù†Ø¯ØŸ' : 'ÃŠtes-vous sÃ»r de vouloir supprimer ce bon ?')) {
       setWithdrawals(prev => prev.filter(x => x.id !== id));
       api.withdrawals.delete(id).catch(e => console.error('Error deleting withdrawal', e));
       if (onLogActivity) {
         onLogActivity(
           'withdraw_delete',
-          `حذف مستند صرف بقيمة ${w.amount.toFixed(2)} لفائدة "${w.person}"`,
+          `Ø­Ø°Ù Ù…Ø³ØªÙ†Ø¯ ØµØ±Ù Ø¨Ù‚ÙŠÙ…Ø© ${w.amount.toFixed(2)} Ù„ÙØ§Ø¦Ø¯Ø© "${w.person}"`,
           `Suppression d'un retrait de ${w.amount.toFixed(2)} pour "${w.person}"`,
           id
         );
@@ -331,7 +331,7 @@ export default function Account({
     setEditingWithdrawal(w);
     setEditAmount(w.amount.toString());
     setEditNotes(w.notes);
-    const presets = ['الياس المباركي', 'فؤاد المباركي', 'احمد المباركي'];
+    const presets = ['Ø§Ù„ÙŠØ§Ø³ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ', 'ÙØ¤Ø§Ø¯ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ', 'Ø§Ø­Ù…Ø¯ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ'];
     if (presets.includes(w.person)) {
       setEditPerson(w.person);
       setEditCustomPerson('');
@@ -352,8 +352,8 @@ export default function Account({
     const updatedW = {
       ...editingWithdrawal,
       amount,
-      person: finalPerson || (isRtl ? 'غير محدد' : 'Non spécifié'),
-      notes: editNotes.trim() || (isRtl ? 'سحب نقدي من الصندوق' : 'Prélèvement de caisse')
+      person: finalPerson || (isRtl ? 'ØºÙŠØ± Ù…Ø­Ø¯Ø¯' : 'Non spÃ©cifiÃ©'),
+      notes: editNotes.trim() || (isRtl ? 'Ø³Ø­Ø¨ Ù†Ù‚Ø¯ÙŠ Ù…Ù† Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚' : 'PrÃ©lÃ¨vement de caisse')
     };
 
     setWithdrawals(prev => prev.map(w => w.id === editingWithdrawal.id ? updatedW : w));
@@ -365,7 +365,7 @@ export default function Account({
     if (onLogActivity) {
       onLogActivity(
         'withdraw_edit',
-        `تعديل مستند صرف (المرجع #${editingWithdrawal.id.substring(editingWithdrawal.id.length - 5)}) بقيمة ${amount.toFixed(2)} لفائدة "${finalPerson}"`,
+        `ØªØ¹Ø¯ÙŠÙ„ Ù…Ø³ØªÙ†Ø¯ ØµØ±Ù (Ø§Ù„Ù…Ø±Ø¬Ø¹ #${editingWithdrawal.id.substring(editingWithdrawal.id.length - 5)}) Ø¨Ù‚ÙŠÙ…Ø© ${amount.toFixed(2)} Ù„ÙØ§Ø¦Ø¯Ø© "${finalPerson}"`,
         `Modification du retrait #${editingWithdrawal.id.substring(editingWithdrawal.id.length - 5)} de ${amount.toFixed(2)} pour "${finalPerson}"`,
         editingWithdrawal.id
       );
@@ -388,27 +388,27 @@ export default function Account({
 
     if (editingField === 'cash_income') {
       previousVal = totalCashIncome;
-      fieldAr = 'المداخيل النقدية التراكمية في الصندوق';
-      fieldFr = 'Entrées de caisse cumulées';
+      fieldAr = 'Ø§Ù„Ù…Ø¯Ø§Ø®ÙŠÙ„ Ø§Ù„Ù†Ù‚Ø¯ÙŠØ© Ø§Ù„ØªØ±Ø§ÙƒÙ…ÙŠØ© ÙÙŠ Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚';
+      fieldFr = 'EntrÃ©es de caisse cumulÃ©es';
       const newAdj = val - baseCashIncome; setCashIncomeAdjustment(newAdj); syncDrawerState({ cash_income_adjustment: newAdj });
     } else if (editingField === 'withdrawals') {
       previousVal = totalWithdrawnAmount;
-      fieldAr = 'مجموع السحوبات ومقتطعات المالك';
-      fieldFr = 'Total des prélèvements';
+      fieldAr = 'Ù…Ø¬Ù…ÙˆØ¹ Ø§Ù„Ø³Ø­ÙˆØ¨Ø§Øª ÙˆÙ…Ù‚ØªØ·Ø¹Ø§Øª Ø§Ù„Ù…Ø§Ù„Ùƒ';
+      fieldFr = 'Total des prÃ©lÃ¨vements';
       const newAdj = val - baseWithdrawnAmount; setWithdrawalsAdjustment(newAdj); syncDrawerState({ withdrawals_adjustment: newAdj });
     } else if (editingField === 'drawer_balance') {
       previousVal = currentDrawerBalance;
-      fieldAr = 'رصيد الصندوق الحالي المتوفر';
+      fieldAr = 'Ø±ØµÙŠØ¯ Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚ Ø§Ù„Ø­Ø§Ù„ÙŠ Ø§Ù„Ù…ØªÙˆÙØ±';
       fieldFr = 'Solde direct du coffre';
       const newAdj = val - (totalCashIncome - totalWithdrawnAmount); setDrawerBalanceAdjustment(newAdj); syncDrawerState({ drawer_balance_adjustment: newAdj });
     }
 
     if (onLogActivity) {
-      const reasonText = adjustmentReason.trim() || (isRtl ? 'تعديل مالي يدوي عام' : 'Ajustement financier manuel');
+      const reasonText = adjustmentReason.trim() || (isRtl ? 'ØªØ¹Ø¯ÙŠÙ„ Ù…Ø§Ù„ÙŠ ÙŠØ¯ÙˆÙŠ Ø¹Ø§Ù…' : 'Ajustement financier manuel');
       onLogActivity(
         'withdraw_add',
-        `تعديل مالي: تم تعديل "${fieldAr}" من ${previousVal.toLocaleString(undefined, { minimumFractionDigits: 2 })} إلى ${val.toLocaleString(undefined, { minimumFractionDigits: 2 })} (المبرر: ${reasonText})`,
-        `Modif financière : "${fieldFr}" ajusté de ${previousVal.toLocaleString(undefined, { minimumFractionDigits: 2 })} à ${val.toLocaleString(undefined, { minimumFractionDigits: 2 })} (Raison : ${reasonText})`,
+        `ØªØ¹Ø¯ÙŠÙ„ Ù…Ø§Ù„ÙŠ: ØªÙ… ØªØ¹Ø¯ÙŠÙ„ "${fieldAr}" Ù…Ù† ${previousVal.toLocaleString(undefined, { minimumFractionDigits: 2 })} Ø¥Ù„Ù‰ ${val.toLocaleString(undefined, { minimumFractionDigits: 2 })} (Ø§Ù„Ù…Ø¨Ø±Ø±: ${reasonText})`,
+        `Modif financiÃ¨re : "${fieldFr}" ajustÃ© de ${previousVal.toLocaleString(undefined, { minimumFractionDigits: 2 })} Ã  ${val.toLocaleString(undefined, { minimumFractionDigits: 2 })} (Raison : ${reasonText})`,
         `financial-adj-${editingField}`
       );
     }
@@ -509,7 +509,7 @@ export default function Account({
 
       inv.items.forEach(item => {
         const prod = products.find(p => p.id === item.productId);
-        const category = prod?.category || (isRtl ? 'غير مصنف' : 'Non classé');
+        const category = prod?.category || (isRtl ? 'ØºÙŠØ± Ù…ØµÙ†Ù' : 'Non classÃ©');
 
         const totalBuyCost = item.qty * item.buyPrice;
         const totalSellRevenue = item.qty * item.sellPrice;
@@ -752,7 +752,7 @@ export default function Account({
           qty: Math.abs(item.diff),
           date: new Date().toISOString(),
           reason: isRtl 
-            ? `المطابقة الدورية ومراقبة فروقات الصندوق (${auditType === 'monthly' ? 'شهري' : 'نصف سنوي'})` 
+            ? `Ø§Ù„Ù…Ø·Ø§Ø¨Ù‚Ø© Ø§Ù„Ø¯ÙˆØ±ÙŠØ© ÙˆÙ…Ø±Ø§Ù‚Ø¨Ø© ÙØ±ÙˆÙ‚Ø§Øª Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚ (${auditType === 'monthly' ? 'Ø´Ù‡Ø±ÙŠ' : 'Ù†ØµÙ Ø³Ù†ÙˆÙŠ'})` 
             : `Ajustement Audit de Caisse (${auditType === 'monthly' ? 'Mensuel' : 'Semestriel'})`,
           operator: auditorName,
           batchId: `audit-${Date.now()}`
@@ -791,7 +791,7 @@ export default function Account({
       type: auditType,
       totalDeficitQty: auditAnalysis.deficitQty,
       totalDeficitValue: auditAnalysis.deficitValue,
-      notes: auditNotes.trim() || (isRtl ? 'تم المطابقة الكاملة وتسوية الكميات وتصفية الفروقات' : 'Audit et rectification de stock effectués.'),
+      notes: auditNotes.trim() || (isRtl ? 'ØªÙ… Ø§Ù„Ù…Ø·Ø§Ø¨Ù‚Ø© Ø§Ù„ÙƒØ§Ù…Ù„Ø© ÙˆØªØ³ÙˆÙŠØ© Ø§Ù„ÙƒÙ…ÙŠØ§Øª ÙˆØªØµÙÙŠØ© Ø§Ù„ÙØ±ÙˆÙ‚Ø§Øª' : 'Audit et rectification de stock effectuÃ©s.'),
       items: auditReportItems
     };
 
@@ -832,12 +832,12 @@ export default function Account({
               <span className="p-2 bg-gradient-to-br from-violet-400 to-purple-500 rounded-xl shadow-sm">
                 <Lock className="w-5 h-5 text-white" />
               </span>
-              <span>{isRtl ? 'إدارة ومطابقة أرصدة الصندوق' : 'Finances, Caisse & Audit de Caisse'}</span>
+              <span>{isRtl ? 'Ø¥Ø¯Ø§Ø±Ø© ÙˆÙ…Ø·Ø§Ø¨Ù‚Ø© Ø£Ø±ØµØ¯Ø© Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚' : 'Finances, Caisse & Audit de Caisse'}</span>
             </h2>
             <p className="hidden md:block text-sm font-semibold text-slate-500 mt-2 max-w-2xl">
               {isRtl 
-                ? (currentUser?.role === 'cashier' ? 'تتبع زمني دقيق لكل السحوبات المسجلة ومجموع المقتطعات من الصندوق.' : 'سحب الأموال والعمولات اليومية من الصندوق، والمطابقة الدورية الشاملة للمخزن ومراجعة فروقات الصندوق والاستحقاق.')
-                : (currentUser?.role === 'cashier' ? 'Suivi des prélèvements de caisse nets.' : 'Gérez les retraits de caisse quotidiens et réalisez l\'audit périodique d\'inventaire.')}
+                ? (currentUser?.role === 'cashier' ? 'ØªØªØ¨Ø¹ Ø²Ù…Ù†ÙŠ Ø¯Ù‚ÙŠÙ‚ Ù„ÙƒÙ„ Ø§Ù„Ø³Ø­ÙˆØ¨Ø§Øª Ø§Ù„Ù…Ø³Ø¬Ù„Ø© ÙˆÙ…Ø¬Ù…ÙˆØ¹ Ø§Ù„Ù…Ù‚ØªØ·Ø¹Ø§Øª Ù…Ù† Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚.' : 'Ø³Ø­Ø¨ Ø§Ù„Ø£Ù…ÙˆØ§Ù„ ÙˆØ§Ù„Ø¹Ù…ÙˆÙ„Ø§Øª Ø§Ù„ÙŠÙˆÙ…ÙŠØ© Ù…Ù† Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚ØŒ ÙˆØ§Ù„Ù…Ø·Ø§Ø¨Ù‚Ø© Ø§Ù„Ø¯ÙˆØ±ÙŠØ© Ø§Ù„Ø´Ø§Ù…Ù„Ø© Ù„Ù„Ù…Ø®Ø²Ù† ÙˆÙ…Ø±Ø§Ø¬Ø¹Ø© ÙØ±ÙˆÙ‚Ø§Øª Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚ ÙˆØ§Ù„Ø§Ø³ØªØ­Ù‚Ø§Ù‚.')
+                : (currentUser?.role === 'cashier' ? 'Suivi des prÃ©lÃ¨vements de caisse nets.' : 'GÃ©rez les retraits de caisse quotidiens et rÃ©alisez l\'audit pÃ©riodique d\'inventaire.')}
             </p>
           </div>
         </div>
@@ -856,7 +856,7 @@ export default function Account({
                 }`}
               >
                 <Coins className={`w-4 h-4 ${activeTab === 'withdrawals' ? 'text-indigo-600' : ''}`} />
-                <span>{isRtl ? 'مسحوبات الصندوق اليومية' : 'Retraits de Caisse'}</span>
+                <span>{isRtl ? 'Ù…Ø³Ø­ÙˆØ¨Ø§Øª Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚ Ø§Ù„ÙŠÙˆÙ…ÙŠØ©' : 'Retraits de Caisse'}</span>
               </button>
               
               <button
@@ -868,7 +868,7 @@ export default function Account({
                 }`}
               >
                 <ClipboardCheck className={`w-4 h-4 ${activeTab === 'audit' ? 'text-emerald-600' : ''}`} />
-                <span>{isRtl ? 'مطابقة ومراقبة فروقات الصندوق' : 'Audit & Contrôle de Caisse'}</span>
+                <span>{isRtl ? 'Ù…Ø·Ø§Ø¨Ù‚Ø© ÙˆÙ…Ø±Ø§Ù‚Ø¨Ø© ÙØ±ÙˆÙ‚Ø§Øª Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚' : 'Audit & ContrÃ´le de Caisse'}</span>
               </button>
 
               <button
@@ -880,7 +880,7 @@ export default function Account({
                 }`}
               >
                 <TrendingUp className={`w-4 h-4 ${activeTab === 'profits' ? 'text-purple-600' : ''}`} />
-                <span>{isRtl ? 'مراقبة الأرباح والخصومات' : 'Marges & Chiffre d\'Affaires'}</span>
+                <span>{isRtl ? 'Ù…Ø±Ø§Ù‚Ø¨Ø© Ø§Ù„Ø£Ø±Ø¨Ø§Ø­ ÙˆØ§Ù„Ø®ØµÙˆÙ…Ø§Øª' : 'Marges & Chiffre d\'Affaires'}</span>
               </button>
             </div>
           </div>
@@ -888,7 +888,7 @@ export default function Account({
       </div>
 
       {/* ========================================================
-          VIEW A: CASH DRAWER WITHDRAWALS ROOM (سحوبات الصندوق)
+          VIEW A: CASH DRAWER WITHDRAWALS ROOM (Ø³Ø­ÙˆØ¨Ø§Øª Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚)
          ======================================================== */}
       {activeTab === 'withdrawals' && (
         <div className="space-y-8 animate-fade-in">
@@ -902,7 +902,7 @@ export default function Account({
                 <div className="w-full">
                   <div className="flex justify-between items-center mb-1">
                     <p className="text-xxs uppercase font-black text-emerald-600 tracking-wider">
-                      {isRtl ? 'المداخيل النقدية التراكمية في الصندوق' : 'Entrées de Caisse (Espèces)'}
+                      {isRtl ? 'Ø§Ù„Ù…Ø¯Ø§Ø®ÙŠÙ„ Ø§Ù„Ù†Ù‚Ø¯ÙŠØ© Ø§Ù„ØªØ±Ø§ÙƒÙ…ÙŠØ© ÙÙŠ Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚' : 'EntrÃ©es de Caisse (EspÃ¨ces)'}
                     </p>
                     <button
                       type="button"
@@ -912,7 +912,7 @@ export default function Account({
                         setAdjustmentReason('');
                       }}
                       className="text-emerald-650 hover:text-emerald-800 p-1 rounded hover:bg-slate-50 transition cursor-pointer flex items-center justify-center"
-                      title={isRtl ? 'تعديل يدوي' : 'Ajustement manuel'}
+                      title={isRtl ? 'ØªØ¹Ø¯ÙŠÙ„ ÙŠØ¯ÙˆÙŠ' : 'Ajustement manuel'}
                     >
                       <Edit3 className="w-3.5 h-3.5" />
                     </button>
@@ -920,7 +920,7 @@ export default function Account({
                   <h4 className="text-lg font-black text-emerald-950 font-mono mt-1">
                     {totalCashIncome.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                   </h4>
-                  <p className="text-xxs text-emerald-600 mt-1">{isRtl ? 'إجمالي المقبوضات النقدية' : 'Total des encaissements'}</p>
+                  <p className="text-xxs text-emerald-600 mt-1">{isRtl ? 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ù…Ù‚Ø¨ÙˆØ¶Ø§Øª Ø§Ù„Ù†Ù‚Ø¯ÙŠØ©' : 'Total des encaissements'}</p>
                 </div>
               </div>
             )}
@@ -930,7 +930,7 @@ export default function Account({
               <div className="flex-1">
                 <div className="flex justify-between items-center mb-1">
                   <p className="text-xxs uppercase font-black text-gray-400 tracking-wider">
-                    {isRtl ? 'مجموع السحوبات ومقتطعات المالك' : 'Prélèvements & Retraits'}
+                    {isRtl ? 'Ù…Ø¬Ù…ÙˆØ¹ Ø§Ù„Ø³Ø­ÙˆØ¨Ø§Øª ÙˆÙ…Ù‚ØªØ·Ø¹Ø§Øª Ø§Ù„Ù…Ø§Ù„Ùƒ' : 'PrÃ©lÃ¨vements & Retraits'}
                   </p>
                   {currentUser?.role !== 'cashier' && (
                     <button
@@ -941,7 +941,7 @@ export default function Account({
                         setAdjustmentReason('');
                       }}
                       className="text-amber-650 hover:text-amber-850 p-1 rounded hover:bg-slate-50 transition cursor-pointer flex items-center justify-center"
-                      title={isRtl ? 'تعديل يدوي' : 'Ajustement manuel'}
+                      title={isRtl ? 'ØªØ¹Ø¯ÙŠÙ„ ÙŠØ¯ÙˆÙŠ' : 'Ajustement manuel'}
                     >
                       <Edit3 className="w-3.5 h-3.5" />
                     </button>
@@ -950,7 +950,7 @@ export default function Account({
                 <h4 className="text-lg font-black text-amber-600 font-mono mt-1">
                   {totalWithdrawnAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                 </h4>
-                <p className="text-xxs text-slate-500 mt-1">{isRtl ? `${withdrawals.length} سحوبات مسجلة` : `${withdrawals.length} retraits`}</p>
+                <p className="text-xxs text-slate-500 mt-1">{isRtl ? `${withdrawals.length} Ø³Ø­ÙˆØ¨Ø§Øª Ù…Ø³Ø¬Ù„Ø©` : `${withdrawals.length} retraits`}</p>
               </div>
               <span className="p-3 bg-slate-50 text-slate-600 rounded-xl shrink-0">
                 <ArrowDownRight className="w-5 h-5 text-amber-500" />
@@ -963,7 +963,7 @@ export default function Account({
                 <div className="flex-1">
                   <div className="flex justify-between items-center mb-1">
                     <p className="text-xxs uppercase font-black text-emerald-100 tracking-wider">
-                      {isRtl ? 'رصيد الصندوق الحالي المتوفر' : 'Solde Net en Casserole'}
+                      {isRtl ? 'Ø±ØµÙŠØ¯ Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚ Ø§Ù„Ø­Ø§Ù„ÙŠ Ø§Ù„Ù…ØªÙˆÙØ±' : 'Solde Net en Casserole'}
                     </p>
                     <button
                       type="button"
@@ -973,7 +973,7 @@ export default function Account({
                         setAdjustmentReason('');
                       }}
                       className="text-emerald-100 hover:text-white p-1 rounded hover:bg-white/15 transition cursor-pointer flex items-center justify-center"
-                      title={isRtl ? 'تعديل يدوي' : 'Ajustement manuel'}
+                      title={isRtl ? 'ØªØ¹Ø¯ÙŠÙ„ ÙŠØ¯ÙˆÙŠ' : 'Ajustement manuel'}
                     >
                       <Edit3 className="w-3.5 h-3.5" />
                     </button>
@@ -983,8 +983,8 @@ export default function Account({
                   </h4>
                   <p className="text-xxs text-emerald-200 mt-1">
                     {currentDrawerBalance < 1000 
-                      ? (isRtl ? '⚠️ مخزون نقدي منخفض بالصندوق' : 'Casserole basse') 
-                      : (isRtl ? '✅ الرصيد النقدي ممتاز ومتاح' : 'Liquidité bonne')}
+                      ? (isRtl ? 'âš ï¸ Ù…Ø®Ø²ÙˆÙ† Ù†Ù‚Ø¯ÙŠ Ù…Ù†Ø®ÙØ¶ Ø¨Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚' : 'Casserole basse') 
+                      : (isRtl ? 'âœ… Ø§Ù„Ø±ØµÙŠØ¯ Ø§Ù„Ù†Ù‚Ø¯ÙŠ Ù…Ù…ØªØ§Ø² ÙˆÙ…ØªØ§Ø­' : 'LiquiditÃ© bonne')}
                   </p>
                 </div>
                 <Coins className="w-8 h-8 text-emerald-200 stroke-1 shrink-0" />
@@ -1000,24 +1000,24 @@ export default function Account({
               <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
                 <div>
                   <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider">
-                    {isRtl ? 'تسجيل عملية سحب نقدي جديدة' : 'Nouveau Prélèvement de Caisse'}
+                    {isRtl ? 'ØªØ³Ø¬ÙŠÙ„ Ø¹Ù…Ù„ÙŠØ© Ø³Ø­Ø¨ Ù†Ù‚Ø¯ÙŠ Ø¬Ø¯ÙŠØ¯Ø©' : 'Nouveau PrÃ©lÃ¨vement de Caisse'}
                   </h3>
                   <p className="text-[10px] text-gray-400 mt-0.5">
-                    {isRtl ? 'سجل أي كمية مال مأخوذة من مسؤولي الصناديق فوراً لضبط الحسابات.' : 'Saisissez les montants retirés pour maintenir l\'équilibre des comptes.'}
+                    {isRtl ? 'Ø³Ø¬Ù„ Ø£ÙŠ ÙƒÙ…ÙŠØ© Ù…Ø§Ù„ Ù…Ø£Ø®ÙˆØ°Ø© Ù…Ù† Ù…Ø³Ø¤ÙˆÙ„ÙŠ Ø§Ù„ØµÙ†Ø§Ø¯ÙŠÙ‚ ÙÙˆØ±Ø§Ù‹ Ù„Ø¶Ø¨Ø· Ø§Ù„Ø­Ø³Ø§Ø¨Ø§Øª.' : 'Saisissez les montants retirÃ©s pour maintenir l\'Ã©quilibre des comptes.'}
                   </p>
                 </div>
 
                 {withdrawalSuccess && (
                   <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-[10px] text-emerald-800 font-extrabold flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                    <span>{isRtl ? 'تم تسجيل السحب بنجاح واقتطاعه من رصيد الصندوق !' : 'Retrait enregistré avec succès !'}</span>
+                    <span>{isRtl ? 'ØªÙ… ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø³Ø­Ø¨ Ø¨Ù†Ø¬Ø§Ø­ ÙˆØ§Ù‚ØªØ·Ø§Ø¹Ù‡ Ù…Ù† Ø±ØµÙŠØ¯ Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚ !' : 'Retrait enregistrÃ© avec succÃ¨s !'}</span>
                   </div>
                 )}
 
                 <form onSubmit={handleAddWithdrawal} className="space-y-4">
                   {/* 1. Draw Amount */}
                   <div className="space-y-1">
-                    <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'المبلغ المطلوب سحبه' : 'Montant Retiré'}</label>
+                    <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'Ø§Ù„Ù…Ø¨Ù„Øº Ø§Ù„Ù…Ø·Ù„ÙˆØ¨ Ø³Ø­Ø¨Ù‡' : 'Montant RetirÃ©'}</label>
                     <input
                       type="number"
                       step="any"
@@ -1031,29 +1031,29 @@ export default function Account({
 
                   {/* 2. Recipient Person */}
                   <div className="space-y-1">
-                    <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'الساحب المستفيد (من أخذ المال؟)' : 'Bénéficiaire / Destinataire'}</label>
+                    <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'Ø§Ù„Ø³Ø§Ø­Ø¨ Ø§Ù„Ù…Ø³ØªÙÙŠØ¯ (Ù…Ù† Ø£Ø®Ø° Ø§Ù„Ù…Ø§Ù„ØŸ)' : 'BÃ©nÃ©ficiaire / Destinataire'}</label>
                     <select
                       value={withdrawPerson}
                       onChange={(e) => setWithdrawPerson(e.target.value)}
                       className="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"
                     >
-                      <option value="الياس المباركي">{isRtl ? 'الياس المباركي' : 'Ilyas El Moubarki'}</option>
-                      <option value="فؤاد المباركي">{isRtl ? 'فؤاد المباركي' : 'Fouad El Moubarki'}</option>
-                      <option value="احمد المباركي">{isRtl ? 'احمد المباركي' : 'Ahmed El Moubarki'}</option>
-                      <option value="autre">{isRtl ? 'شخص آخر (كتابة الاسم بالأسفل)' : 'Autre personne (saisir ci-dessous)'}</option>
+                      <option value="Ø§Ù„ÙŠØ§Ø³ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ">{isRtl ? 'Ø§Ù„ÙŠØ§Ø³ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ' : 'Ilyas El Moubarki'}</option>
+                      <option value="ÙØ¤Ø§Ø¯ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ">{isRtl ? 'ÙØ¤Ø§Ø¯ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ' : 'Fouad El Moubarki'}</option>
+                      <option value="Ø§Ø­Ù…Ø¯ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ">{isRtl ? 'Ø§Ø­Ù…Ø¯ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ' : 'Ahmed El Moubarki'}</option>
+                      <option value="autre">{isRtl ? 'Ø´Ø®Øµ Ø¢Ø®Ø± (ÙƒØªØ§Ø¨Ø© Ø§Ù„Ø§Ø³Ù… Ø¨Ø§Ù„Ø£Ø³ÙÙ„)' : 'Autre personne (saisir ci-dessous)'}</option>
                     </select>
                   </div>
 
                   {/* Conditional custom name input */}
                   {withdrawPerson === 'autre' && (
                     <div className="space-y-1">
-                      <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'اسم الشخص المستفيد المستهدف' : 'Nom du bénéficiaire'}</label>
+                      <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'Ø§Ø³Ù… Ø§Ù„Ø´Ø®Øµ Ø§Ù„Ù…Ø³ØªÙÙŠØ¯ Ø§Ù„Ù…Ø³ØªÙ‡Ø¯Ù' : 'Nom du bÃ©nÃ©ficiaire'}</label>
                       <input
                         type="text"
                         required
                         value={customPerson}
                         onChange={(e) => setCustomPerson(e.target.value)}
-                        placeholder={isRtl ? 'أدخل الاسم هنا...' : 'Entrez le nom...'}
+                        placeholder={isRtl ? 'Ø£Ø¯Ø®Ù„ Ø§Ù„Ø§Ø³Ù… Ù‡Ù†Ø§...' : 'Entrez le nom...'}
                         className="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"
                       />
                     </div>
@@ -1061,12 +1061,12 @@ export default function Account({
 
                   {/* 3. Reason notes */}
                   <div className="space-y-1">
-                    <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'السبب أو تدوين الملاحظة' : 'Motif / Description'}</label>
+                    <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'Ø§Ù„Ø³Ø¨Ø¨ Ø£Ùˆ ØªØ¯ÙˆÙŠÙ† Ø§Ù„Ù…Ù„Ø§Ø­Ø¸Ø©' : 'Motif / Description'}</label>
                     <textarea
                       rows={2}
                       value={withdrawNotes}
                       onChange={(e) => setWithdrawNotes(e.target.value)}
-                      placeholder={isRtl ? 'مثلاً: مقتطعات المالك، أداء فواتير، نقل السلع، إلخ...' : 'Dépenses personnelles, achats logistiques...'}
+                      placeholder={isRtl ? 'Ù…Ø«Ù„Ø§Ù‹: Ù…Ù‚ØªØ·Ø¹Ø§Øª Ø§Ù„Ù…Ø§Ù„ÙƒØŒ Ø£Ø¯Ø§Ø¡ ÙÙˆØ§ØªÙŠØ±ØŒ Ù†Ù‚Ù„ Ø§Ù„Ø³Ù„Ø¹ØŒ Ø¥Ù„Ø®...' : 'DÃ©penses personnelles, achats logistiques...'}
                       className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"
                     ></textarea>
                   </div>
@@ -1076,7 +1076,7 @@ export default function Account({
                     className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer mt-2"
                   >
                     <PlusCircle className="w-4 h-4" />
-                    <span>{isRtl ? 'تأكيد وصرف السحب' : 'Valider le Prélèvement'}</span>
+                    <span>{isRtl ? 'ØªØ£ÙƒÙŠØ¯ ÙˆØµØ±Ù Ø§Ù„Ø³Ø­Ø¨' : 'Valider le PrÃ©lÃ¨vement'}</span>
                   </button>
                 </form>
               </div>
@@ -1087,31 +1087,31 @@ export default function Account({
               <div className="flex items-center justify-between pb-2 border-b border-gray-50">
                 <div>
                   <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider">
-                    {isRtl ? 'سجل مستندات الصرف والمسحوبات' : 'Historique des Mouvements de Sortie'}
+                    {isRtl ? 'Ø³Ø¬Ù„ Ù…Ø³ØªÙ†Ø¯Ø§Øª Ø§Ù„ØµØ±Ù ÙˆØ§Ù„Ù…Ø³Ø­ÙˆØ¨Ø§Øª' : 'Historique des Mouvements de Sortie'}
                   </h3>
                   <p className="text-[10px] text-gray-400 mt-0.5">
-                    {isRtl ? 'تتبع زمني دقيق لكل السحوبات المسجلة مع تفاصيل المبالغ والمسؤولين.' : 'Liste exhaustive des décaissements et prélèvements d\'espèces.'}
+                    {isRtl ? 'ØªØªØ¨Ø¹ Ø²Ù…Ù†ÙŠ Ø¯Ù‚ÙŠÙ‚ Ù„ÙƒÙ„ Ø§Ù„Ø³Ø­ÙˆØ¨Ø§Øª Ø§Ù„Ù…Ø³Ø¬Ù„Ø© Ù…Ø¹ ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ù…Ø¨Ø§Ù„Øº ÙˆØ§Ù„Ù…Ø³Ø¤ÙˆÙ„ÙŠÙ†.' : 'Liste exhaustive des dÃ©caissements et prÃ©lÃ¨vements d\'espÃ¨ces.'}
                   </p>
                 </div>
               </div>
 
               <div className="overflow-x-auto no-scrollbar max-h-[320px] pr-1">
-                <table className="w-full text-left whitespace-nowrap">
+                <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} whitespace-nowrap">
                   <thead className="bg-white">
                     <tr className="border-b border-gray-100 text-[10px] font-bold uppercase text-gray-400">
-                      <th className="py-2.5 px-2">{isRtl ? 'المرجع' : 'Réf'}</th>
-                      <th className="py-2.5 px-2">{isRtl ? 'التاريخ' : 'Date'}</th>
-                      <th className="py-2.5 px-2">{isRtl ? 'المستفيد' : 'Bénéficiaire'}</th>
-                      <th className="py-2.5 px-2 text-right">{isRtl ? 'المبلغ' : 'Montant'}</th>
-                      <th className="py-2.5 px-2 text-center">{isRtl ? 'المسؤول' : 'Saisi par'}</th>
-                      <th className="py-2.5 px-2 text-center">{isRtl ? 'الإجراءات' : 'Actions'}</th>
+                      <th className="py-2.5 px-2">{isRtl ? 'Ø§Ù„Ù…Ø±Ø¬Ø¹' : 'RÃ©f'}</th>
+                      <th className="py-2.5 px-2">{isRtl ? 'Ø§Ù„ØªØ§Ø±ÙŠØ®' : 'Date'}</th>
+                      <th className="py-2.5 px-2">{isRtl ? 'Ø§Ù„Ù…Ø³ØªÙÙŠØ¯' : 'BÃ©nÃ©ficiaire'}</th>
+                      <th className="py-2.5 px-2 text-right">{isRtl ? 'Ø§Ù„Ù…Ø¨Ù„Øº' : 'Montant'}</th>
+                      <th className="py-2.5 px-2 text-center">{isRtl ? 'Ø§Ù„Ù…Ø³Ø¤ÙˆÙ„' : 'Saisi par'}</th>
+                      <th className="py-2.5 px-2 text-center">{isRtl ? 'Ø§Ù„Ø¥Ø¬Ø±Ø§Ø¡Ø§Øª' : 'Actions'}</th>
                     </tr>
                   </thead>
                   <tbody className="block md:table-row-group divide-y divide-gray-100/60 md:divide-gray-50">
                     {withdrawals.length === 0 ? (
                       <tr>
                         <td colSpan={6} className="py-8 text-center text-gray-400 text-xs font-bold">
-                          {isRtl ? 'لا توجد سحوبات مسجلة بالخزينة.' : 'Aucun prélèvement de caisse.'}
+                          {isRtl ? 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø³Ø­ÙˆØ¨Ø§Øª Ù…Ø³Ø¬Ù„Ø© Ø¨Ø§Ù„Ø®Ø²ÙŠÙ†Ø©.' : 'Aucun prÃ©lÃ¨vement de caisse.'}
                         </td>
                       </tr>
                     ) : (
@@ -1137,27 +1137,27 @@ export default function Account({
                             <div className="flex items-center justify-center gap-1.5">
                               <button
                                 onClick={() => setPrintWithdrawal(w)}
-                                title={isRtl ? 'طباعة' : 'Imprimer'}
+                                title={isRtl ? 'Ø·Ø¨Ø§Ø¹Ø©' : 'Imprimer'}
                                 className="p-1 px-2 bg-gray-50 hover:bg-gray-100 text-slate-600 border border-gray-200 rounded-lg text-[10px] font-black cursor-pointer inline-flex items-center gap-0.5 transition"
                               >
                                 <Printer className="w-3.5 h-3.5 text-emerald-600" />
-                                <span className="hidden md:inline">{isRtl ? 'طباعة' : 'Imprimer'}</span>
+                                <span className="hidden md:inline">{isRtl ? 'Ø·Ø¨Ø§Ø¹Ø©' : 'Imprimer'}</span>
                               </button>
                               <button
                                 onClick={() => handleEditWithdrawalClick(w)}
-                                title={isRtl ? 'تعديل' : 'Modifier'}
+                                title={isRtl ? 'ØªØ¹Ø¯ÙŠÙ„' : 'Modifier'}
                                 className="p-1 px-2 bg-gray-50 hover:bg-gray-100 text-slate-600 border border-gray-200 rounded-lg text-[10px] font-black cursor-pointer inline-flex items-center gap-0.5 transition"
                               >
                                 <Edit3 className="w-3.5 h-3.5 text-amber-500" />
-                                <span className="hidden md:inline">{isRtl ? 'تعديل' : 'Modifier'}</span>
+                                <span className="hidden md:inline">{isRtl ? 'ØªØ¹Ø¯ÙŠÙ„' : 'Modifier'}</span>
                               </button>
                               <button
                                 onClick={() => handleDeleteWithdrawal(w.id)}
-                                title={isRtl ? 'حذف' : 'Supprimer'}
+                                title={isRtl ? 'Ø­Ø°Ù' : 'Supprimer'}
                                 className="p-1 px-2 bg-gray-50 hover:bg-gray-100 text-red-600 border border-gray-200 rounded-lg text-[10px] font-black cursor-pointer inline-flex items-center gap-0.5 transition"
                               >
                                 <Trash2 className="w-3.5 h-3.5 text-red-500" />
-                                <span className="hidden md:inline">{isRtl ? 'حذف' : 'Supprimer'}</span>
+                                <span className="hidden md:inline">{isRtl ? 'Ø­Ø°Ù' : 'Supprimer'}</span>
                               </button>
                             </div>
                           </td>
@@ -1185,46 +1185,46 @@ export default function Account({
                 {/* Printable receipt structure perfectly formatted */}
                 <div id="printable-area" className="border-2 border-slate-900 p-4 space-y-4 font-mono text-xs text-slate-800 bg-white">
                   <div className="text-center border-b border-dashed border-slate-900 pb-3">
-                    <h2 className="font-extrabold text-sm">{isRtl ? 'الجميلة - لتدبير الحسابات والمخازن' : 'Al Jamila - Gestion de Caisse'}</h2>
-                    <p className="text-[10px] text-slate-500">{isRtl ? 'مستند ووصل سحب نقدي رسمي' : 'BON DE RETRAIT DE CAISSE'}</p>
-                    <p className="text-[9px] font-semibold mt-1">Nº: {printWithdrawal.id}</p>
+                    <h2 className="font-extrabold text-sm">{isRtl ? 'Ø§Ù„Ø¬Ù…ÙŠÙ„Ø© - Ù„ØªØ¯Ø¨ÙŠØ± Ø§Ù„Ø­Ø³Ø§Ø¨Ø§Øª ÙˆØ§Ù„Ù…Ø®Ø§Ø²Ù†' : 'Al Jamila - Gestion de Caisse'}</h2>
+                    <p className="text-[10px] text-slate-500">{isRtl ? 'Ù…Ø³ØªÙ†Ø¯ ÙˆÙˆØµÙ„ Ø³Ø­Ø¨ Ù†Ù‚Ø¯ÙŠ Ø±Ø³Ù…ÙŠ' : 'BON DE RETRAIT DE CAISSE'}</p>
+                    <p className="text-[9px] font-semibold mt-1">NÂº: {printWithdrawal.id}</p>
                   </div>
 
                   <div className="space-y-1.5 py-1 text-[11px]">
                     <div className="flex justify-between">
-                      <span>{isRtl ? 'التاريخ والوقت:' : 'Date/Heure:'}</span>
+                      <span>{isRtl ? 'Ø§Ù„ØªØ§Ø±ÙŠØ® ÙˆØ§Ù„ÙˆÙ‚Øª:' : 'Date/Heure:'}</span>
                       <span className="font-bold">{new Date(printWithdrawal.date).toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>{isRtl ? 'المستلم والساحب :' : 'Bénéficiaire:'}</span>
+                      <span>{isRtl ? 'Ø§Ù„Ù…Ø³ØªÙ„Ù… ÙˆØ§Ù„Ø³Ø§Ø­Ø¨ :' : 'BÃ©nÃ©ficiaire:'}</span>
                       <span className="font-bold">{printWithdrawal.person}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>{isRtl ? 'مسؤول التسجيل:' : 'Opérateur:'}</span>
+                      <span>{isRtl ? 'Ù…Ø³Ø¤ÙˆÙ„ Ø§Ù„ØªØ³Ø¬ÙŠÙ„:' : 'OpÃ©rateur:'}</span>
                       <span className="font-bold">{resolveUserName(printWithdrawal.responsible, lang)}</span>
                     </div>
                   </div>
 
                   <div className="border-y border-dashed border-slate-900 py-3 text-center my-3">
-                    <p className="text-[10px] text-slate-500 uppercase">{isRtl ? 'القيمة المسحوبة من الصرف' : 'MONTANT PRÉLEVÉ'}</p>
+                    <p className="text-[10px] text-slate-500 uppercase">{isRtl ? 'Ø§Ù„Ù‚ÙŠÙ…Ø© Ø§Ù„Ù…Ø³Ø­ÙˆØ¨Ø© Ù…Ù† Ø§Ù„ØµØ±Ù' : 'MONTANT PRÃ‰LEVÃ‰'}</p>
                     <h3 className="text-xl font-black mt-1 font-mono text-slate-900">
                       {printWithdrawal.amount.toFixed(2)}
                     </h3>
                   </div>
 
                   <div className="space-y-1 text-slate-600 text-[10px]">
-                    <p className="font-semibold">{isRtl ? 'علاقة السحب / ملاحظات:' : 'Motif de décaissement:'}</p>
+                    <p className="font-semibold">{isRtl ? 'Ø¹Ù„Ø§Ù‚Ø© Ø§Ù„Ø³Ø­Ø¨ / Ù…Ù„Ø§Ø­Ø¸Ø§Øª:' : 'Motif de dÃ©caissement:'}</p>
                     <p className="italic bg-gray-50 p-2 rounded border border-gray-100">{printWithdrawal.notes}</p>
                   </div>
 
                   <div className="pt-4 flex justify-between text-[10px] border-t border-dashed border-slate-900">
                     <div className="text-center">
-                      <p>{isRtl ? 'توقيع الصندوق' : 'Sign. Caisse'}</p>
+                      <p>{isRtl ? 'ØªÙˆÙ‚ÙŠØ¹ Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚' : 'Sign. Caisse'}</p>
                       <div className="h-6"></div>
                       <p>................</p>
                     </div>
                     <div className="text-center">
-                      <p>{isRtl ? 'توقيع المستلم' : 'Sign. Receveur'}</p>
+                      <p>{isRtl ? 'ØªÙˆÙ‚ÙŠØ¹ Ø§Ù„Ù…Ø³ØªÙ„Ù…' : 'Sign. Receveur'}</p>
                       <div className="h-6"></div>
                       <p>................</p>
                     </div>
@@ -1240,13 +1240,13 @@ export default function Account({
                     className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <Printer className="w-4 h-4" />
-                    <span>{isRtl ? 'بدء الطباعة الفورية' : 'Lancer l\'impression'}</span>
+                    <span>{isRtl ? 'Ø¨Ø¯Ø¡ Ø§Ù„Ø·Ø¨Ø§Ø¹Ø© Ø§Ù„ÙÙˆØ±ÙŠØ©' : 'Lancer l\'impression'}</span>
                   </button>
                   <button
                     onClick={() => setPrintWithdrawal(null)}
                     className="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition cursor-pointer text-center"
                   >
-                    {isRtl ? 'إغلاق المستند' : 'Fermer'}
+                    {isRtl ? 'Ø¥ØºÙ„Ø§Ù‚ Ø§Ù„Ù…Ø³ØªÙ†Ø¯' : 'Fermer'}
                   </button>
                 </div>
 
@@ -1260,20 +1260,20 @@ export default function Account({
               <div className="bg-white p-6 rounded-3xl max-w-md w-full space-y-4 shadow-2xl relative border border-gray-100">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                   <h3 className="text-sm font-black text-slate-800 uppercase tracking-wider">
-                    {isRtl ? 'تعديل مستند الصرف' : 'Modifier le Prélèvement'}
+                    {isRtl ? 'ØªØ¹Ø¯ÙŠÙ„ Ù…Ø³ØªÙ†Ø¯ Ø§Ù„ØµØ±Ù' : 'Modifier le PrÃ©lÃ¨vement'}
                   </h3>
                   <button 
                     onClick={() => setEditingWithdrawal(null)}
                     className="text-gray-400 hover:text-gray-600 cursor-pointer font-bold text-xs"
                   >
-                    {isRtl ? 'إلغاء' : 'Annuler'}
+                    {isRtl ? 'Ø¥Ù„ØºØ§Ø¡' : 'Annuler'}
                   </button>
                 </div>
 
                 <form onSubmit={handleSaveEdit} className="space-y-4">
                   {/* Amount */}
                   <div className="space-y-1">
-                    <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'المبلغ المستهدف ' : 'Montant Prélevé '}</label>
+                    <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'Ø§Ù„Ù…Ø¨Ù„Øº Ø§Ù„Ù…Ø³ØªÙ‡Ø¯Ù ' : 'Montant PrÃ©levÃ© '}</label>
                     <input
                       type="number"
                       step="0.01"
@@ -1287,29 +1287,29 @@ export default function Account({
 
                   {/* Beneficiary */}
                   <div className="space-y-1">
-                    <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'المستفيد' : 'Bénéficiaire'}</label>
+                    <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'Ø§Ù„Ù…Ø³ØªÙÙŠØ¯' : 'BÃ©nÃ©ficiaire'}</label>
                     <select
                       value={editPerson}
                       onChange={(e) => setEditPerson(e.target.value)}
                       className="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition cursor-pointer"
                     >
-                      <option value="الياس المباركي">{isRtl ? 'الياس المباركي' : 'Ilyas El Moubarki'}</option>
-                      <option value="فؤاد المباركي">{isRtl ? 'فؤاد المباركي' : 'Fouad El Moubarki'}</option>
-                      <option value="احمد المباركي">{isRtl ? 'احمد المباركي' : 'Ahmed El Moubarki'}</option>
-                      <option value="autre">{isRtl ? 'شخص آخر (كتابة الاسم بالأسفل)' : 'Autre personne (saisir ci-dessous)'}</option>
+                      <option value="Ø§Ù„ÙŠØ§Ø³ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ">{isRtl ? 'Ø§Ù„ÙŠØ§Ø³ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ' : 'Ilyas El Moubarki'}</option>
+                      <option value="ÙØ¤Ø§Ø¯ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ">{isRtl ? 'ÙØ¤Ø§Ø¯ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ' : 'Fouad El Moubarki'}</option>
+                      <option value="Ø§Ø­Ù…Ø¯ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ">{isRtl ? 'Ø§Ø­Ù…Ø¯ Ø§Ù„Ù…Ø¨Ø§Ø±ÙƒÙŠ' : 'Ahmed El Moubarki'}</option>
+                      <option value="autre">{isRtl ? 'Ø´Ø®Øµ Ø¢Ø®Ø± (ÙƒØªØ§Ø¨Ø© Ø§Ù„Ø§Ø³Ù… Ø¨Ø§Ù„Ø£Ø³ÙÙ„)' : 'Autre personne (saisir ci-dessous)'}</option>
                     </select>
                   </div>
 
                   {/* Custom Beneficiary */}
                   {editPerson === 'autre' && (
                     <div className="space-y-1">
-                      <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'اسم الشخص المستفيد المستهدف' : 'Nom du bénéficiaire'}</label>
+                      <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'Ø§Ø³Ù… Ø§Ù„Ø´Ø®Øµ Ø§Ù„Ù…Ø³ØªÙÙŠØ¯ Ø§Ù„Ù…Ø³ØªÙ‡Ø¯Ù' : 'Nom du bÃ©nÃ©ficiaire'}</label>
                       <input
                         type="text"
                         required
                         value={editCustomPerson}
                         onChange={(e) => setEditCustomPerson(e.target.value)}
-                        placeholder={isRtl ? 'أدخل الاسم هنا...' : 'Entrez le nom...'}
+                        placeholder={isRtl ? 'Ø£Ø¯Ø®Ù„ Ø§Ù„Ø§Ø³Ù… Ù‡Ù†Ø§...' : 'Entrez le nom...'}
                         className="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition"
                       />
                     </div>
@@ -1317,12 +1317,12 @@ export default function Account({
 
                   {/* Notes */}
                   <div className="space-y-1">
-                    <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'السبب أو تدوين الملاحظة' : 'Motif / Description'}</label>
+                    <label className="text-xxs font-black uppercase text-gray-400 block">{isRtl ? 'Ø§Ù„Ø³Ø¨Ø¨ Ø£Ùˆ ØªØ¯ÙˆÙŠÙ† Ø§Ù„Ù…Ù„Ø§Ø­Ø¸Ø©' : 'Motif / Description'}</label>
                     <textarea
                       rows={2}
                       value={editNotes}
                       onChange={(e) => setEditNotes(e.target.value)}
-                      placeholder={isRtl ? 'مثلاً: مقتطعات المالك، أداء فواتير، نقل السلع، إلخ...' : 'Dépenses personnelles, achats logistiques...'}
+                      placeholder={isRtl ? 'Ù…Ø«Ù„Ø§Ù‹: Ù…Ù‚ØªØ·Ø¹Ø§Øª Ø§Ù„Ù…Ø§Ù„ÙƒØŒ Ø£Ø¯Ø§Ø¡ ÙÙˆØ§ØªÙŠØ±ØŒ Ù†Ù‚Ù„ Ø§Ù„Ø³Ù„Ø¹ØŒ Ø¥Ù„Ø®...' : 'DÃ©penses personnelles, achats logistiques...'}
                       className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition"
                     ></textarea>
                   </div>
@@ -1332,7 +1332,7 @@ export default function Account({
                     type="submit"
                     className="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs rounded-xl shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer mt-2"
                   >
-                    <span>{isRtl ? 'حفظ التعديلات' : 'Enregistrer les modifications'}</span>
+                    <span>{isRtl ? 'Ø­ÙØ¸ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„Ø§Øª' : 'Enregistrer les modifications'}</span>
                   </button>
                 </form>
               </div>
@@ -1343,7 +1343,7 @@ export default function Account({
 
 
       {/* ========================================================
-          VIEW B: PERIODIC STOCK AUDITING (مراقبة عجز الصندوق)
+          VIEW B: PERIODIC STOCK AUDITING (Ù…Ø±Ø§Ù‚Ø¨Ø© Ø¹Ø¬Ø² Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚)
          ======================================================== */}
       {activeTab === 'audit' && (
         <div className="space-y-8 animate-fade-in text-slate-800">
@@ -1352,9 +1352,9 @@ export default function Account({
           <div className="max-w-xs">
             <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
               <div>
-                <p className="text-xxs uppercase font-black text-gray-400 tracking-wider">{isRtl ? 'إجمالي فئات وتنوع السلع ' : 'Nombre d\'Articles distincts'}</p>
+                <p className="text-xxs uppercase font-black text-gray-400 tracking-wider">{isRtl ? 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ ÙØ¦Ø§Øª ÙˆØªÙ†ÙˆØ¹ Ø§Ù„Ø³Ù„Ø¹ ' : 'Nombre d\'Articles distincts'}</p>
                 <h4 className="text-lg font-black font-mono mt-1 text-slate-800">
-                  {products.length} {isRtl ? 'أصناف متنوعة' : 'produits'}
+                  {products.length} {isRtl ? 'Ø£ØµÙ†Ø§Ù Ù…ØªÙ†ÙˆØ¹Ø©' : 'produits'}
                 </h4>
               </div>
               <span className="p-3 bg-teal-50 text-teal-600 rounded-xl">
@@ -1370,12 +1370,12 @@ export default function Account({
               <div>
                 <h3 className="text-xs uppercase font-extrabold text-blue-800 tracking-wider flex items-center gap-1.5">
                   <ShieldAlert className="w-4 h-4" />
-                  <span>{isRtl ? 'مطبخ التفتيش ومطابقة المخزن الفعلي للسلع لمراقبة الفروقات والعجز' : 'Salle d\'Audit & Reconcialiation Physique de Stock'}</span>
+                  <span>{isRtl ? 'Ù…Ø·Ø¨Ø® Ø§Ù„ØªÙØªÙŠØ´ ÙˆÙ…Ø·Ø§Ø¨Ù‚Ø© Ø§Ù„Ù…Ø®Ø²Ù† Ø§Ù„ÙØ¹Ù„ÙŠ Ù„Ù„Ø³Ù„Ø¹ Ù„Ù…Ø±Ø§Ù‚Ø¨Ø© Ø§Ù„ÙØ±ÙˆÙ‚Ø§Øª ÙˆØ§Ù„Ø¹Ø¬Ø²' : 'Salle d\'Audit & Reconcialiation Physique de Stock'}</span>
                 </h3>
                 <p className="text-xs text-gray-400 mt-0.5">
                   {isRtl 
-                    ? 'أدخل الكميات المتوفرة مادياً وقارنها مع قاعدة البيانات لرصد العجز والسرقات فوراً.' 
-                    : 'Ajustez les quantités physiques observées sur l\'étagère pour calculer les déficits.'}
+                    ? 'Ø£Ø¯Ø®Ù„ Ø§Ù„ÙƒÙ…ÙŠØ§Øª Ø§Ù„Ù…ØªÙˆÙØ±Ø© Ù…Ø§Ø¯ÙŠØ§Ù‹ ÙˆÙ‚Ø§Ø±Ù†Ù‡Ø§ Ù…Ø¹ Ù‚Ø§Ø¹Ø¯Ø© Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ù„Ø±ØµØ¯ Ø§Ù„Ø¹Ø¬Ø² ÙˆØ§Ù„Ø³Ø±Ù‚Ø§Øª ÙÙˆØ±Ø§Ù‹.' 
+                    : 'Ajustez les quantitÃ©s physiques observÃ©es sur l\'Ã©tagÃ¨re pour calculer les dÃ©ficits.'}
                 </p>
               </div>
 
@@ -1386,7 +1386,7 @@ export default function Account({
                 className="text-xxs font-black px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-slate-900 border border-gray-200 rounded-xl transition cursor-pointer self-start md:self-auto flex items-center gap-1"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                <span>{isRtl ? 'إعادة مطابقة مع النظام' : 'Recopier le stock théorique'}</span>
+                <span>{isRtl ? 'Ø¥Ø¹Ø§Ø¯Ø© Ù…Ø·Ø§Ø¨Ù‚Ø© Ù…Ø¹ Ø§Ù„Ù†Ø¸Ø§Ù…' : 'Recopier le stock thÃ©orique'}</span>
               </button>
             </div>
 
@@ -1394,9 +1394,9 @@ export default function Account({
               <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl text-xs text-emerald-800 font-extrabold flex items-center gap-2">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
                 <div>
-                  <p>{isRtl ? 'تم تطبيق تقرير جرد ومطابقة الصندوق بنجاح !' : 'Audit de stock validé avec succès !'}</p>
+                  <p>{isRtl ? 'ØªÙ… ØªØ·Ø¨ÙŠÙ‚ ØªÙ‚Ø±ÙŠØ± Ø¬Ø±Ø¯ ÙˆÙ…Ø·Ø§Ø¨Ù‚Ø© Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚ Ø¨Ù†Ø¬Ø§Ø­ !' : 'Audit de stock validÃ© avec succÃ¨s !'}</p>
                   <p className="text-[10px] text-emerald-600 font-medium mt-0.5">
-                    {isRtl ? 'تمت تسوية وتصفية جميع الفروقات وتعديل المخازن وتوليد الحركات في الأرشيف.' : 'Les stocks ont été adaptés et les mouvements générés.'}
+                    {isRtl ? 'ØªÙ…Øª ØªØ³ÙˆÙŠØ© ÙˆØªØµÙÙŠØ© Ø¬Ù…ÙŠØ¹ Ø§Ù„ÙØ±ÙˆÙ‚Ø§Øª ÙˆØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ù…Ø®Ø§Ø²Ù† ÙˆØªÙˆÙ„ÙŠØ¯ Ø§Ù„Ø­Ø±ÙƒØ§Øª ÙÙŠ Ø§Ù„Ø£Ø±Ø´ÙŠÙ.' : 'Les stocks ont Ã©tÃ© adaptÃ©s et les mouvements gÃ©nÃ©rÃ©s.'}
                   </p>
                 </div>
               </div>
@@ -1405,19 +1405,19 @@ export default function Account({
             {/* Config metadata of audit */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
               <div className="space-y-1">
-                <label className="text-xxs font-black text-slate-400 uppercase block">{isRtl ? 'وتيرة ونوعية التفتيش الدوري' : 'Fréquence de l\'Audit'}</label>
+                <label className="text-xxs font-black text-slate-400 uppercase block">{isRtl ? 'ÙˆØªÙŠØ±Ø© ÙˆÙ†ÙˆØ¹ÙŠØ© Ø§Ù„ØªÙØªÙŠØ´ Ø§Ù„Ø¯ÙˆØ±ÙŠ' : 'FrÃ©quence de l\'Audit'}</label>
                 <select
                   value={auditType}
                   onChange={(e) => setAuditType(e.target.value as any)}
                   className="w-full py-1.5 px-3 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700"
                 >
-                  <option value="monthly">{isRtl ? 'تفتيش وتعديل شهري دوري للصندوق' : 'Mensuel (Contrôle de Caisse)'}</option>
-                  <option value="semiannual">{isRtl ? 'جرد شامل سنوي / نصف سنوي' : 'Semestriel / Annuel Complet'}</option>
+                  <option value="monthly">{isRtl ? 'ØªÙØªÙŠØ´ ÙˆØªØ¹Ø¯ÙŠÙ„ Ø´Ù‡Ø±ÙŠ Ø¯ÙˆØ±ÙŠ Ù„Ù„ØµÙ†Ø¯ÙˆÙ‚' : 'Mensuel (ContrÃ´le de Caisse)'}</option>
+                  <option value="semiannual">{isRtl ? 'Ø¬Ø±Ø¯ Ø´Ø§Ù…Ù„ Ø³Ù†ÙˆÙŠ / Ù†ØµÙ Ø³Ù†ÙˆÙŠ' : 'Semestriel / Annuel Complet'}</option>
                 </select>
               </div>
 
               <div className="space-y-1">
-                <label className="text-xxs font-black text-slate-400 uppercase block">{isRtl ? 'المفتش القائم بالتدقيق والعد الفعلي' : 'Responsable / Auditeur'}</label>
+                <label className="text-xxs font-black text-slate-400 uppercase block">{isRtl ? 'Ø§Ù„Ù…ÙØªØ´ Ø§Ù„Ù‚Ø§Ø¦Ù… Ø¨Ø§Ù„ØªØ¯Ù‚ÙŠÙ‚ ÙˆØ§Ù„Ø¹Ø¯ Ø§Ù„ÙØ¹Ù„ÙŠ' : 'Responsable / Auditeur'}</label>
                 <input
                   type="text"
                   value={auditorName}
@@ -1427,12 +1427,12 @@ export default function Account({
               </div>
 
               <div className="space-y-1">
-                <label className="text-xxs font-black text-slate-400 uppercase block">{isRtl ? 'ملاحظة تفتيش شاملة' : 'Rapport & Notes de Clôture'}</label>
+                <label className="text-xxs font-black text-slate-400 uppercase block">{isRtl ? 'Ù…Ù„Ø§Ø­Ø¸Ø© ØªÙØªÙŠØ´ Ø´Ø§Ù…Ù„Ø©' : 'Rapport & Notes de ClÃ´ture'}</label>
                 <input
                   type="text"
                   value={auditNotes}
                   onChange={(e) => setAuditNotes(e.target.value)}
-                  placeholder={isRtl ? 'مثال: تم تصفية العجز المالي الناتج عن التخريب...' : 'Ex: Ajustement suite à pertes.'}
+                  placeholder={isRtl ? 'Ù…Ø«Ø§Ù„: ØªÙ… ØªØµÙÙŠØ© Ø§Ù„Ø¹Ø¬Ø² Ø§Ù„Ù…Ø§Ù„ÙŠ Ø§Ù„Ù†Ø§ØªØ¬ Ø¹Ù† Ø§Ù„ØªØ®Ø±ÙŠØ¨...' : 'Ex: Ajustement suite Ã  pertes.'}
                   className="w-full py-1.5 px-3 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700 placeholder-slate-400"
                 />
               </div>
@@ -1446,12 +1446,12 @@ export default function Account({
                 </div>
                 <div>
                   <h4 className="text-xs font-extrabold text-slate-800">
-                    {isRtl ? 'تصنيف ومطابقة المخزون حسب فئة المنتوج' : 'Audit et matching par catégorie de produit'}
+                    {isRtl ? 'ØªØµÙ†ÙŠÙ ÙˆÙ…Ø·Ø§Ø¨Ù‚Ø© Ø§Ù„Ù…Ø®Ø²ÙˆÙ† Ø­Ø³Ø¨ ÙØ¦Ø© Ø§Ù„Ù…Ù†ØªÙˆØ¬' : 'Audit et matching par catÃ©gorie de produit'}
                   </h4>
                   <p className="text-[10px] text-gray-400 mt-0.5">
                     {isRtl 
-                      ? 'اختر فئة معينة لتسهيل جرد وتفتيش الرفوف ومكافحة السرقة بشكل منظم جزئي.' 
-                      : 'Sélectionnez une catégorie pour filtrer la table de vérification courante.'}
+                      ? 'Ø§Ø®ØªØ± ÙØ¦Ø© Ù…Ø¹ÙŠÙ†Ø© Ù„ØªØ³Ù‡ÙŠÙ„ Ø¬Ø±Ø¯ ÙˆØªÙØªÙŠØ´ Ø§Ù„Ø±ÙÙˆÙ ÙˆÙ…ÙƒØ§ÙØ­Ø© Ø§Ù„Ø³Ø±Ù‚Ø© Ø¨Ø´ÙƒÙ„ Ù…Ù†Ø¸Ù… Ø¬Ø²Ø¦ÙŠ.' 
+                      : 'SÃ©lectionnez une catÃ©gorie pour filtrer la table de vÃ©rification courante.'}
                   </p>
                 </div>
               </div>
@@ -1463,7 +1463,7 @@ export default function Account({
                     type="text"
                     value={auditSearchQuery}
                     onChange={(e) => setAuditSearchQuery(e.target.value)}
-                    placeholder={isRtl ? 'البحث بالاسم أو رمز SKU...' : 'Rechercher par nom, SKU...'}
+                    placeholder={isRtl ? 'Ø§Ù„Ø¨Ø­Ø« Ø¨Ø§Ù„Ø§Ø³Ù… Ø£Ùˆ Ø±Ù…Ø² SKU...' : 'Rechercher par nom, SKU...'}
                     className={`w-full py-1.5 ${isRtl ? 'pr-9 pl-3' : 'pl-9 pr-3'} bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500`}
                   />
                   {auditSearchQuery && (
@@ -1472,7 +1472,7 @@ export default function Account({
                       onClick={() => setAuditSearchQuery('')}
                       className={`absolute ${isRtl ? 'left-2.5' : 'right-2.5'} top-1.5 text-slate-400 hover:text-slate-600 font-bold text-base`}
                     >
-                      ×
+                      Ã—
                     </button>
                   )}
                 </div>
@@ -1483,7 +1483,7 @@ export default function Account({
                     onChange={(e) => setAuditCategoryFilter(e.target.value)}
                     className="w-full py-2 px-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500"
                   >
-                    <option value="all">{isRtl ? 'جميع فئات المنتجات والسلع' : 'Toutes les catégories'}</option>
+                    <option value="all">{isRtl ? 'Ø¬Ù…ÙŠØ¹ ÙØ¦Ø§Øª Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª ÙˆØ§Ù„Ø³Ù„Ø¹' : 'Toutes les catÃ©gories'}</option>
                     {categoriesList.map(cat => (
                       <option key={cat} value={cat}>{cat}</option>
                     ))}
@@ -1495,7 +1495,7 @@ export default function Account({
             {/* Category Matching Status Progress indicators & Cards */}
             <div className="space-y-2">
               <div className="text-xxs font-black text-slate-400 uppercase tracking-widest block leading-none">
-                {isRtl ? 'مؤشرات جرد وتفتيش الفئات والرفوف (اضغط للاختيار والتصفية)' : 'Progression d\'audit par catégorie (cliquez pour filtrer)'}
+                {isRtl ? 'Ù…Ø¤Ø´Ø±Ø§Øª Ø¬Ø±Ø¯ ÙˆØªÙØªÙŠØ´ Ø§Ù„ÙØ¦Ø§Øª ÙˆØ§Ù„Ø±ÙÙˆÙ (Ø§Ø¶ØºØ· Ù„Ù„Ø§Ø®ØªÙŠØ§Ø± ÙˆØ§Ù„ØªØµÙÙŠØ©)' : 'Progression d\'audit par catÃ©gorie (cliquez pour filtrer)'}
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {/* Card for 'all' */}
@@ -1514,7 +1514,7 @@ export default function Account({
                     >
                       <div className="flex items-center justify-between w-full">
                         <span className="font-extrabold text-[9px] uppercase tracking-wider text-slate-400">
-                          {isRtl ? 'الإجمالي العام' : 'Total Général'}
+                          {isRtl ? 'Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ø¹Ø§Ù…' : 'Total GÃ©nÃ©ral'}
                         </span>
                         {stats.pct === 100 ? (
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
@@ -1524,10 +1524,10 @@ export default function Account({
                       </div>
                       <div>
                         <p className="text-[11px] font-black text-slate-900 truncate">
-                          {isRtl ? 'كل فئات السلع' : 'Toutes Catégories'}
+                          {isRtl ? 'ÙƒÙ„ ÙØ¦Ø§Øª Ø§Ù„Ø³Ù„Ø¹' : 'Toutes CatÃ©gories'}
                         </p>
                         <span className="text-[9px] text-gray-450 font-bold block mt-0.5">
-                          {isRtl ? `${stats.counted} من ${stats.total} سلع` : `${stats.counted} sur ${stats.total}`}
+                          {isRtl ? `${stats.counted} Ù…Ù† ${stats.total} Ø³Ù„Ø¹` : `${stats.counted} sur ${stats.total}`}
                         </span>
                       </div>
                     </button>
@@ -1550,7 +1550,7 @@ export default function Account({
                     >
                       <div className="flex items-center justify-between gap-1 w-full">
                         <span className="font-extrabold text-[8px] uppercase tracking-wider text-slate-400 truncate max-w-[80px]">
-                          {isRtl ? 'فئة' : 'Cat.'}
+                          {isRtl ? 'ÙØ¦Ø©' : 'Cat.'}
                         </span>
                         {stats.pct === 100 ? (
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
@@ -1563,7 +1563,7 @@ export default function Account({
                           {cat}
                         </p>
                         <span className="text-[9px] text-gray-450 font-bold block mt-1">
-                          {isRtl ? `${stats.counted} من ${stats.total} سلع` : `${stats.counted} sur ${stats.total}`}
+                          {isRtl ? `${stats.counted} Ù…Ù† ${stats.total} Ø³Ù„Ø¹` : `${stats.counted} sur ${stats.total}`}
                         </span>
                       </div>
                     </button>
@@ -1578,16 +1578,16 @@ export default function Account({
                 <div className="flex items-start gap-2">
                   <ShieldAlert className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5 animate-bounce" />
                   <div>
-                    <h5 className="text-red-900 font-extrabold">{isRtl ? 'تحذير المراقبة المالية: تم رصد فروقات غير متطابقة !' : 'Anomalie de Stock Détectée'}</h5>
+                    <h5 className="text-red-900 font-extrabold">{isRtl ? 'ØªØ­Ø°ÙŠØ± Ø§Ù„Ù…Ø±Ø§Ù‚Ø¨Ø© Ø§Ù„Ù…Ø§Ù„ÙŠØ©: ØªÙ… Ø±ØµØ¯ ÙØ±ÙˆÙ‚Ø§Øª ØºÙŠØ± Ù…ØªØ·Ø§Ø¨Ù‚Ø© !' : 'Anomalie de Stock DÃ©tectÃ©e'}</h5>
                     <p className="text-[10px] text-red-700 font-bold mt-0.5">
                       {isRtl 
-                        ? `تم رصد عجز واختلاس كلي بقيمة ${auditAnalysis.deficitQty} وحدات من السلع المفقودة.` 
-                        : `Déficit cumulé estimé à ${auditAnalysis.deficitQty} unités perdues.`}
+                        ? `ØªÙ… Ø±ØµØ¯ Ø¹Ø¬Ø² ÙˆØ§Ø®ØªÙ„Ø§Ø³ ÙƒÙ„ÙŠ Ø¨Ù‚ÙŠÙ…Ø© ${auditAnalysis.deficitQty} ÙˆØ­Ø¯Ø§Øª Ù…Ù† Ø§Ù„Ø³Ù„Ø¹ Ø§Ù„Ù…ÙÙ‚ÙˆØ¯Ø©.` 
+                        : `DÃ©ficit cumulÃ© estimÃ© Ã  ${auditAnalysis.deficitQty} unitÃ©s perdues.`}
                     </p>
                   </div>
                 </div>
                 <div className="text-slate-800 self-stretch sm:self-auto bg-white p-2.5 px-4 rounded-xl border border-red-100 text-right">
-                  <p className="text-[10px] text-gray-400 font-bold uppercase">{isRtl ? 'الضرر المالي الناتج عن العجز المالي (شراء)' : 'Pertes Coût d\'Achat Restant'}</p>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase">{isRtl ? 'Ø§Ù„Ø¶Ø±Ø± Ø§Ù„Ù…Ø§Ù„ÙŠ Ø§Ù„Ù†Ø§ØªØ¬ Ø¹Ù† Ø§Ù„Ø¹Ø¬Ø² Ø§Ù„Ù…Ø§Ù„ÙŠ (Ø´Ø±Ø§Ø¡)' : 'Pertes CoÃ»t d\'Achat Restant'}</p>
                   <p className="font-mono text-base font-black text-red-600">
                     -{auditAnalysis.deficitValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                   </p>
@@ -1597,25 +1597,25 @@ export default function Account({
 
             {/* Product verification list table */}
             <div className="overflow-x-auto no-scrollbar">
-              <table className="w-full text-left whitespace-nowrap">
+              <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} whitespace-nowrap">
                 <thead className="bg-white">
                   <tr className="border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
-                    <th className="py-2.5 px-2">{isRtl ? 'المنتج والصنف' : 'Désignation de l\'article'}</th>
-                    <th className="py-2.5 px-2 text-center">{isRtl ? 'سعر الشراء' : 'P. Achat'}</th>
-                    <th className="py-2.5 px-2 text-center">{isRtl ? 'سعر البيع' : 'P. Vente'}</th>
-                    <th className="py-2.5 px-2 text-center bg-blue-50/30 text-blue-900 font-black">{isRtl ? 'المسجل بالنظام حالياً' : 'Stock Théorique'}</th>
-                    <th className="py-2.5 px-2 text-center bg-emerald-50/30 text-emerald-900 font-black">{isRtl ? 'العدد الفعلي المادي على الرف' : 'Quantité Réelle'}</th>
-                    <th className="py-2.5 px-2 text-center">{isRtl ? 'تصفية الفارق' : 'Écart / Différence'}</th>
-                    <th className="py-2.5 px-2 text-right">{isRtl ? 'قيمة الفارق المالي' : 'Impulsion Financière'}</th>
-                    <th className="py-2.5 px-2 text-center">{isRtl ? 'الحالة والمراقبة' : 'Statut'}</th>
-                    <th className="py-2.5 px-2 text-center">{isRtl ? 'المطابقة والتدقيق' : 'Vérification'}</th>
+                    <th className="py-2.5 px-2">{isRtl ? 'Ø§Ù„Ù…Ù†ØªØ¬ ÙˆØ§Ù„ØµÙ†Ù' : 'DÃ©signation de l\'article'}</th>
+                    <th className="py-2.5 px-2 text-center">{isRtl ? 'Ø³Ø¹Ø± Ø§Ù„Ø´Ø±Ø§Ø¡' : 'P. Achat'}</th>
+                    <th className="py-2.5 px-2 text-center">{isRtl ? 'Ø³Ø¹Ø± Ø§Ù„Ø¨ÙŠØ¹' : 'P. Vente'}</th>
+                    <th className="py-2.5 px-2 text-center bg-blue-50/30 text-blue-900 font-black">{isRtl ? 'Ø§Ù„Ù…Ø³Ø¬Ù„ Ø¨Ø§Ù„Ù†Ø¸Ø§Ù… Ø­Ø§Ù„ÙŠØ§Ù‹' : 'Stock ThÃ©orique'}</th>
+                    <th className="py-2.5 px-2 text-center bg-emerald-50/30 text-emerald-900 font-black">{isRtl ? 'Ø§Ù„Ø¹Ø¯Ø¯ Ø§Ù„ÙØ¹Ù„ÙŠ Ø§Ù„Ù…Ø§Ø¯ÙŠ Ø¹Ù„Ù‰ Ø§Ù„Ø±Ù' : 'QuantitÃ© RÃ©elle'}</th>
+                    <th className="py-2.5 px-2 text-center">{isRtl ? 'ØªØµÙÙŠØ© Ø§Ù„ÙØ§Ø±Ù‚' : 'Ã‰cart / DiffÃ©rence'}</th>
+                    <th className="py-2.5 px-2 text-right">{isRtl ? 'Ù‚ÙŠÙ…Ø© Ø§Ù„ÙØ§Ø±Ù‚ Ø§Ù„Ù…Ø§Ù„ÙŠ' : 'Impulsion FinanciÃ¨re'}</th>
+                    <th className="py-2.5 px-2 text-center">{isRtl ? 'Ø§Ù„Ø­Ø§Ù„Ø© ÙˆØ§Ù„Ù…Ø±Ø§Ù‚Ø¨Ø©' : 'Statut'}</th>
+                    <th className="py-2.5 px-2 text-center">{isRtl ? 'Ø§Ù„Ù…Ø·Ø§Ø¨Ù‚Ø© ÙˆØ§Ù„ØªØ¯Ù‚ÙŠÙ‚' : 'VÃ©rification'}</th>
                   </tr>
                 </thead>
                 <tbody className="block md:table-row-group md:divide-y md:divide-gray-50 text-xs font-semibold space-y-3 md:space-y-0 pb-4 md:pb-0">
                   {filteredAuditProducts.length === 0 ? (
                     <tr>
                       <td colSpan={9} className="py-12 text-center text-gray-400 font-bold">
-                        {isRtl ? 'لا توجد سلع أو منتجات مسجلة ضمن هذه الفئة حالياً.' : 'Aucun produit enregistré sous cette catégorie.'}
+                        {isRtl ? 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø³Ù„Ø¹ Ø£Ùˆ Ù…Ù†ØªØ¬Ø§Øª Ù…Ø³Ø¬Ù„Ø© Ø¶Ù…Ù† Ù‡Ø°Ù‡ Ø§Ù„ÙØ¦Ø© Ø­Ø§Ù„ÙŠØ§Ù‹.' : 'Aucun produit enregistrÃ© sous cette catÃ©gorie.'}
                       </td>
                     </tr>
                   ) : (
@@ -1635,30 +1635,30 @@ export default function Account({
                               {physicalCounts[p.id] !== undefined ? (
                                 <span className="inline-flex items-center gap-0.5 text-[9px] text-emerald-600 bg-emerald-50 border border-emerald-100 px-1 py-0.5 rounded font-black shrink-0">
                                   <CheckCircle2 className="w-2.5 h-2.5" />
-                                  <span>{isRtl ? 'تم حسابه عمداً' : 'Compté'}</span>
+                                  <span>{isRtl ? 'ØªÙ… Ø­Ø³Ø§Ø¨Ù‡ Ø¹Ù…Ø¯Ø§Ù‹' : 'ComptÃ©'}</span>
                                 </span>
                               ) : (
                                 <span className="inline-flex items-center gap-0.5 text-[9px] text-slate-400 bg-slate-50 border border-slate-100 px-1.5 py-0.5 rounded font-bold shrink-0">
                                   <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                                  <span>{isRtl ? 'معين تلقائياً' : 'Par défaut'}</span>
+                                  <span>{isRtl ? 'Ù…Ø¹ÙŠÙ† ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹' : 'Par dÃ©faut'}</span>
                                 </span>
                               )}
                             </div>
                           </td>
                           <td className="flex justify-between md:table-cell py-2 md:py-3 px-2 text-center font-mono font-medium text-slate-500 border-t border-dashed border-gray-100 md:border-none mt-3 md:mt-0 pt-3 md:pt-3">
-                            <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'سعر الشراء' : 'P. Achat'}</span>
+                            <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'Ø³Ø¹Ø± Ø§Ù„Ø´Ø±Ø§Ø¡' : 'P. Achat'}</span>
                             <span>{p.buyPrice.toFixed(1)}</span>
                           </td>
                           <td className="flex justify-between md:table-cell py-2 md:py-3 px-2 text-center font-mono font-medium text-slate-500 border-t border-dashed border-gray-100 md:border-none">
-                            <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'سعر البيع' : 'P. Vente'}</span>
+                            <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'Ø³Ø¹Ø± Ø§Ù„Ø¨ÙŠØ¹' : 'P. Vente'}</span>
                             <span>{p.sellPrice.toFixed(1)}</span>
                           </td>
                           <td className="flex justify-between md:table-cell py-2 md:py-3 px-2 text-center font-mono font-extrabold bg-blue-50/10 text-blue-700 border-t border-dashed border-gray-100 md:border-none">
-                            <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'المسجل بالنظام حالياً' : 'Stock Théorique'}</span>
+                            <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'Ø§Ù„Ù…Ø³Ø¬Ù„ Ø¨Ø§Ù„Ù†Ø¸Ø§Ù… Ø­Ø§Ù„ÙŠØ§Ù‹' : 'Stock ThÃ©orique'}</span>
                             <span>{expectedValue}</span>
                           </td>
                           <td className="flex justify-between md:table-cell py-3 md:py-3 px-2 text-center bg-emerald-50/10 border-t border-dashed border-gray-100 md:border-none">
-                            <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'العدد الفعلي المادي على الرف' : 'Quantité Réelle'}</span>
+                            <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'Ø§Ù„Ø¹Ø¯Ø¯ Ø§Ù„ÙØ¹Ù„ÙŠ Ø§Ù„Ù…Ø§Ø¯ÙŠ Ø¹Ù„Ù‰ Ø§Ù„Ø±Ù' : 'QuantitÃ© RÃ©elle'}</span>
                             <div className="inline-flex items-center gap-1 text-center justify-center">
                               <button
                                 type="button"
@@ -1687,7 +1687,7 @@ export default function Account({
                             </div>
                           </td>
                           <td className="flex justify-between md:table-cell py-2 md:py-3 px-2 text-center border-t border-dashed border-gray-100 md:border-none">
-                            <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'تصفية الفارق' : 'Écart / Différence'}</span>
+                            <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'ØªØµÙÙŠØ© Ø§Ù„ÙØ§Ø±Ù‚' : 'Ã‰cart / DiffÃ©rence'}</span>
                             {diffValue === 0 ? (
                               <span className="font-mono font-bold text-gray-300">-</span>
                             ) : (
@@ -1697,7 +1697,7 @@ export default function Account({
                             )}
                           </td>
                           <td className="flex justify-between md:table-cell py-2 md:py-3 px-2 text-right font-mono font-bold border-t border-dashed border-gray-100 md:border-none">
-                            <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'قيمة الفارق المالي' : 'Impulsion Financière'}</span>
+                            <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'Ù‚ÙŠÙ…Ø© Ø§Ù„ÙØ§Ø±Ù‚ Ø§Ù„Ù…Ø§Ù„ÙŠ' : 'Impulsion FinanciÃ¨re'}</span>
                             {diffValue === 0 ? (
                               <span className="text-gray-300">0.00</span>
                             ) : (
@@ -1710,17 +1710,17 @@ export default function Account({
                             {diffValue === 0 ? (
                               <span className="inline-flex items-center gap-1 text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-black">
                                 <ShieldCheck className="w-3 h-3" />
-                                <span>{isRtl ? 'مطابق' : 'Parfait'}</span>
+                                <span>{isRtl ? 'Ù…Ø·Ø§Ø¨Ù‚' : 'Parfait'}</span>
                               </span>
                             ) : diffValue < 0 ? (
                               <span className="inline-flex items-center gap-1 text-xs text-red-600 bg-red-50 px-2 py-0.5 rounded-full font-black">
                                 <ShieldAlert className="w-3 h-3" />
-                                <span>{isRtl ? 'عجز ⚠️' : 'Anomalie'}</span>
+                                <span>{isRtl ? 'Ø¹Ø¬Ø² âš ï¸' : 'Anomalie'}</span>
                               </span>
                             ) : (
                               <span className="inline-flex items-center gap-1 text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full font-black">
                                 <Info className="w-3 h-3" />
-                                <span>{isRtl ? 'زائد' : 'Inconnu'}</span>
+                                <span>{isRtl ? 'Ø²Ø§Ø¦Ø¯' : 'Inconnu'}</span>
                               </span>
                             )}
                           </td>
@@ -1746,7 +1746,7 @@ export default function Account({
                               }`}
                             >
                               <Check className={`w-3 h-3 stroke-[3.5] ${isVerified ? 'text-white' : 'text-slate-400'}`} />
-                              <span>{isVerified ? (isRtl ? 'تم التحقق' : 'Vérifié') : (isRtl ? 'تحقق' : 'Vérifier')}</span>
+                              <span>{isVerified ? (isRtl ? 'ØªÙ… Ø§Ù„ØªØ­Ù‚Ù‚' : 'VÃ©rifiÃ©') : (isRtl ? 'ØªØ­Ù‚Ù‚' : 'VÃ©rifier')}</span>
                             </button>
                           </td>
                         </tr>
@@ -1761,7 +1761,7 @@ export default function Account({
             <div className="pt-4 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
               <p className="text-[11px] text-gray-400">
                 {isRtl 
-                  ? '⚠️ تذكير: عند الضغط على زر الاعتماد، سيقوم النظام بتسوية Stocks تلقائياً وترسيب التقارير.' 
+                  ? 'âš ï¸ ØªØ°ÙƒÙŠØ±: Ø¹Ù†Ø¯ Ø§Ù„Ø¶ØºØ· Ø¹Ù„Ù‰ Ø²Ø± Ø§Ù„Ø§Ø¹ØªÙ…Ø§Ø¯ØŒ Ø³ÙŠÙ‚ÙˆÙ… Ø§Ù„Ù†Ø¸Ø§Ù… Ø¨ØªØ³ÙˆÙŠØ© Stocks ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹ ÙˆØªØ±Ø³ÙŠØ¨ Ø§Ù„ØªÙ‚Ø§Ø±ÙŠØ±.' 
                   : 'Note: La validation ajustera les inventaires et stockera cette session historique.'}
               </p>
               <button
@@ -1770,7 +1770,7 @@ export default function Account({
                 className="py-3 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer self-stretch sm:self-auto"
               >
                 <ClipboardCheck className="w-4 h-4" />
-                <span>{isRtl ? 'اعتماد المطابقة تصفية وتحديث المخزن الفعلي' : 'Confirmer & Enregistrer l\'Audit d\'Inventaire'}</span>
+                <span>{isRtl ? 'Ø§Ø¹ØªÙ…Ø§Ø¯ Ø§Ù„Ù…Ø·Ø§Ø¨Ù‚Ø© ØªØµÙÙŠØ© ÙˆØªØ­Ø¯ÙŠØ« Ø§Ù„Ù…Ø®Ø²Ù† Ø§Ù„ÙØ¹Ù„ÙŠ' : 'Confirmer & Enregistrer l\'Audit d\'Inventaire'}</span>
               </button>
             </div>
 
@@ -1780,25 +1780,25 @@ export default function Account({
           <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
             <div>
               <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider">
-                {isRtl ? 'أرشيف محاضر التفتيش والجرد المالي للمخازن' : 'Rapports Légaux de l\'Audit d\'Inventaire Périodiques'}
+                {isRtl ? 'Ø£Ø±Ø´ÙŠÙ Ù…Ø­Ø§Ø¶Ø± Ø§Ù„ØªÙØªÙŠØ´ ÙˆØ§Ù„Ø¬Ø±Ø¯ Ø§Ù„Ù…Ø§Ù„ÙŠ Ù„Ù„Ù…Ø®Ø§Ø²Ù†' : 'Rapports LÃ©gaux de l\'Audit d\'Inventaire PÃ©riodiques'}
               </h3>
               <p className="text-[10px] text-gray-400 mt-0.5">
-                {isRtl ? 'محاضر جرد المخازن شهرياً ولتأكيد عدم وجود اختلاس السلع أو تلاعب في الصندوق.' : 'Archivage des sessions de réconciliation physique et de détection de détournements.'}
+                {isRtl ? 'Ù…Ø­Ø§Ø¶Ø± Ø¬Ø±Ø¯ Ø§Ù„Ù…Ø®Ø§Ø²Ù† Ø´Ù‡Ø±ÙŠØ§Ù‹ ÙˆÙ„ØªØ£ÙƒÙŠØ¯ Ø¹Ø¯Ù… ÙˆØ¬ÙˆØ¯ Ø§Ø®ØªÙ„Ø§Ø³ Ø§Ù„Ø³Ù„Ø¹ Ø£Ùˆ ØªÙ„Ø§Ø¹Ø¨ ÙÙŠ Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚.' : 'Archivage des sessions de rÃ©conciliation physique et de dÃ©tection de dÃ©tournements.'}
               </p>
             </div>
 
             <div className="overflow-x-auto no-scrollbar">
-              <table className="w-full text-left whitespace-nowrap">
+              <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} whitespace-nowrap">
                 <thead className="bg-white">
                   <tr className="border-b border-gray-100 text-[10px] font-bold uppercase text-gray-400">
-                    <th className="py-2 px-2">{isRtl ? 'معرف التفتيش' : 'Session ID'}</th>
-                    <th className="py-2 px-2">{isRtl ? 'تاريخ الجرد' : 'Date d\'Audit'}</th>
-                    <th className="py-2 px-2">{isRtl ? 'دورية الجرد' : 'Périodicité'}</th>
-                    <th className="py-2 px-2">{isRtl ? 'المفتش القائم بالعملية' : 'Audité par'}</th>
-                    <th className="py-2 px-2 text-center">{isRtl ? 'مجموع السلع المفقودة' : 'Anomalies'}</th>
-                    <th className="py-2 px-2 text-right">{isRtl ? 'قيمة العجز المستكشف' : 'Perte Estimée Cost'}</th>
-                    <th className="py-2 px-2">{isRtl ? 'خلاصة التقرير' : 'Synthèse & Certificat'}</th>
-                    <th className="py-2 px-2 text-center">{isRtl ? 'التفاصيل' : 'Détails'}</th>
+                    <th className="py-2 px-2">{isRtl ? 'Ù…Ø¹Ø±Ù Ø§Ù„ØªÙØªÙŠØ´' : 'Session ID'}</th>
+                    <th className="py-2 px-2">{isRtl ? 'ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¬Ø±Ø¯' : 'Date d\'Audit'}</th>
+                    <th className="py-2 px-2">{isRtl ? 'Ø¯ÙˆØ±ÙŠØ© Ø§Ù„Ø¬Ø±Ø¯' : 'PÃ©riodicitÃ©'}</th>
+                    <th className="py-2 px-2">{isRtl ? 'Ø§Ù„Ù…ÙØªØ´ Ø§Ù„Ù‚Ø§Ø¦Ù… Ø¨Ø§Ù„Ø¹Ù…Ù„ÙŠØ©' : 'AuditÃ© par'}</th>
+                    <th className="py-2 px-2 text-center">{isRtl ? 'Ù…Ø¬Ù…ÙˆØ¹ Ø§Ù„Ø³Ù„Ø¹ Ø§Ù„Ù…ÙÙ‚ÙˆØ¯Ø©' : 'Anomalies'}</th>
+                    <th className="py-2 px-2 text-right">{isRtl ? 'Ù‚ÙŠÙ…Ø© Ø§Ù„Ø¹Ø¬Ø² Ø§Ù„Ù…Ø³ØªÙƒØ´Ù' : 'Perte EstimÃ©e Cost'}</th>
+                    <th className="py-2 px-2">{isRtl ? 'Ø®Ù„Ø§ØµØ© Ø§Ù„ØªÙ‚Ø±ÙŠØ±' : 'SynthÃ¨se & Certificat'}</th>
+                    <th className="py-2 px-2 text-center">{isRtl ? 'Ø§Ù„ØªÙØ§ØµÙŠÙ„' : 'DÃ©tails'}</th>
                   </tr>
                 </thead>
                 <tbody className="block md:table-row-group divide-y divide-gray-100/60 md:divide-gray-50 text-slate-700 font-medium">
@@ -1809,45 +1809,45 @@ export default function Account({
                       onClick={() => setSelectedAudit(audit)}
                     >
                       <td className="block md:table-cell py-1 md:py-3 px-2 font-mono font-bold text-blue-600 text-[14px] md:text-xs">
-                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase mr-2 ml-2">{isRtl ? 'معرف التفتيش' : 'Session ID'}:</span>
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase mr-2 ml-2">{isRtl ? 'Ù…Ø¹Ø±Ù Ø§Ù„ØªÙØªÙŠØ´' : 'Session ID'}:</span>
                         #{audit.id.substring(audit.id.length - 6)}
                       </td>
                       <td className="flex justify-between md:table-cell py-2 md:py-3 px-2 font-mono text-[12px] md:text-[11px] text-gray-400 font-extrabold border-t border-dashed border-gray-100 md:border-none mt-3 md:mt-0 pt-3 md:pt-3">
-                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'تاريخ الجرد' : 'Date d\'Audit'}</span>
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¬Ø±Ø¯' : 'Date d\'Audit'}</span>
                         {new Date(audit.date).toLocaleDateString(lang === 'ar' ? 'ar-MA' : 'fr', {
                           day: '2-digit', month: 'short', year: 'numeric'
                         })}
                       </td>
                       <td className="flex justify-between md:table-cell py-2 md:py-3 px-2 border-t border-dashed border-gray-100 md:border-none">
-                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'دورية الجرد' : 'Périodicité'}</span>
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'Ø¯ÙˆØ±ÙŠØ© Ø§Ù„Ø¬Ø±Ø¯' : 'PÃ©riodicitÃ©'}</span>
                         {audit.type === 'monthly' ? (
                           <span className="px-2 py-0.5 bg-blue-50 text-blue-800 rounded font-bold text-[10px] uppercase">
-                            {isRtl ? 'تفتيش ومطابقة شهرية' : 'Mensuelle'}
+                            {isRtl ? 'ØªÙØªÙŠØ´ ÙˆÙ…Ø·Ø§Ø¨Ù‚Ø© Ø´Ù‡Ø±ÙŠØ©' : 'Mensuelle'}
                           </span>
                         ) : (
                           <span className="px-2 py-0.5 bg-purple-50 text-purple-800 rounded font-bold text-[10px] uppercase">
-                            {isRtl ? 'جرد شامل سنوي/نصف سنوي' : 'Semestrielle'}
+                            {isRtl ? 'Ø¬Ø±Ø¯ Ø´Ø§Ù…Ù„ Ø³Ù†ÙˆÙŠ/Ù†ØµÙ Ø³Ù†ÙˆÙŠ' : 'Semestrielle'}
                           </span>
                         )}
                       </td>
                       <td className="flex justify-between md:table-cell py-2 md:py-3 px-2 text-slate-900 font-extrabold border-t border-dashed border-gray-100 md:border-none">
-                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'المفتش' : 'Audité par'}</span>
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'Ø§Ù„Ù…ÙØªØ´' : 'AuditÃ© par'}</span>
                         {audit.auditor}
                       </td>
                       <td className="flex justify-between md:table-cell py-2 md:py-3 px-2 text-center font-mono border-t border-dashed border-gray-100 md:border-none">
-                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'مجموع السلع المفقودة' : 'Anomalies'}</span>
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'Ù…Ø¬Ù…ÙˆØ¹ Ø§Ù„Ø³Ù„Ø¹ Ø§Ù„Ù…ÙÙ‚ÙˆØ¯Ø©' : 'Anomalies'}</span>
                         {audit.totalDeficitQty > 0 ? (
-                          <span className="text-amber-600 font-bold">{audit.totalDeficitQty} وحدات</span>
+                          <span className="text-amber-600 font-bold">{audit.totalDeficitQty} ÙˆØ­Ø¯Ø§Øª</span>
                         ) : (
-                          <span className="text-emerald-600 font-bold">{isRtl ? '0 مطابقة تامة' : 'Aucune'}</span>
+                          <span className="text-emerald-600 font-bold">{isRtl ? '0 Ù…Ø·Ø§Ø¨Ù‚Ø© ØªØ§Ù…Ø©' : 'Aucune'}</span>
                         )}
                       </td>
                       <td className="flex justify-between md:table-cell py-2 md:py-3 px-2 text-right font-mono font-black text-red-600 border-t border-dashed border-gray-100 md:border-none">
-                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'قيمة العجز المستكشف' : 'Perte Estimée Cost'}</span>
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'Ù‚ÙŠÙ…Ø© Ø§Ù„Ø¹Ø¬Ø² Ø§Ù„Ù…Ø³ØªÙƒØ´Ù' : 'Perte EstimÃ©e Cost'}</span>
                         {audit.totalDeficitValue > 0 ? `-${audit.totalDeficitValue.toFixed(1)}` : '0.00'}
                       </td>
                       <td className="flex justify-between md:table-cell py-2 md:py-3 px-2 italic text-[11px] md:text-[10px] text-gray-500 max-w-full md:max-w-[200px] truncate border-t border-dashed border-gray-100 md:border-none" title={audit.notes}>
-                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'خلاصة التقرير' : 'Synthèse'}</span>
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'Ø®Ù„Ø§ØµØ© Ø§Ù„ØªÙ‚Ø±ÙŠØ±' : 'SynthÃ¨se'}</span>
                         <span className="truncate">{audit.notes}</span>
                       </td>
                       <td className="block md:table-cell py-3 md:py-3 px-2 text-center border-t border-dashed border-gray-100 md:border-none bg-slate-50 md:bg-transparent rounded-xl mt-2 md:mt-0">
@@ -1860,7 +1860,7 @@ export default function Account({
                           className="w-full md:w-auto inline-flex items-center justify-center gap-1.5 py-2 md:py-1 px-4 md:px-2.5 bg-white md:bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-black text-[12px] md:text-[10px] rounded-lg transition shrink-0 cursor-pointer border border-indigo-200 md:border-indigo-100 shadow-sm md:shadow-none"
                         >
                           <Eye className="w-4 h-4 md:w-3.5 md:h-3.5" />
-                          <span>{isRtl ? 'عرض' : 'Détails'}</span>
+                          <span>{isRtl ? 'Ø¹Ø±Ø¶' : 'DÃ©tails'}</span>
                         </button>
                       </td>
                     </tr>
@@ -1888,12 +1888,12 @@ export default function Account({
               </span>
               <div>
                 <h3 className="text-xs font-black text-slate-855 uppercase tracking-wider">
-                  {isRtl ? 'بوابة مراقبة الأرباح ومطابقة إجمالي المعاملات والخصومات' : 'Suivi des Marges Profit, Remises & Chiffre d\'Affaires'}
+                  {isRtl ? 'Ø¨ÙˆØ§Ø¨Ø© Ù…Ø±Ø§Ù‚Ø¨Ø© Ø§Ù„Ø£Ø±Ø¨Ø§Ø­ ÙˆÙ…Ø·Ø§Ø¨Ù‚Ø© Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ù…Ø¹Ø§Ù…Ù„Ø§Øª ÙˆØ§Ù„Ø®ØµÙˆÙ…Ø§Øª' : 'Suivi des Marges Profit, Remises & Chiffre d\'Affaires'}
                 </h3>
                 <p className="text-[10px] text-slate-500 mt-1">
                   {isRtl 
-                    ? 'منصة أمان متطورة لربط مبيعات الكاشير بالهوامش الحقيقية المستهدفة ومراجعة تأثير الخصومات المباشرة على الأرباح.' 
-                    : 'Aperçu consolidé des ventes, déduction faite de toutes les remises accordées pour l\'audit financier.'}
+                    ? 'Ù…Ù†ØµØ© Ø£Ù…Ø§Ù† Ù…ØªØ·ÙˆØ±Ø© Ù„Ø±Ø¨Ø· Ù…Ø¨ÙŠØ¹Ø§Øª Ø§Ù„ÙƒØ§Ø´ÙŠØ± Ø¨Ø§Ù„Ù‡ÙˆØ§Ù…Ø´ Ø§Ù„Ø­Ù‚ÙŠÙ‚ÙŠØ© Ø§Ù„Ù…Ø³ØªÙ‡Ø¯ÙØ© ÙˆÙ…Ø±Ø§Ø¬Ø¹Ø© ØªØ£Ø«ÙŠØ± Ø§Ù„Ø®ØµÙˆÙ…Ø§Øª Ø§Ù„Ù…Ø¨Ø§Ø´Ø±Ø© Ø¹Ù„Ù‰ Ø§Ù„Ø£Ø±Ø¨Ø§Ø­.' 
+                    : 'AperÃ§u consolidÃ© des ventes, dÃ©duction faite de toutes les remises accordÃ©es pour l\'audit financier.'}
                 </p>
               </div>
             </div>
@@ -1905,15 +1905,15 @@ export default function Account({
             {/* Box 1: Period filter selection */}
             <div className="bg-white p-5 rounded-2xl border border-slate-150 shadow-xs space-y-3 lg:col-span-2">
               <label className="text-xxs uppercase font-black text-slate-400 tracking-wider block">
-                {isRtl ? 'تحديد الفترة الزمنية للبحث' : 'Filtrer la période de vente'}
+                {isRtl ? 'ØªØ­Ø¯ÙŠØ¯ Ø§Ù„ÙØªØ±Ø© Ø§Ù„Ø²Ù…Ù†ÙŠØ© Ù„Ù„Ø¨Ø­Ø«' : 'Filtrer la pÃ©riode de vente'}
               </label>
               <div className="grid grid-cols-5 gap-1.5 flex-wrap">
                 {(['all', 'today', 'yesterday', 'this_month', 'custom'] as const).map(f => {
-                  const label = f === 'all' ? (isRtl ? 'الكل' : 'Tous') :
-                                f === 'today' ? (isRtl ? 'اليوم' : 'Aujourd\'hui') :
-                                f === 'yesterday' ? (isRtl ? 'البارحة' : 'Hier') :
-                                f === 'this_month' ? (isRtl ? 'الشهر الجاري' : 'Ce mois') :
-                                (isRtl ? 'مخصص' : 'Perso');
+                  const label = f === 'all' ? (isRtl ? 'Ø§Ù„ÙƒÙ„' : 'Tous') :
+                                f === 'today' ? (isRtl ? 'Ø§Ù„ÙŠÙˆÙ…' : 'Aujourd\'hui') :
+                                f === 'yesterday' ? (isRtl ? 'Ø§Ù„Ø¨Ø§Ø±Ø­Ø©' : 'Hier') :
+                                f === 'this_month' ? (isRtl ? 'Ø§Ù„Ø´Ù‡Ø± Ø§Ù„Ø¬Ø§Ø±ÙŠ' : 'Ce mois') :
+                                (isRtl ? 'Ù…Ø®ØµØµ' : 'Perso');
                   return (
                     <button
                       key={f}
@@ -1934,7 +1934,7 @@ export default function Account({
               {profitDateFilter === 'custom' && (
                 <div className="grid grid-cols-2 gap-2 pt-2 animate-fade-in">
                   <div>
-                    <label className="text-[9px] text-gray-450 block mb-1 font-bold">{isRtl ? 'من تاريخ' : 'Du'}</label>
+                    <label className="text-[9px] text-gray-450 block mb-1 font-bold">{isRtl ? 'Ù…Ù† ØªØ§Ø±ÙŠØ®' : 'Du'}</label>
                     <input
                       type="date"
                       value={profitStartDate}
@@ -1943,7 +1943,7 @@ export default function Account({
                     />
                   </div>
                   <div>
-                    <label className="text-[9px] text-gray-455 block mb-1 font-bold">{isRtl ? 'إلى تاريخ' : 'Au'}</label>
+                    <label className="text-[9px] text-gray-455 block mb-1 font-bold">{isRtl ? 'Ø¥Ù„Ù‰ ØªØ§Ø±ÙŠØ®' : 'Au'}</label>
                     <input
                       type="date"
                       value={profitEndDate}
@@ -1958,14 +1958,14 @@ export default function Account({
             {/* Box 2: Search sold items */}
             <div className="bg-white p-5 rounded-2xl border border-slate-150 shadow-xs space-y-3">
               <label className="text-xxs uppercase font-black text-slate-400 tracking-wider block">
-                {isRtl ? 'البحث عن سلعة، فئة، أو فاتورة' : 'Rechercher produit, fac, cat'}
+                {isRtl ? 'Ø§Ù„Ø¨Ø­Ø« Ø¹Ù† Ø³Ù„Ø¹Ø©ØŒ ÙØ¦Ø©ØŒ Ø£Ùˆ ÙØ§ØªÙˆØ±Ø©' : 'Rechercher produit, fac, cat'}
               </label>
               <div className="relative">
                 <input
                   type="text"
                   value={profitSearchText}
                   onChange={(e) => setProfitSearchText(e.target.value)}
-                  placeholder={isRtl ? 'ابحث هنا...' : 'Ex: Produit, Catégorie ou Facture...'}
+                  placeholder={isRtl ? 'Ø§Ø¨Ø­Ø« Ù‡Ù†Ø§...' : 'Ex: Produit, CatÃ©gorie ou Facture...'}
                   className="w-full py-2.5 pl-3 pr-9 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-750 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                 />
                 <Search className={`w-4 h-4 text-gray-400 absolute top-3.5 ${isRtl ? 'right-3' : 'left-3'}`} />
@@ -1975,13 +1975,13 @@ export default function Account({
             {/* Box 3: Grouping level options */}
             <div className="bg-white p-5 rounded-2xl border border-slate-150 shadow-xs space-y-3">
               <label className="text-xxs uppercase font-black text-slate-400 tracking-wider block">
-                {isRtl ? 'مستوى ترتيب مبيعات الأرباح' : 'Niveau de regroupement des marges'}
+                {isRtl ? 'Ù…Ø³ØªÙˆÙ‰ ØªØ±ØªÙŠØ¨ Ù…Ø¨ÙŠØ¹Ø§Øª Ø§Ù„Ø£Ø±Ø¨Ø§Ø­' : 'Niveau de regroupement des marges'}
               </label>
               <div className="grid grid-cols-3 gap-2">
                 {[
-                  { value: 'none', labelAr: 'تسلسل التواريخ', labelFr: 'Chronologique' },
-                  { value: 'product', labelAr: 'حسب السلع', labelFr: 'Par Produit' },
-                  { value: 'category', labelAr: 'حسب الفئات', labelFr: 'Par Catégorie' }
+                  { value: 'none', labelAr: 'ØªØ³Ù„Ø³Ù„ Ø§Ù„ØªÙˆØ§Ø±ÙŠØ®', labelFr: 'Chronologique' },
+                  { value: 'product', labelAr: 'Ø­Ø³Ø¨ Ø§Ù„Ø³Ù„Ø¹', labelFr: 'Par Produit' },
+                  { value: 'category', labelAr: 'Ø­Ø³Ø¨ Ø§Ù„ÙØ¦Ø§Øª', labelFr: 'Par CatÃ©gorie' }
                 ].map(opt => (
                   <button
                     key={opt.value}
@@ -2009,13 +2009,13 @@ export default function Account({
               <div className="p-4 sm:p-6 flex flex-col justify-between space-y-4 bg-slate-50/30">
                 <div>
                   <span className="text-[10px] uppercase font-black text-slate-400 tracking-wider block mb-3 font-semibold">
-                    {isRtl ? '💼 معاملات وأرباح النشاط الحسابي' : 'Transactions & Revenu Fiscal'}
+                    {isRtl ? 'ðŸ’¼ Ù…Ø¹Ø§Ù…Ù„Ø§Øª ÙˆØ£Ø±Ø¨Ø§Ø­ Ø§Ù„Ù†Ø´Ø§Ø· Ø§Ù„Ø­Ø³Ø§Ø¨ÙŠ' : 'Transactions & Revenu Fiscal'}
                   </span>
                   <div className="space-y-3.5">
                     {/* Brut sales */}
                     <div className="flex justify-between items-center border-b border-slate-100/50 pb-2.5">
                       <span className="text-xs font-semibold text-slate-600">
-                        {isRtl ? 'إجمالي المعاملات الخام' : 'Chiffre d\'Affaires Brut'}
+                        {isRtl ? 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ù…Ø¹Ø§Ù…Ù„Ø§Øª Ø§Ù„Ø®Ø§Ù…' : 'Chiffre d\'Affaires Brut'}
                       </span>
                       <span className="font-mono text-sm font-extrabold text-slate-800">
                         {totalChiffreAffaireBrut.toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -2024,7 +2024,7 @@ export default function Account({
                     {/* Discounts applied */}
                     <div className="flex justify-between items-center border-b border-slate-100/50 pb-2.5">
                       <span className="text-xs font-semibold text-slate-600">
-                        {isRtl ? 'الخصومات الممنوحة' : 'Total Remises'}
+                        {isRtl ? 'Ø§Ù„Ø®ØµÙˆÙ…Ø§Øª Ø§Ù„Ù…Ù…Ù†ÙˆØ­Ø©' : 'Total Remises'}
                       </span>
                       <span className="font-mono text-sm font-extrabold text-amber-600">
                         {totalDiscountsApplied.toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -2033,7 +2033,7 @@ export default function Account({
                     {/* Net turnover */}
                     <div className="flex justify-between items-center border-b border-slate-100/50 pb-2.5">
                       <span className="text-xs font-semibold text-slate-600">
-                        {isRtl ? 'صافي رقم المعاملات' : 'Chiffre d\'Affaires Net'}
+                        {isRtl ? 'ØµØ§ÙÙŠ Ø±Ù‚Ù… Ø§Ù„Ù…Ø¹Ø§Ù…Ù„Ø§Øª' : 'Chiffre d\'Affaires Net'}
                       </span>
                       <span className="font-mono text-xs font-black text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
                         {totalChiffreAffaireNet.toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -2042,7 +2042,7 @@ export default function Account({
                     {/* Net Profits */}
                     <div className="flex justify-between items-center bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100 mt-2">
                       <span className="text-xs font-black text-emerald-800">
-                        {isRtl ? 'صافي أرباح الخزينة' : 'Bénéfice Net Réel'}
+                        {isRtl ? 'ØµØ§ÙÙŠ Ø£Ø±Ø¨Ø§Ø­ Ø§Ù„Ø®Ø²ÙŠÙ†Ø©' : 'BÃ©nÃ©fice Net RÃ©el'}
                       </span>
                       <span className="font-mono text-sm font-black text-emerald-700">
                         {totalNetProfit.toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -2056,13 +2056,13 @@ export default function Account({
               <div className="p-4 sm:p-6 flex flex-col justify-between space-y-4">
                 <div>
                   <span className="text-[10px] uppercase font-black text-slate-400 tracking-wider block mb-3 font-semibold">
-                    {isRtl ? '🛒 مبيعات وعائدات المحل المباشرة' : 'Ventes du Magasin & Encaissements'}
+                    {isRtl ? 'ðŸ›’ Ù…Ø¨ÙŠØ¹Ø§Øª ÙˆØ¹Ø§Ø¦Ø¯Ø§Øª Ø§Ù„Ù…Ø­Ù„ Ø§Ù„Ù…Ø¨Ø§Ø´Ø±Ø©' : 'Ventes du Magasin & Encaissements'}
                   </span>
                   <div className="space-y-3.5">
                     {/* Overall Sales */}
                     <div className="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                       <span className="text-xs font-bold text-slate-700">
-                        {isRtl ? '🛍️ إجمالي مبيعات المحل :' : 'Ventes globales du magasin :'}
+                        {isRtl ? 'ðŸ›ï¸ Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ù…Ø¨ÙŠØ¹Ø§Øª Ø§Ù„Ù…Ø­Ù„ :' : 'Ventes globales du magasin :'}
                       </span>
                       <span className="font-mono text-xs font-black text-slate-900">
                         {totalOverallSales.toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -2071,7 +2071,7 @@ export default function Account({
                     {/* Cash Income received */}
                     <div className="flex justify-between items-center border-b border-slate-50 pb-2.5 px-1 pt-1">
                       <span className="text-xs font-semibold text-emerald-700 flex items-center gap-1">
-                        <span>💵</span> {isRtl ? 'نقد (مقبض نقدي) :' : 'Espèces de caisse :'}
+                        <span>ðŸ’µ</span> {isRtl ? 'Ù†Ù‚Ø¯ (Ù…Ù‚Ø¨Ø¶ Ù†Ù‚Ø¯ÙŠ) :' : 'EspÃ¨ces de caisse :'}
                       </span>
                       <span className="font-mono text-sm font-extrabold text-emerald-600">
                         {cumulativeCashSum.toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -2080,7 +2080,7 @@ export default function Account({
                     {/* Debts outstanding */}
                     <div className="flex justify-between items-center border-b border-slate-50 pb-2.5 px-1">
                       <span className="text-xs font-semibold text-rose-700 flex items-center gap-1">
-                        <span>💸</span> {isRtl ? 'سلف (ديون العملاء) :' : 'Dettes clients :'}
+                        <span>ðŸ’¸</span> {isRtl ? 'Ø³Ù„Ù (Ø¯ÙŠÙˆÙ† Ø§Ù„Ø¹Ù…Ù„Ø§Ø¡) :' : 'Dettes clients :'}
                       </span>
                       <span className="font-mono text-sm font-extrabold text-rose-600">
                         {cumulativeDebtSum.toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -2089,7 +2089,7 @@ export default function Account({
                     {/* Client checks (postal checks as guarantee) */}
                     <div className="flex justify-between items-center pb-1 px-1">
                       <span className="text-xs font-semibold text-indigo-700 flex items-center gap-1">
-                        <span>📩</span> {isRtl ? 'شيكات الضمان :' : 'Chèques de garantie :'}
+                        <span>ðŸ“©</span> {isRtl ? 'Ø´ÙŠÙƒØ§Øª Ø§Ù„Ø¶Ù…Ø§Ù† :' : 'ChÃ¨ques de garantie :'}
                       </span>
                       <span className="font-mono text-sm font-extrabold text-indigo-600">
                         {cumulativeChecksSum.toLocaleString(undefined, { minimumFractionDigits: 2 })}
@@ -2103,13 +2103,13 @@ export default function Account({
               <div className="p-4 sm:p-6 flex flex-col justify-between space-y-4 bg-slate-50/30">
                 <div>
                   <span className="text-[10px] uppercase font-black text-slate-400 tracking-wider block mb-3 font-semibold">
-                    {isRtl ? '📦 مستودع السلع وتقييم المخازن' : 'Valorisation du Stock & Profit Latent'}
+                    {isRtl ? 'ðŸ“¦ Ù…Ø³ØªÙˆØ¯Ø¹ Ø§Ù„Ø³Ù„Ø¹ ÙˆØªÙ‚ÙŠÙŠÙ… Ø§Ù„Ù…Ø®Ø§Ø²Ù†' : 'Valorisation du Stock & Profit Latent'}
                   </span>
                   <div className="space-y-3.5">
                     {/* Purchase/Buying price worth */}
                     <div className="flex justify-between items-center border-b border-slate-100/50 pb-2.5">
                       <span className="text-xs font-semibold text-slate-600">
-                        {isRtl ? 'قيمة شراء السلع الكلي' : 'Valeur d\'Achat (Stock) :'}
+                        {isRtl ? 'Ù‚ÙŠÙ…Ø© Ø´Ø±Ø§Ø¡ Ø§Ù„Ø³Ù„Ø¹ Ø§Ù„ÙƒÙ„ÙŠ' : 'Valeur d\'Achat (Stock) :'}
                       </span>
                       <span className="font-mono text-sm font-extrabold text-slate-800">
                         {totalStockWorthBuying.toLocaleString(undefined, { maximumFractionDigits: 1 })}
@@ -2118,7 +2118,7 @@ export default function Account({
                     {/* Estimated Selling worth */}
                     <div className="flex justify-between items-center border-b border-slate-100/50 pb-2.5">
                       <span className="text-xs font-semibold text-slate-600">
-                        {isRtl ? 'تقدير بيع السلع المتوقع' : 'Estimation de Vente (Stock) :'}
+                        {isRtl ? 'ØªÙ‚Ø¯ÙŠØ± Ø¨ÙŠØ¹ Ø§Ù„Ø³Ù„Ø¹ Ø§Ù„Ù…ØªÙˆÙ‚Ø¹' : 'Estimation de Vente (Stock) :'}
                       </span>
                       <span className="font-mono text-sm font-extrabold text-slate-800">
                         {totalStockWorthSelling.toLocaleString(undefined, { maximumFractionDigits: 1 })}
@@ -2127,7 +2127,7 @@ export default function Account({
                     {/* Potential Stock Profit / Margin in warehouse */}
                     <div className="flex justify-between items-center bg-indigo-950 text-white p-2.5 rounded-xl shadow-xs mt-2">
                       <span className="text-xs font-bold text-indigo-100">
-                        {isRtl ? 'هامش الربح المتوقع' : 'Profit Latent au Stock :'}
+                        {isRtl ? 'Ù‡Ø§Ù…Ø´ Ø§Ù„Ø±Ø¨Ø­ Ø§Ù„Ù…ØªÙˆÙ‚Ø¹' : 'Profit Latent au Stock :'}
                       </span>
                       <span className="font-mono text-sm font-black text-emerald-400">
                         +{potentialStockProfit.toLocaleString(undefined, { maximumFractionDigits: 1 })}
@@ -2147,13 +2147,13 @@ export default function Account({
                 <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
                   <TrendingUp className="w-4 h-4 text-emerald-600" />
                   <span>
-                    {profitGroupBy === 'none' ? (isRtl ? 'سجل تفصيلي لحساب ومراقبة أرباح السلع والخصومات' : 'Détail des ventes et profits chronologiques') :
-                     profitGroupBy === 'product' ? (isRtl ? 'تحليل الأرباح ومبيعات السلع والمنتجات' : 'Marges bénéficiaires regroupées par Produit') :
-                     (isRtl ? 'تحليل الأرباح وهوامش الفئات ونوع السلع' : 'Marges bénéficiaires regroupées par Catégorie')}
+                    {profitGroupBy === 'none' ? (isRtl ? 'Ø³Ø¬Ù„ ØªÙØµÙŠÙ„ÙŠ Ù„Ø­Ø³Ø§Ø¨ ÙˆÙ…Ø±Ø§Ù‚Ø¨Ø© Ø£Ø±Ø¨Ø§Ø­ Ø§Ù„Ø³Ù„Ø¹ ÙˆØ§Ù„Ø®ØµÙˆÙ…Ø§Øª' : 'DÃ©tail des ventes et profits chronologiques') :
+                     profitGroupBy === 'product' ? (isRtl ? 'ØªØ­Ù„ÙŠÙ„ Ø§Ù„Ø£Ø±Ø¨Ø§Ø­ ÙˆÙ…Ø¨ÙŠØ¹Ø§Øª Ø§Ù„Ø³Ù„Ø¹ ÙˆØ§Ù„Ù…Ù†ØªØ¬Ø§Øª' : 'Marges bÃ©nÃ©ficiaires regroupÃ©es par Produit') :
+                     (isRtl ? 'ØªØ­Ù„ÙŠÙ„ Ø§Ù„Ø£Ø±Ø¨Ø§Ø­ ÙˆÙ‡ÙˆØ§Ù…Ø´ Ø§Ù„ÙØ¦Ø§Øª ÙˆÙ†ÙˆØ¹ Ø§Ù„Ø³Ù„Ø¹' : 'Marges bÃ©nÃ©ficiaires regroupÃ©es par CatÃ©gorie')}
                   </span>
                 </h3>
                 <p className="text-[10px] text-gray-400 mt-0.5">
-                  {isRtl ? 'تقرير دوري لمطابقة هامش الربح وقمع السرقة والتلاعب بالخصومات.' : 'Tracer l\'origine de toutes les marges dégagées par transaction.'}
+                  {isRtl ? 'ØªÙ‚Ø±ÙŠØ± Ø¯ÙˆØ±ÙŠ Ù„Ù…Ø·Ø§Ø¨Ù‚Ø© Ù‡Ø§Ù…Ø´ Ø§Ù„Ø±Ø¨Ø­ ÙˆÙ‚Ù…Ø¹ Ø§Ù„Ø³Ø±Ù‚Ø© ÙˆØ§Ù„ØªÙ„Ø§Ø¹Ø¨ Ø¨Ø§Ù„Ø®ØµÙˆÙ…Ø§Øª.' : 'Tracer l\'origine de toutes les marges dÃ©gagÃ©es par transaction.'}
                 </p>
               </div>
 
@@ -2170,33 +2170,33 @@ export default function Account({
                 className="py-1.5 px-3 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black border border-slate-200 transition cursor-pointer flex items-center gap-1 shrink-0"
               >
                 <RotateCcw className="w-3 h-3" />
-                <span>{isRtl ? 'إعادة ضبط التصفية' : 'Réinitialiser'}</span>
+                <span>{isRtl ? 'Ø¥Ø¹Ø§Ø¯Ø© Ø¶Ø¨Ø· Ø§Ù„ØªØµÙÙŠØ©' : 'RÃ©initialiser'}</span>
               </button>
             </div>
 
             {/* View A: Detail Table (Chronological Transactions) */}
             {profitGroupBy === 'none' && (
               <div className="overflow-x-auto">
-                <table className="w-full text-right sm:text-right">
+                <table className={`w-full sm:text-right ${isRtl ? 'text-right' : 'text-left'}`}>
                   <thead>
                     <tr className="border-b border-slate-100 text-[10px] font-extrabold uppercase text-gray-400 whitespace-nowrap">
-                      <th className="py-3 px-2 text-right">{isRtl ? 'تاريخ المعاملة' : 'Date de Vente'}</th>
-                      <th className="py-3 px-2 text-right">{isRtl ? 'رقم الفاتورة' : 'N° Facture'}</th>
-                      <th className="py-3 px-2 text-right">{isRtl ? 'المنتوج المباع' : 'Produit'}</th>
-                      <th className="py-3 px-2 text-center">{isRtl ? 'فئة السلعة' : 'Catégorie'}</th>
-                      <th className="py-3 px-2 text-center">{isRtl ? 'الكمية المباعة' : 'Quantité'}</th>
-                      <th className="py-3 px-2 text-center">{isRtl ? 'شراء فردي' : 'Achat Unitaire'}</th>
-                      <th className="py-3 px-2 text-center">{isRtl ? 'بيع فردي' : 'Vente Unitaire'}</th>
-                      <th className="py-3 px-2 text-center">{isRtl ? 'صافي الربح الفعلي' : 'Marge Net'}</th>
-                      <th className="py-3 px-3 text-center bg-amber-50/20 text-amber-800">{isRtl ? 'الخصم التناسبي' : 'Remise Prop.'}</th>
-                      <th className="py-3 px-3 text-right text-slate-850">{isRtl ? 'صافي المقبوضات' : 'Revenu net'}</th>
+                      <th className="py-3 px-2 text-right">{isRtl ? 'ØªØ§Ø±ÙŠØ® Ø§Ù„Ù…Ø¹Ø§Ù…Ù„Ø©' : 'Date de Vente'}</th>
+                      <th className="py-3 px-2 text-right">{isRtl ? 'Ø±Ù‚Ù… Ø§Ù„ÙØ§ØªÙˆØ±Ø©' : 'NÂ° Facture'}</th>
+                      <th className="py-3 px-2 text-right">{isRtl ? 'Ø§Ù„Ù…Ù†ØªÙˆØ¬ Ø§Ù„Ù…Ø¨Ø§Ø¹' : 'Produit'}</th>
+                      <th className="py-3 px-2 text-center">{isRtl ? 'ÙØ¦Ø© Ø§Ù„Ø³Ù„Ø¹Ø©' : 'CatÃ©gorie'}</th>
+                      <th className="py-3 px-2 text-center">{isRtl ? 'Ø§Ù„ÙƒÙ…ÙŠØ© Ø§Ù„Ù…Ø¨Ø§Ø¹Ø©' : 'QuantitÃ©'}</th>
+                      <th className="py-3 px-2 text-center">{isRtl ? 'Ø´Ø±Ø§Ø¡ ÙØ±Ø¯ÙŠ' : 'Achat Unitaire'}</th>
+                      <th className="py-3 px-2 text-center">{isRtl ? 'Ø¨ÙŠØ¹ ÙØ±Ø¯ÙŠ' : 'Vente Unitaire'}</th>
+                      <th className="py-3 px-2 text-center">{isRtl ? 'ØµØ§ÙÙŠ Ø§Ù„Ø±Ø¨Ø­ Ø§Ù„ÙØ¹Ù„ÙŠ' : 'Marge Net'}</th>
+                      <th className="py-3 px-3 text-center bg-amber-50/20 text-amber-800">{isRtl ? 'Ø§Ù„Ø®ØµÙ… Ø§Ù„ØªÙ†Ø§Ø³Ø¨ÙŠ' : 'Remise Prop.'}</th>
+                      <th className="py-3 px-3 text-right text-slate-850">{isRtl ? 'ØµØ§ÙÙŠ Ø§Ù„Ù…Ù‚Ø¨ÙˆØ¶Ø§Øª' : 'Revenu net'}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50 text-xs font-semibold text-slate-750">
                     {soldItemsList.length === 0 ? (
                       <tr>
                         <td colSpan={10} className="py-12 text-center text-gray-400 text-xs font-bold">
-                          {isRtl ? 'لم تسجل أي عمليات بيع أو مبيعات بعد مطابقة لفلاتر التصفية.' : 'Aucun produit vendu correspondant.'}
+                          {isRtl ? 'Ù„Ù… ØªØ³Ø¬Ù„ Ø£ÙŠ Ø¹Ù…Ù„ÙŠØ§Øª Ø¨ÙŠØ¹ Ø£Ùˆ Ù…Ø¨ÙŠØ¹Ø§Øª Ø¨Ø¹Ø¯ Ù…Ø·Ø§Ø¨Ù‚Ø© Ù„ÙÙ„Ø§ØªØ± Ø§Ù„ØªØµÙÙŠØ©.' : 'Aucun produit vendu correspondant.'}
                         </td>
                       </tr>
                     ) : (
@@ -2220,7 +2220,7 @@ export default function Account({
                               </span>
                             </td>
                             <td className="py-3 px-2 text-center font-mono font-bold text-slate-800">
-                              {item.qty} {isRtl ? 'وحدات' : 'U'}
+                              {item.qty} {isRtl ? 'ÙˆØ­Ø¯Ø§Øª' : 'U'}
                             </td>
                             <td className="py-3 px-2 text-center font-mono text-gray-400">{item.buyPrice.toFixed(1)}</td>
                             <td className="py-3 px-2 text-center font-mono text-slate-500">{item.sellPrice.toFixed(1)}</td>
@@ -2231,14 +2231,14 @@ export default function Account({
                                 </span>
                                 {item.proportionalDiscount > 0 && (
                                   <span className="text-[9px] text-gray-400 font-bold font-mono">
-                                    ({isRtl ? 'الخام' : 'Brut'}: +{item.rawProfit.toFixed(1)})
+                                    ({isRtl ? 'Ø§Ù„Ø®Ø§Ù…' : 'Brut'}: +{item.rawProfit.toFixed(1)})
                                   </span>
                                 )}
                               </div>
                             </td>
                             <td className="py-3 px-3 text-center font-mono font-extrabold text-amber-600 bg-amber-50/10">
                               {item.proportionalDiscount > 0 ? (
-                                <span title={isRtl ? 'حصة الخصم التناسبية' : 'Part Remise'}>
+                                <span title={isRtl ? 'Ø­ØµØ© Ø§Ù„Ø®ØµÙ… Ø§Ù„ØªÙ†Ø§Ø³Ø¨ÙŠØ©' : 'Part Remise'}>
                                   -{item.proportionalDiscount.toFixed(1)}
                                 </span>
                               ) : (
@@ -2260,22 +2260,22 @@ export default function Account({
             {/* View B: Grouped By Product Table */}
             {profitGroupBy === 'product' && (
               <div className="overflow-x-auto animate-fade-in">
-                <table className="w-full text-right sm:text-right">
+                <table className={`w-full sm:text-right ${isRtl ? 'text-right' : 'text-left'}`}>
                   <thead>
                     <tr className="border-b border-slate-100 text-[10px] font-extrabold uppercase text-gray-400 whitespace-nowrap">
-                      <th className="py-3 px-3 text-right">{isRtl ? 'المنتوج والسلعة' : 'Produit'}</th>
-                      <th className="py-3 px-3 text-center">{isRtl ? 'الفئة المرجعية' : 'Catégorie'}</th>
-                      <th className="py-3 px-3 text-center">{isRtl ? 'إجمالي الكميات المباعة' : 'Quantité Cumulée'}</th>
-                      <th className="py-3 px-3 text-center">{isRtl ? 'إجمالي تكلفة الشراء' : 'Coût global d\'achat'}</th>
-                      <th className="py-3 px-3 text-center">{isRtl ? 'صافي المبيعات' : 'Revenu net'}</th>
-                      <th className="py-3 px-3 text-right">{isRtl ? 'صافي الربح التراكمي' : 'Marge Nette Cumulée'}</th>
+                      <th className="py-3 px-3 text-right">{isRtl ? 'Ø§Ù„Ù…Ù†ØªÙˆØ¬ ÙˆØ§Ù„Ø³Ù„Ø¹Ø©' : 'Produit'}</th>
+                      <th className="py-3 px-3 text-center">{isRtl ? 'Ø§Ù„ÙØ¦Ø© Ø§Ù„Ù…Ø±Ø¬Ø¹ÙŠØ©' : 'CatÃ©gorie'}</th>
+                      <th className="py-3 px-3 text-center">{isRtl ? 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„ÙƒÙ…ÙŠØ§Øª Ø§Ù„Ù…Ø¨Ø§Ø¹Ø©' : 'QuantitÃ© CumulÃ©e'}</th>
+                      <th className="py-3 px-3 text-center">{isRtl ? 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ ØªÙƒÙ„ÙØ© Ø§Ù„Ø´Ø±Ø§Ø¡' : 'CoÃ»t global d\'achat'}</th>
+                      <th className="py-3 px-3 text-center">{isRtl ? 'ØµØ§ÙÙŠ Ø§Ù„Ù…Ø¨ÙŠØ¹Ø§Øª' : 'Revenu net'}</th>
+                      <th className="py-3 px-3 text-right">{isRtl ? 'ØµØ§ÙÙŠ Ø§Ù„Ø±Ø¨Ø­ Ø§Ù„ØªØ±Ø§ÙƒÙ…ÙŠ' : 'Marge Nette CumulÃ©e'}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50 text-xs font-semibold text-slate-700">
                     {groupedByProduct.length === 0 ? (
                       <tr>
                         <td colSpan={6} className="py-12 text-center text-gray-400 font-bold">
-                          {isRtl ? 'لا توجد بيانات متاحة للمنتجات تحت التصفية المحددة.' : 'Aucune donnée correspondante.'}
+                          {isRtl ? 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø¨ÙŠØ§Ù†Ø§Øª Ù…ØªØ§Ø­Ø© Ù„Ù„Ù…Ù†ØªØ¬Ø§Øª ØªØ­Øª Ø§Ù„ØªØµÙÙŠØ© Ø§Ù„Ù…Ø­Ø¯Ø¯Ø©.' : 'Aucune donnÃ©e correspondante.'}
                         </td>
                       </tr>
                     ) : (
@@ -2288,7 +2288,7 @@ export default function Account({
                             </span>
                           </td>
                           <td className="py-3.5 px-3 text-center font-mono font-bold text-slate-800">
-                            {pGroup.totalQty} {isRtl ? 'وحدة' : 'U'}
+                            {pGroup.totalQty} {isRtl ? 'ÙˆØ­Ø¯Ø©' : 'U'}
                           </td>
                           <td className="py-3.5 px-3 text-center font-mono text-gray-400">{pGroup.totalBuyCost.toFixed(2)}</td>
                           <td className="py-3.5 px-3 text-center">
@@ -2296,7 +2296,7 @@ export default function Account({
                               <span className="font-mono text-slate-600 font-bold">{pGroup.totalSellRevenue.toFixed(2)}</span>
                               {pGroup.totalDiscount > 0 && (
                                 <span className="text-[10px] text-amber-600 font-semibold font-mono">
-                                  (-{pGroup.totalDiscount.toFixed(2)} {isRtl ? 'خصم' : 'Remise'})
+                                  (-{pGroup.totalDiscount.toFixed(2)} {isRtl ? 'Ø®ØµÙ…' : 'Remise'})
                                 </span>
                               )}
                             </div>
@@ -2319,22 +2319,22 @@ export default function Account({
             {/* View C: Grouped By Category Table */}
             {profitGroupBy === 'category' && (
               <div className="overflow-x-auto animate-fade-in">
-                <table className="w-full text-right sm:text-right">
+                <table className={`w-full sm:text-right ${isRtl ? 'text-right' : 'text-left'}`}>
                   <thead>
                     <tr className="border-b border-slate-100 text-[10px] font-extrabold uppercase text-gray-400 whitespace-nowrap">
-                      <th className="py-3 px-4 text-right">{isRtl ? 'الفئة المستهدفة' : 'Catégorie'}</th>
-                      <th className="py-3 px-4 text-center">{isRtl ? 'عدد السلع المختلفة المباعة' : 'Produits distincts'}</th>
-                      <th className="py-3 px-4 text-center">{isRtl ? 'إجمالي القطع الموزعة' : 'Quantité totale cumulée'}</th>
-                      <th className="py-3 px-4 text-center">{isRtl ? 'إجمالي كلفة المقتنيات' : 'Coût d\'acquisition total'}</th>
-                      <th className="py-3 px-4 text-center">{isRtl ? 'صافي الإيرادات' : 'Revenu net total'}</th>
-                      <th className="py-3 px-4 text-right">{isRtl ? 'صافي ربح الفئة ونسبته' : 'Profil net dégagé'}</th>
+                      <th className="py-3 px-4 text-right">{isRtl ? 'Ø§Ù„ÙØ¦Ø© Ø§Ù„Ù…Ø³ØªÙ‡Ø¯ÙØ©' : 'CatÃ©gorie'}</th>
+                      <th className="py-3 px-4 text-center">{isRtl ? 'Ø¹Ø¯Ø¯ Ø§Ù„Ø³Ù„Ø¹ Ø§Ù„Ù…Ø®ØªÙ„ÙØ© Ø§Ù„Ù…Ø¨Ø§Ø¹Ø©' : 'Produits distincts'}</th>
+                      <th className="py-3 px-4 text-center">{isRtl ? 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ù‚Ø·Ø¹ Ø§Ù„Ù…ÙˆØ²Ø¹Ø©' : 'QuantitÃ© totale cumulÃ©e'}</th>
+                      <th className="py-3 px-4 text-center">{isRtl ? 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ ÙƒÙ„ÙØ© Ø§Ù„Ù…Ù‚ØªÙ†ÙŠØ§Øª' : 'CoÃ»t d\'acquisition total'}</th>
+                      <th className="py-3 px-4 text-center">{isRtl ? 'ØµØ§ÙÙŠ Ø§Ù„Ø¥ÙŠØ±Ø§Ø¯Ø§Øª' : 'Revenu net total'}</th>
+                      <th className="py-3 px-4 text-right">{isRtl ? 'ØµØ§ÙÙŠ Ø±Ø¨Ø­ Ø§Ù„ÙØ¦Ø© ÙˆÙ†Ø³Ø¨ØªÙ‡' : 'Profil net dÃ©gagÃ©'}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50 text-xs font-semibold text-slate-700">
                     {groupedByCategory.length === 0 ? (
                       <tr>
                         <td colSpan={6} className="py-12 text-center text-gray-400 font-bold">
-                          {isRtl ? 'لا توجد مبيعات مسجلة لأي فئة تحت فلاتر الفرز الحالية.' : 'aucune vente par catégorie enregistrée.'}
+                          {isRtl ? 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ù…Ø¨ÙŠØ¹Ø§Øª Ù…Ø³Ø¬Ù„Ø© Ù„Ø£ÙŠ ÙØ¦Ø© ØªØ­Øª ÙÙ„Ø§ØªØ± Ø§Ù„ÙØ±Ø² Ø§Ù„Ø­Ø§Ù„ÙŠØ©.' : 'aucune vente par catÃ©gorie enregistrÃ©e.'}
                         </td>
                       </tr>
                     ) : (
@@ -2350,10 +2350,10 @@ export default function Account({
                               <span>{cGroup.category}</span>
                             </td>
                             <td className="py-4 px-4 text-center font-bold text-slate-500">
-                              {cGroup.totalProductsCount} {isRtl ? 'سلع مختلفة' : 'produits'}
+                              {cGroup.totalProductsCount} {isRtl ? 'Ø³Ù„Ø¹ Ù…Ø®ØªÙ„ÙØ©' : 'produits'}
                             </td>
                             <td className="py-4 px-4 text-center font-mono font-bold text-slate-800">
-                              {cGroup.totalQty} {isRtl ? 'قطعة' : 'Pcs'}
+                              {cGroup.totalQty} {isRtl ? 'Ù‚Ø·Ø¹Ø©' : 'Pcs'}
                             </td>
                             <td className="py-4 px-4 text-center font-mono text-gray-400">{cGroup.totalBuyCost.toFixed(2)}</td>
                             <td className="py-4 px-4 text-center font-mono">
@@ -2361,7 +2361,7 @@ export default function Account({
                                 <span className="font-mono text-slate-600 font-bold">{cGroup.totalSellRevenue.toFixed(2)}</span>
                                 {cGroup.totalDiscount > 0 && (
                                   <span className="text-[10px] text-amber-600 font-bold font-mono">
-                                    (-{cGroup.totalDiscount.toFixed(2)} {isRtl ? 'خصم' : 'Remise'})
+                                    (-{cGroup.totalDiscount.toFixed(2)} {isRtl ? 'Ø®ØµÙ…' : 'Remise'})
                                   </span>
                                 )}
                               </div>
@@ -2371,7 +2371,7 @@ export default function Account({
                                 <span className={cGroup.totalProfit >= 0 ? "font-black text-emerald-600" : "font-black text-rose-600"}>
                                   {cGroup.totalProfit >= 0 ? '+' : ''}{cGroup.totalProfit.toFixed(2)}
                                 </span>
-                                <span className="text-[10px] text-emerald-500 font-bold">({marginPercent}% {isRtl ? 'عائد' : 'marge'})</span>
+                                <span className="text-[10px] text-emerald-500 font-bold">({marginPercent}% {isRtl ? 'Ø¹Ø§Ø¦Ø¯' : 'marge'})</span>
                               </div>
                             </td>
                           </tr>
@@ -2400,10 +2400,10 @@ export default function Account({
                 </div>
                 <div>
                   <h3 className="text-sm font-black text-slate-900">
-                    {isRtl ? 'اعتماد ومطابقة المخزون الفعلي' : 'Validation & Alignement de l\'Inventaire'}
+                    {isRtl ? 'Ø§Ø¹ØªÙ…Ø§Ø¯ ÙˆÙ…Ø·Ø§Ø¨Ù‚Ø© Ø§Ù„Ù…Ø®Ø²ÙˆÙ† Ø§Ù„ÙØ¹Ù„ÙŠ' : 'Validation & Alignement de l\'Inventaire'}
                   </h3>
                   <p className="text-xxs font-bold text-gray-400 mt-0.5">
-                    {isRtl ? 'يرجى مراجعة وتأكيد الفروقات المسجلة قبل الترسيب وتحديث قواعد البيانات' : 'Veuillez vérifier les écarts avant alignement de la base.'}
+                    {isRtl ? 'ÙŠØ±Ø¬Ù‰ Ù…Ø±Ø§Ø¬Ø¹Ø© ÙˆØªØ£ÙƒÙŠØ¯ Ø§Ù„ÙØ±ÙˆÙ‚Ø§Øª Ø§Ù„Ù…Ø³Ø¬Ù„Ø© Ù‚Ø¨Ù„ Ø§Ù„ØªØ±Ø³ÙŠØ¨ ÙˆØªØ­Ø¯ÙŠØ« Ù‚ÙˆØ§Ø¹Ø¯ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª' : 'Veuillez vÃ©rifier les Ã©carts avant alignement de la base.'}
                   </p>
                 </div>
               </div>
@@ -2412,7 +2412,7 @@ export default function Account({
                 onClick={() => setShowConfirmModal(false)}
                 className="p-1 px-2.5 bg-slate-100 text-slate-500 hover:text-slate-800 rounded-lg text-xs font-bold transition shrink-0 cursor-pointer"
               >
-                ×
+                Ã—
               </button>
             </div>
 
@@ -2420,20 +2420,20 @@ export default function Account({
             <div className="p-6 overflow-y-auto space-y-4">
               <p className="text-xs font-bold text-slate-700 leading-relaxed">
                 {isRtl 
-                  ? 'هل أنت متأكد من اعتماد تقرير التفتيش وتحديث المخزون الفعلي؟ سيقوم النظام بتسوية Stocks تلقائياً وستسجل هذه الدورة باسمك بشكل دائم.' 
-                  : 'Êtes-vous sûr de vouloir valider le rapport d\'inspection ? Cela va rectifier les stocks théoriques.'}
+                  ? 'Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ù…Ù† Ø§Ø¹ØªÙ…Ø§Ø¯ ØªÙ‚Ø±ÙŠØ± Ø§Ù„ØªÙØªÙŠØ´ ÙˆØªØ­Ø¯ÙŠØ« Ø§Ù„Ù…Ø®Ø²ÙˆÙ† Ø§Ù„ÙØ¹Ù„ÙŠØŸ Ø³ÙŠÙ‚ÙˆÙ… Ø§Ù„Ù†Ø¸Ø§Ù… Ø¨ØªØ³ÙˆÙŠØ© Stocks ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹ ÙˆØ³ØªØ³Ø¬Ù„ Ù‡Ø°Ù‡ Ø§Ù„Ø¯ÙˆØ±Ø© Ø¨Ø§Ø³Ù…Ùƒ Ø¨Ø´ÙƒÙ„ Ø¯Ø§Ø¦Ù….' 
+                  : 'ÃŠtes-vous sÃ»r de vouloir valider le rapport d\'inspection ? Cela va rectifier les stocks thÃ©oriques.'}
               </p>
 
               {/* Stats card inside summary */}
               <div className="grid grid-cols-2 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                 <div className="text-center">
-                  <span className="text-[10px] text-gray-400 font-extrabold uppercase block">{isRtl ? 'إجمالي العجز المالي' : 'Dépenses Déficit total'}</span>
+                  <span className="text-[10px] text-gray-400 font-extrabold uppercase block">{isRtl ? 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ø¹Ø¬Ø² Ø§Ù„Ù…Ø§Ù„ÙŠ' : 'DÃ©penses DÃ©ficit total'}</span>
                   <span className="text-sm font-black text-red-600 font-mono mt-0.5 block">
                     -{auditAnalysis.deficitValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                   </span>
                 </div>
                 <div className="text-center border-r sm:border-slate-200 border-none">
-                  <span className="text-[10px] text-gray-400 font-extrabold uppercase block">{isRtl ? 'المسؤول القائم بالعد' : 'Auditeur Responsable'}</span>
+                  <span className="text-[10px] text-gray-400 font-extrabold uppercase block">{isRtl ? 'Ø§Ù„Ù…Ø³Ø¤ÙˆÙ„ Ø§Ù„Ù‚Ø§Ø¦Ù… Ø¨Ø§Ù„Ø¹Ø¯' : 'Auditeur Responsable'}</span>
                   <span className="text-xs font-bold text-slate-800 truncate mt-0.5 block">
                     {auditorName}
                   </span>
@@ -2443,12 +2443,12 @@ export default function Account({
               {/* Table of adjustments */}
               <div className="space-y-1.5">
                 <span className="text-xxs font-black text-slate-400 uppercase tracking-wider block">
-                  {isRtl ? 'تفاصيل السلع والفروقات المراد تسويتها تصفية الفارق:' : 'Détails des articles qui vont être modifiés :'}
+                  {isRtl ? 'ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ø³Ù„Ø¹ ÙˆØ§Ù„ÙØ±ÙˆÙ‚Ø§Øª Ø§Ù„Ù…Ø±Ø§Ø¯ ØªØ³ÙˆÙŠØªÙ‡Ø§ ØªØµÙÙŠØ© Ø§Ù„ÙØ§Ø±Ù‚:' : 'DÃ©tails des articles qui vont Ãªtre modifiÃ©s :'}
                 </span>
                 
                 {auditAnalysis.items.filter(item => item.diff !== 0).length === 0 ? (
                   <div className="p-4 bg-emerald-50 text-emerald-800 rounded-2xl text-center text-xs font-black border border-emerald-100 animate-pulse">
-                    {isRtl ? '🎉 ممتاز: لا توجد أي فروقات مادية! مطابقة تامة 100% لجميع السلع على الرفوف.' : 'Excellent : aucun écart constaté.'}
+                    {isRtl ? 'ðŸŽ‰ Ù…Ù…ØªØ§Ø²: Ù„Ø§ ØªÙˆØ¬Ø¯ Ø£ÙŠ ÙØ±ÙˆÙ‚Ø§Øª Ù…Ø§Ø¯ÙŠØ©! Ù…Ø·Ø§Ø¨Ù‚Ø© ØªØ§Ù…Ø© 100% Ù„Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø³Ù„Ø¹ Ø¹Ù„Ù‰ Ø§Ù„Ø±ÙÙˆÙ.' : 'Excellent : aucun Ã©cart constatÃ©.'}
                   </div>
                 ) : (
                   <div className="border border-slate-100 rounded-2xl overflow-hidden max-h-48 overflow-y-auto divide-y divide-slate-50">
@@ -2464,15 +2464,15 @@ export default function Account({
                             </div>
                             <div className="flex items-center gap-4 shrink-0 text-right">
                               <div>
-                                <span className="text-[9px] text-gray-400 uppercase block">{isRtl ? 'الفرق' : 'Écart'}</span>
+                                <span className="text-[9px] text-gray-400 uppercase block">{isRtl ? 'Ø§Ù„ÙØ±Ù‚' : 'Ã‰cart'}</span>
                                 <span className={`font-mono font-black ${isDeficit ? 'text-red-600' : 'text-blue-600'}`}>
                                   {item.diff > 0 ? `+${item.diff}` : item.diff}
                                 </span>
                               </div>
                               <div>
-                                <span className="text-[9px] text-gray-400 uppercase block">{isRtl ? 'من ➔ إلى' : 'Avant -> Après'}</span>
+                                <span className="text-[9px] text-gray-400 uppercase block">{isRtl ? 'Ù…Ù† âž” Ø¥Ù„Ù‰' : 'Avant -> AprÃ¨s'}</span>
                                 <span className="font-mono font-bold text-slate-600">
-                                  {item.expected} ➔ {item.actual}
+                                  {item.expected} âž” {item.actual}
                                 </span>
                               </div>
                             </div>
@@ -2491,7 +2491,7 @@ export default function Account({
                 onClick={() => setShowConfirmModal(false)}
                 className="py-2.5 px-5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 font-extrabold text-xs rounded-xl shadow-sm transition cursor-pointer"
               >
-                {isRtl ? 'إلغاء التراجع' : 'Annuler'}
+                {isRtl ? 'Ø¥Ù„ØºØ§Ø¡ Ø§Ù„ØªØ±Ø§Ø¬Ø¹' : 'Annuler'}
               </button>
 
               <button
@@ -2500,7 +2500,7 @@ export default function Account({
                 className="py-2.5 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer"
               >
                 <ClipboardCheck className="w-4 h-4" />
-                <span>{isRtl ? 'نعم، اعتمد المطابقة وتحديث المخزن' : 'Oui, Confirmer & Rectifier le Stock'}</span>
+                <span>{isRtl ? 'Ù†Ø¹Ù…ØŒ Ø§Ø¹ØªÙ…Ø¯ Ø§Ù„Ù…Ø·Ø§Ø¨Ù‚Ø© ÙˆØªØ­Ø¯ÙŠØ« Ø§Ù„Ù…Ø®Ø²Ù†' : 'Oui, Confirmer & Rectifier le Stock'}</span>
               </button>
             </div>
 
@@ -2520,10 +2520,10 @@ export default function Account({
                 </div>
                 <div>
                   <h3 className="text-sm font-black text-slate-900">
-                    {isRtl ? 'تفاصيل محضر التفتيش والجرد المالي للمخازن' : 'Détails du Rapport d\'Inspection d\'Inventaire'}
+                    {isRtl ? 'ØªÙØ§ØµÙŠÙ„ Ù…Ø­Ø¶Ø± Ø§Ù„ØªÙØªÙŠØ´ ÙˆØ§Ù„Ø¬Ø±Ø¯ Ø§Ù„Ù…Ø§Ù„ÙŠ Ù„Ù„Ù…Ø®Ø§Ø²Ù†' : 'DÃ©tails du Rapport d\'Inspection d\'Inventaire'}
                   </h3>
                   <p className="text-xxs font-bold text-gray-400 mt-0.5">
-                    {isRtl ? `مستند تدقيق رسمي رقم: #${selectedAudit.id.substring(selectedAudit.id.length - 8)}` : `Détail du document d'audit officiel #${selectedAudit.id}`}
+                    {isRtl ? `Ù…Ø³ØªÙ†Ø¯ ØªØ¯Ù‚ÙŠÙ‚ Ø±Ø³Ù…ÙŠ Ø±Ù‚Ù…: #${selectedAudit.id.substring(selectedAudit.id.length - 8)}` : `DÃ©tail du document d'audit officiel #${selectedAudit.id}`}
                   </p>
                 </div>
               </div>
@@ -2532,7 +2532,7 @@ export default function Account({
                 onClick={() => setSelectedAudit(null)}
                 className="p-1 px-2.5 bg-slate-100 text-slate-500 hover:text-slate-800 rounded-lg text-xs font-bold transition shrink-0 cursor-pointer"
               >
-                ×
+                Ã—
               </button>
             </div>
 
@@ -2545,19 +2545,19 @@ export default function Account({
                 {/* Stat block 1 */}
                 <div className="p-4 bg-slate-50/80 border border-slate-100 rounded-2xl flex flex-col justify-between">
                   <span className="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider block">
-                    {isRtl ? 'معلومات المسؤول والتحقق' : 'Détails de l\'Auditeur'}
+                    {isRtl ? 'Ù…Ø¹Ù„ÙˆÙ…Ø§Øª Ø§Ù„Ù…Ø³Ø¤ÙˆÙ„ ÙˆØ§Ù„ØªØ­Ù‚Ù‚' : 'DÃ©tails de l\'Auditeur'}
                   </span>
                   <div className="mt-2 space-y-1">
                     <div className="flex justify-between items-center text-xs font-semibold">
-                      <span className="text-gray-400">{isRtl ? 'القائم بالعملية:' : 'Responsable:'}</span>
+                      <span className="text-gray-400">{isRtl ? 'Ø§Ù„Ù‚Ø§Ø¦Ù… Ø¨Ø§Ù„Ø¹Ù…Ù„ÙŠØ©:' : 'Responsable:'}</span>
                       <span className="text-slate-900 font-extrabold">{selectedAudit.auditor}</span>
                     </div>
                     <div className="flex justify-between items-center text-xs font-semibold">
-                      <span className="text-gray-400">{isRtl ? 'نوع الجرد:' : 'Type d\'Audit:'}</span>
+                      <span className="text-gray-400">{isRtl ? 'Ù†ÙˆØ¹ Ø§Ù„Ø¬Ø±Ø¯:' : 'Type d\'Audit:'}</span>
                       <span className="text-indigo-600 font-bold">
                         {selectedAudit.type === 'monthly' 
-                          ? (isRtl ? 'تفتيش ومطابقة شهرية' : 'Mensuel') 
-                          : (isRtl ? 'جرد شامل سنوي' : 'Semestriel')}
+                          ? (isRtl ? 'ØªÙØªÙŠØ´ ÙˆÙ…Ø·Ø§Ø¨Ù‚Ø© Ø´Ù‡Ø±ÙŠØ©' : 'Mensuel') 
+                          : (isRtl ? 'Ø¬Ø±Ø¯ Ø´Ø§Ù…Ù„ Ø³Ù†ÙˆÙŠ' : 'Semestriel')}
                       </span>
                     </div>
                   </div>
@@ -2566,11 +2566,11 @@ export default function Account({
                 {/* Stat block 2 */}
                 <div className="p-4 bg-slate-50/80 border border-slate-100 rounded-2xl flex flex-col justify-between">
                   <span className="text-[10px] text-gray-400 font-extrabold uppercase tracking-wider block">
-                    {isRtl ? 'رمز وتاريخ المحضر' : 'Date d\'Inspection'}
+                    {isRtl ? 'Ø±Ù…Ø² ÙˆØªØ§Ø±ÙŠØ® Ø§Ù„Ù…Ø­Ø¶Ø±' : 'Date d\'Inspection'}
                   </span>
                   <div className="mt-2 space-y-1">
                     <div className="flex justify-between items-center text-xs font-semibold">
-                      <span className="text-gray-400">{isRtl ? 'التاريخ واليوم:' : 'Date d\'audit:'}</span>
+                      <span className="text-gray-400">{isRtl ? 'Ø§Ù„ØªØ§Ø±ÙŠØ® ÙˆØ§Ù„ÙŠÙˆÙ…:' : 'Date d\'audit:'}</span>
                       <span className="text-slate-750 font-mono font-bold">
                         {new Date(selectedAudit.date).toLocaleDateString(lang === 'ar' ? 'ar-MA' : 'fr', {
                           day: '2-digit', month: 'long', year: 'numeric'
@@ -2578,7 +2578,7 @@ export default function Account({
                       </span>
                     </div>
                     <div className="flex justify-between items-center text-xs font-semibold">
-                      <span className="text-gray-400">{isRtl ? 'التوقيت:' : 'Heure:'}</span>
+                      <span className="text-gray-400">{isRtl ? 'Ø§Ù„ØªÙˆÙ‚ÙŠØª:' : 'Heure:'}</span>
                       <span className="text-slate-700 font-mono">
                         {new Date(selectedAudit.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
@@ -2589,15 +2589,15 @@ export default function Account({
                 {/* Stat block 3 */}
                 <div className="p-4 bg-red-50/45 border border-red-100/50 rounded-2xl flex flex-col justify-between">
                   <span className="text-[10px] text-red-500 font-extrabold uppercase tracking-wider block">
-                    {isRtl ? 'النتائج والفروقات المالية' : 'Impact Financier & Pertes'}
+                    {isRtl ? 'Ø§Ù„Ù†ØªØ§Ø¦Ø¬ ÙˆØ§Ù„ÙØ±ÙˆÙ‚Ø§Øª Ø§Ù„Ù…Ø§Ù„ÙŠØ©' : 'Impact Financier & Pertes'}
                   </span>
                   <div className="mt-2 space-y-1">
                     <div className="flex justify-between items-center text-xs font-semibold">
-                      <span className="text-red-750">{isRtl ? 'السلع المفقودة:' : 'Articles Perdus:'}</span>
-                      <span className="text-red-700 font-mono font-black">{selectedAudit.totalDeficitQty} {isRtl ? 'وحدات' : 'unités'}</span>
+                      <span className="text-red-750">{isRtl ? 'Ø§Ù„Ø³Ù„Ø¹ Ø§Ù„Ù…ÙÙ‚ÙˆØ¯Ø©:' : 'Articles Perdus:'}</span>
+                      <span className="text-red-700 font-mono font-black">{selectedAudit.totalDeficitQty} {isRtl ? 'ÙˆØ­Ø¯Ø§Øª' : 'unitÃ©s'}</span>
                     </div>
                     <div className="flex justify-between items-center text-xs font-semibold">
-                      <span className="text-red-650">{isRtl ? 'إجمالي العجز:' : 'Déficit total:'}</span>
+                      <span className="text-red-650">{isRtl ? 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ø¹Ø¬Ø²:' : 'DÃ©ficit total:'}</span>
                       <span className="text-red-600 font-mono font-black">-{selectedAudit.totalDeficitValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                     </div>
                   </div>
@@ -2608,7 +2608,7 @@ export default function Account({
               {/* Notes block */}
               <div className="p-4 bg-amber-50/40 border border-amber-150 rounded-2xl">
                 <span className="text-[10px] text-amber-700 font-black uppercase tracking-wider block mb-1">
-                  {isRtl ? 'ملاحظات وتوصية تقرير التفتيش المالي:' : 'Observations de l\'inspecteur :'}
+                  {isRtl ? 'Ù…Ù„Ø§Ø­Ø¸Ø§Øª ÙˆØªÙˆØµÙŠØ© ØªÙ‚Ø±ÙŠØ± Ø§Ù„ØªÙØªÙŠØ´ Ø§Ù„Ù…Ø§Ù„ÙŠ:' : 'Observations de l\'inspecteur :'}
                 </span>
                 <p className="text-xs font-extrabold text-slate-800 leading-relaxed italic">
                   "{selectedAudit.notes}"
@@ -2619,29 +2619,29 @@ export default function Account({
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xxs font-black text-slate-400 uppercase tracking-wider block">
-                    {isRtl ? 'قائمة الفروقات والتسويات التفصيلية بالمنتجات:' : 'Ajustements détaillés des produits affectés :'}
+                    {isRtl ? 'Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„ÙØ±ÙˆÙ‚Ø§Øª ÙˆØ§Ù„ØªØ³ÙˆÙŠØ§Øª Ø§Ù„ØªÙØµÙŠÙ„ÙŠØ© Ø¨Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª:' : 'Ajustements dÃ©taillÃ©s des produits affectÃ©s :'}
                   </span>
                   <span className="text-xxs font-bold text-gray-400">
-                    {(selectedAudit.items ? selectedAudit.items.length : 0)} {isRtl ? 'تعديلات مصجلة' : 'modifications'}
+                    {(selectedAudit.items ? selectedAudit.items.length : 0)} {isRtl ? 'ØªØ¹Ø¯ÙŠÙ„Ø§Øª Ù…ØµØ¬Ù„Ø©' : 'modifications'}
                   </span>
                 </div>
 
                 {!selectedAudit.items || selectedAudit.items.length === 0 ? (
                   <div className="p-8 bg-emerald-55 bg-emerald-50 text-emerald-800 rounded-3xl text-center text-xs font-black border border-emerald-100/50">
-                    {isRtl ? '🎉 مطابقة تامة 100%! لا توجد أي فروقات مادية مسجلة في هذا الجرد.' : 'Excellence : aucun écart constaté sur cette période.'}
+                    {isRtl ? 'ðŸŽ‰ Ù…Ø·Ø§Ø¨Ù‚Ø© ØªØ§Ù…Ø© 100%! Ù„Ø§ ØªÙˆØ¬Ø¯ Ø£ÙŠ ÙØ±ÙˆÙ‚Ø§Øª Ù…Ø§Ø¯ÙŠØ© Ù…Ø³Ø¬Ù„Ø© ÙÙŠ Ù‡Ø°Ø§ Ø§Ù„Ø¬Ø±Ø¯.' : 'Excellence : aucun Ã©cart constatÃ© sur cette pÃ©riode.'}
                   </div>
                 ) : (
                   <div className="border border-slate-100 rounded-2xl overflow-hidden max-h-80 overflow-y-auto shadow-sm">
                     <table className="w-full text-xs font-semibold">
                       <thead className="bg-slate-50 text-[10px] font-black uppercase text-slate-500 border-b border-slate-100 sticky top-0 z-10">
                         <tr>
-                          <th className="py-2.5 px-3 text-right">{isRtl ? 'المنتجات التي بها زيادة أو نقصان' : 'Articles affectés'}</th>
-                          <th className="py-2.5 px-3 text-center">{isRtl ? 'حالة المخزون' : 'Statut d\'Écart'}</th>
-                          <th className="py-2.5 px-3 text-center">{isRtl ? 'الكمية التي كانت بالمخزون' : 'Quantité attendue'}</th>
-                          <th className="py-2.5 px-3 text-center">{isRtl ? 'الكمية التي بالرف الفعلي' : 'Quantité sur Rayon'}</th>
-                          <th className="py-2.5 px-3 text-center">{isRtl ? 'كمية الزيادة أو النقصان' : 'Quantité variation'}</th>
-                          <th className="py-2.5 px-3 text-center">{isRtl ? 'سعر الشراء' : 'Prix d\'Achat'}</th>
-                          <th className="py-2.5 px-3 text-left">{isRtl ? 'الخسائر / الأثر المالي' : 'Pertes / Impact'}</th>
+                          <th className="py-2.5 px-3 text-right">{isRtl ? 'Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„ØªÙŠ Ø¨Ù‡Ø§ Ø²ÙŠØ§Ø¯Ø© Ø£Ùˆ Ù†Ù‚ØµØ§Ù†' : 'Articles affectÃ©s'}</th>
+                          <th className="py-2.5 px-3 text-center">{isRtl ? 'Ø­Ø§Ù„Ø© Ø§Ù„Ù…Ø®Ø²ÙˆÙ†' : 'Statut d\'Ã‰cart'}</th>
+                          <th className="py-2.5 px-3 text-center">{isRtl ? 'Ø§Ù„ÙƒÙ…ÙŠØ© Ø§Ù„ØªÙŠ ÙƒØ§Ù†Øª Ø¨Ø§Ù„Ù…Ø®Ø²ÙˆÙ†' : 'QuantitÃ© attendue'}</th>
+                          <th className="py-2.5 px-3 text-center">{isRtl ? 'Ø§Ù„ÙƒÙ…ÙŠØ© Ø§Ù„ØªÙŠ Ø¨Ø§Ù„Ø±Ù Ø§Ù„ÙØ¹Ù„ÙŠ' : 'QuantitÃ© sur Rayon'}</th>
+                          <th className="py-2.5 px-3 text-center">{isRtl ? 'ÙƒÙ…ÙŠØ© Ø§Ù„Ø²ÙŠØ§Ø¯Ø© Ø£Ùˆ Ø§Ù„Ù†Ù‚ØµØ§Ù†' : 'QuantitÃ© variation'}</th>
+                          <th className="py-2.5 px-3 text-center">{isRtl ? 'Ø³Ø¹Ø± Ø§Ù„Ø´Ø±Ø§Ø¡' : 'Prix d\'Achat'}</th>
+                          <th className="py-2.5 px-3 text-left">{isRtl ? 'Ø§Ù„Ø®Ø³Ø§Ø¦Ø± / Ø§Ù„Ø£Ø«Ø± Ø§Ù„Ù…Ø§Ù„ÙŠ' : 'Pertes / Impact'}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-50 text-slate-700">
@@ -2659,11 +2659,11 @@ export default function Account({
                               <td className="py-3 px-3 text-center">
                                 {isDeficit ? (
                                   <span className="inline-flex items-center gap-1 py-0.5 px-2 bg-red-50 text-red-700 rounded-lg text-[10px] font-black border border-red-100">
-                                    {isRtl ? 'نقصان / عجز 📉' : 'Déficit (Baisse)'}
+                                    {isRtl ? 'Ù†Ù‚ØµØ§Ù† / Ø¹Ø¬Ø² ðŸ“‰' : 'DÃ©ficit (Baisse)'}
                                   </span>
                                 ) : (
                                   <span className="inline-flex items-center gap-1 py-0.5 px-2 bg-emerald-55 bg-emerald-50 text-emerald-700 rounded-lg text-[10px] font-black border border-emerald-100">
-                                    {isRtl ? 'زيادة / فائض 📈' : 'Excédent (Hausse)'}
+                                    {isRtl ? 'Ø²ÙŠØ§Ø¯Ø© / ÙØ§Ø¦Ø¶ ðŸ“ˆ' : 'ExcÃ©dent (Hausse)'}
                                   </span>
                                 )}
                               </td>
@@ -2680,11 +2680,11 @@ export default function Account({
                               <td className="py-3 px-3 text-left font-mono font-black text-red-600">
                                 {isDeficit ? (
                                   <span className="text-red-650 bg-red-50/50 p-1 px-2 rounded border border-red-100">
-                                    -{Math.abs(financialEffect).toFixed(2)} ({isRtl ? 'خسارة' : 'Perte'})
+                                    -{Math.abs(financialEffect).toFixed(2)} ({isRtl ? 'Ø®Ø³Ø§Ø±Ø©' : 'Perte'})
                                   </span>
                                 ) : (
                                   <span className="text-emerald-650 bg-emerald-50/50 p-1 px-2 rounded border border-emerald-100">
-                                    +{financialEffect.toFixed(2)} ({isRtl ? 'أرباح تسوية' : 'Gain'})
+                                    +{financialEffect.toFixed(2)} ({isRtl ? 'Ø£Ø±Ø¨Ø§Ø­ ØªØ³ÙˆÙŠØ©' : 'Gain'})
                                   </span>
                                 )}
                               </td>
@@ -2706,7 +2706,7 @@ export default function Account({
                 onClick={() => setSelectedAudit(null)}
                 className="py-2.5 px-6 bg-slate-800 hover:bg-slate-900 text-white font-black text-xs rounded-xl shadow-md transition cursor-pointer"
               >
-                {isRtl ? 'إغلاق ومتابعة' : 'Fermer'}
+                {isRtl ? 'Ø¥ØºÙ„Ø§Ù‚ ÙˆÙ…ØªØ§Ø¨Ø¹Ø©' : 'Fermer'}
               </button>
             </div>
 
@@ -2727,12 +2727,12 @@ export default function Account({
                 </div>
                 <div className="text-right">
                   <h3 className="text-xs font-black text-slate-900">
-                    {isRtl ? 'تعديل وتصحيح الحساب المالي' : 'Correction du Solde Financier'}
+                    {isRtl ? 'ØªØ¹Ø¯ÙŠÙ„ ÙˆØªØµØ­ÙŠØ­ Ø§Ù„Ø­Ø³Ø§Ø¨ Ø§Ù„Ù…Ø§Ù„ÙŠ' : 'Correction du Solde Financier'}
                   </h3>
                   <p className="text-[10px] font-bold text-gray-400 mt-0.5">
-                    {editingField === 'cash_income' && (isRtl ? 'تعديل "المداخيل النقدية التراكمية"' : 'Ajustement des entrées de caisse')}
-                    {editingField === 'withdrawals' && (isRtl ? 'تعديل "مجموع السحوبات ومقتطعات المالك"' : 'Ajustement des prélèvements')}
-                    {editingField === 'drawer_balance' && (isRtl ? 'تعديل "رصيد الصندوق الحالي"' : 'Ajustement du solde du coffre')}
+                    {editingField === 'cash_income' && (isRtl ? 'ØªØ¹Ø¯ÙŠÙ„ "Ø§Ù„Ù…Ø¯Ø§Ø®ÙŠÙ„ Ø§Ù„Ù†Ù‚Ø¯ÙŠØ© Ø§Ù„ØªØ±Ø§ÙƒÙ…ÙŠØ©"' : 'Ajustement des entrÃ©es de caisse')}
+                    {editingField === 'withdrawals' && (isRtl ? 'ØªØ¹Ø¯ÙŠÙ„ "Ù…Ø¬Ù…ÙˆØ¹ Ø§Ù„Ø³Ø­ÙˆØ¨Ø§Øª ÙˆÙ…Ù‚ØªØ·Ø¹Ø§Øª Ø§Ù„Ù…Ø§Ù„Ùƒ"' : 'Ajustement des prÃ©lÃ¨vements')}
+                    {editingField === 'drawer_balance' && (isRtl ? 'ØªØ¹Ø¯ÙŠÙ„ "Ø±ØµÙŠØ¯ Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚ Ø§Ù„Ø­Ø§Ù„ÙŠ"' : 'Ajustement du solde du coffre')}
                   </p>
                 </div>
               </div>
@@ -2741,7 +2741,7 @@ export default function Account({
                 onClick={() => setEditingField(null)}
                 className="p-1 px-2.5 bg-slate-100 text-slate-500 hover:text-slate-800 rounded-lg text-xs font-bold transition shrink-0 cursor-pointer"
               >
-                ×
+                Ã—
               </button>
             </div>
 
@@ -2753,8 +2753,8 @@ export default function Account({
                 <div className="p-3 bg-blue-50/70 border border-blue-100 rounded-xl text-[10px] text-blue-800 leading-relaxed font-bold">
                   <p>
                     {isRtl 
-                      ? '💡 يقوم هذا التعديل بحفظ قيمة إجمالية مخصصة للرصيد المالي. سيتم تسجيل هذا التعديل في جدول المستجدات التاريخية فوراً وبكل التفاصيل للشفافية.' 
-                      : "L'exercice d'ajustement manuel enregistre un écart de trésorerie. L'activité sera consignée pour un audit transparent."}
+                      ? 'ðŸ’¡ ÙŠÙ‚ÙˆÙ… Ù‡Ø°Ø§ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„ Ø¨Ø­ÙØ¸ Ù‚ÙŠÙ…Ø© Ø¥Ø¬Ù…Ø§Ù„ÙŠØ© Ù…Ø®ØµØµØ© Ù„Ù„Ø±ØµÙŠØ¯ Ø§Ù„Ù…Ø§Ù„ÙŠ. Ø³ÙŠØªÙ… ØªØ³Ø¬ÙŠÙ„ Ù‡Ø°Ø§ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„ ÙÙŠ Ø¬Ø¯ÙˆÙ„ Ø§Ù„Ù…Ø³ØªØ¬Ø¯Ø§Øª Ø§Ù„ØªØ§Ø±ÙŠØ®ÙŠØ© ÙÙˆØ±Ø§Ù‹ ÙˆØ¨ÙƒÙ„ Ø§Ù„ØªÙØ§ØµÙŠÙ„ Ù„Ù„Ø´ÙØ§ÙÙŠØ©.' 
+                      : "L'exercice d'ajustement manuel enregistre un Ã©cart de trÃ©sorerie. L'activitÃ© sera consignÃ©e pour un audit transparent."}
                   </p>
                 </div>
 
@@ -2762,7 +2762,7 @@ export default function Account({
                 <div className="space-y-3">
                   <div>
                     <label className="block text-[10px] font-black uppercase text-gray-400 mb-1">
-                      {isRtl ? 'القيمة الإجمالية المراد اعتمادها  :' : 'Nouveau Montant Cible  :'}
+                      {isRtl ? 'Ø§Ù„Ù‚ÙŠÙ…Ø© Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠØ© Ø§Ù„Ù…Ø±Ø§Ø¯ Ø§Ø¹ØªÙ…Ø§Ø¯Ù‡Ø§  :' : 'Nouveau Montant Cible  :'}
                     </label>
                     <input
                       type="number"
@@ -2777,7 +2777,7 @@ export default function Account({
 
                   <div>
                     <label className="block text-[10px] font-black uppercase text-gray-400 mb-1">
-                      {isRtl ? 'السبب أو تبرير التعديل الحسابي (إلزامي) :' : 'Motif ou explication de l\'ajustement (requis) :'}
+                      {isRtl ? 'Ø§Ù„Ø³Ø¨Ø¨ Ø£Ùˆ ØªØ¨Ø±ÙŠØ± Ø§Ù„ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø­Ø³Ø§Ø¨ÙŠ (Ø¥Ù„Ø²Ø§Ù…ÙŠ) :' : 'Motif ou explication de l\'ajustement (requis) :'}
                     </label>
                     <textarea
                       required
@@ -2785,7 +2785,7 @@ export default function Account({
                       value={adjustmentReason}
                       onChange={e => setAdjustmentReason(e.target.value)}
                       className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 focus:border-indigo-500 focus:bg-white outline-none transition resize-none"
-                      placeholder={isRtl ? 'مثلاً: مراجعة المداخيل، تصحيح فروقات الصرف المباشر الصباحي...' : 'Ex: Correction des écarts de caisse de la journée...'}
+                      placeholder={isRtl ? 'Ù…Ø«Ù„Ø§Ù‹: Ù…Ø±Ø§Ø¬Ø¹Ø© Ø§Ù„Ù…Ø¯Ø§Ø®ÙŠÙ„ØŒ ØªØµØ­ÙŠØ­ ÙØ±ÙˆÙ‚Ø§Øª Ø§Ù„ØµØ±Ù Ø§Ù„Ù…Ø¨Ø§Ø´Ø± Ø§Ù„ØµØ¨Ø§Ø­ÙŠ...' : 'Ex: Correction des Ã©carts de caisse de la journÃ©e...'}
                     />
                   </div>
                 </div>
@@ -2799,13 +2799,13 @@ export default function Account({
                   onClick={() => setEditingField(null)}
                   className="py-2 px-4 bg-white border border-gray-200 hover:bg-slate-50 text-slate-700 rounded-xl transition cursor-pointer"
                 >
-                  {isRtl ? 'إلغاء' : 'Annuler'}
+                  {isRtl ? 'Ø¥Ù„ØºØ§Ø¡' : 'Annuler'}
                 </button>
                 <button
                   type="submit"
                   className="py-2 px-4 bg-slate-900 hover:bg-slate-850 text-white rounded-xl shadow-md font-black transition cursor-pointer"
                 >
-                  {isRtl ? 'اعتماد وحفظ' : 'Valider & Enregistrer'}
+                  {isRtl ? 'Ø§Ø¹ØªÙ…Ø§Ø¯ ÙˆØ­ÙØ¸' : 'Valider & Enregistrer'}
                 </button>
               </div>
             </form>
@@ -2817,3 +2817,5 @@ export default function Account({
     </div>
   );
 }
+
+

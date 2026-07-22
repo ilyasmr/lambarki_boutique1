@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Product, User, StockMovement, Invoice } from '../types';
 import { translations, arabicDashboardLabels } from '../translations';
 import { 
@@ -153,15 +153,15 @@ const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('databa
     e.preventDefault();
 
     if (!formName.trim() || !formSku.trim() || !formCategory.trim()) {
-      alert(isRtl ? 'يرجى ملء جميع الحقول المطلوبة الأساسية.' : 'Saisie invalide ou champs vides requis.');
+      alert(isRtl ? 'ÙŠØ±Ø¬Ù‰ Ù…Ù„Ø¡ Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø© Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ©.' : 'Saisie invalide ou champs vides requis.');
       return;
     }
 
     const isDuplicateSku = products.some(p => p.sku.trim() === formSku.trim() && p.id !== editingId);
     if (isDuplicateSku) {
       alert(isRtl 
-        ? 'خطأ: هذا الرمز الشريطي (الباركود) مستخدم بالفعل لمنتج آخر!' 
-        : 'Erreur: Ce code à barre (SKU) est déjà utilisé par un autre produit !'
+        ? 'Ø®Ø·Ø£: Ù‡Ø°Ø§ Ø§Ù„Ø±Ù…Ø² Ø§Ù„Ø´Ø±ÙŠØ·ÙŠ (Ø§Ù„Ø¨Ø§Ø±ÙƒÙˆØ¯) Ù…Ø³ØªØ®Ø¯Ù… Ø¨Ø§Ù„ÙØ¹Ù„ Ù„Ù…Ù†ØªØ¬ Ø¢Ø®Ø±!' 
+        : 'Erreur: Ce code Ã  barre (SKU) est dÃ©jÃ  utilisÃ© par un autre produit !'
       );
       return;
     }
@@ -169,16 +169,16 @@ const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('databa
     const isDuplicateName = products.some(p => p.name.trim().toLowerCase() === formName.trim().toLowerCase() && p.id !== editingId);
     if (isDuplicateName) {
       alert(isRtl 
-        ? 'خطأ: هذا المنتج مسجل مسبقاً بنفس الاسم!' 
-        : 'Erreur: Ce produit est déjà enregistré avec ce nom !'
+        ? 'Ø®Ø·Ø£: Ù‡Ø°Ø§ Ø§Ù„Ù…Ù†ØªØ¬ Ù…Ø³Ø¬Ù„ Ù…Ø³Ø¨Ù‚Ø§Ù‹ Ø¨Ù†ÙØ³ Ø§Ù„Ø§Ø³Ù…!' 
+        : 'Erreur: Ce produit est dÃ©jÃ  enregistrÃ© avec ce nom !'
       );
       return;
     }
 
     if (formSellPrice < formBuyPrice) {
       const ok = window.confirm(isRtl 
-        ? 'تنبيه: سعر البيع أقل من سعر الشراء (خسارة محتومة). هل ترغب بالمضي قدماً؟' 
-        : 'Attention: Le prix de vente est inférieur au prix de revient d\'achat. Continuer quand même ?'
+        ? 'ØªÙ†Ø¨ÙŠÙ‡: Ø³Ø¹Ø± Ø§Ù„Ø¨ÙŠØ¹ Ø£Ù‚Ù„ Ù…Ù† Ø³Ø¹Ø± Ø§Ù„Ø´Ø±Ø§Ø¡ (Ø®Ø³Ø§Ø±Ø© Ù…Ø­ØªÙˆÙ…Ø©). Ù‡Ù„ ØªØ±ØºØ¨ Ø¨Ø§Ù„Ù…Ø¶ÙŠ Ù‚Ø¯Ù…Ø§Ù‹ØŸ' 
+        : 'Attention: Le prix de vente est infÃ©rieur au prix de revient d\'achat. Continuer quand mÃªme ?'
       );
       if (!ok) return;
     }
@@ -208,7 +208,7 @@ const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('databa
     e.preventDefault();
     const validItems = bulkItems.filter(i => i.productId && i.qty > 0);
     if (validItems.length === 0) {
-      alert(isRtl ? 'يرجى تحديد سلعة واحدة على الأقل بكمية صحيحة.' : 'Veuillez sélectionner au moins un article avec quantité valide.');
+      alert(isRtl ? 'ÙŠØ±Ø¬Ù‰ ØªØ­Ø¯ÙŠØ¯ Ø³Ù„Ø¹Ø© ÙˆØ§Ø­Ø¯Ø© Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„ Ø¨ÙƒÙ…ÙŠØ© ØµØ­ÙŠØ­Ø©.' : 'Veuillez sÃ©lectionner au moins un article avec quantitÃ© valide.');
       return;
     }
 
@@ -216,7 +216,7 @@ const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('databa
       for (const item of validItems) {
         const p = products.find(x => x.id === item.productId);
         if (p && p.stock - item.qty < 0) {
-          alert(isRtl ? `الكمية المسحوبة أكبر من المخزون المتوفر للمنتج: ${p.name}!` : `Stock insuffisant pour: ${p.name}!`);
+          alert(isRtl ? `Ø§Ù„ÙƒÙ…ÙŠØ© Ø§Ù„Ù…Ø³Ø­ÙˆØ¨Ø© Ø£ÙƒØ¨Ø± Ù…Ù† Ø§Ù„Ù…Ø®Ø²ÙˆÙ† Ø§Ù„Ù…ØªÙˆÙØ± Ù„Ù„Ù…Ù†ØªØ¬: ${p.name}!` : `Stock insuffisant pour: ${p.name}!`);
           return;
         }
       }
@@ -233,7 +233,7 @@ const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('databa
         type: stockFormType,
         qty: item.qty,
         date: new Date().toISOString(),
-        reason: stockFormReason || (stockFormType === 'in' ? (isRtl ? 'واردات متعددة' : 'Entrées groupées') : (isRtl ? 'تسوية مخزون جماعية' : 'Ajustement groupé')),
+        reason: stockFormReason || (stockFormType === 'in' ? (isRtl ? 'ÙˆØ§Ø±Ø¯Ø§Øª Ù…ØªØ¹Ø¯Ø¯Ø©' : 'EntrÃ©es groupÃ©es') : (isRtl ? 'ØªØ³ÙˆÙŠØ© Ù…Ø®Ø²ÙˆÙ† Ø¬Ù…Ø§Ø¹ÙŠØ©' : 'Ajustement groupÃ©')),
         operator: currentUser?.name || 'Admin',
         batchId: currentBatchId
       };
@@ -265,7 +265,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
       type: diff > 0 ? 'in' : 'out',
       qty: Math.abs(diff),
       date: new Date().toISOString(),
-      reason: isRtl ? 'تعديل سريع من الواجهة' : 'Ajustement rapide',
+      reason: isRtl ? 'ØªØ¹Ø¯ÙŠÙ„ Ø³Ø±ÙŠØ¹ Ù…Ù† Ø§Ù„ÙˆØ§Ø¬Ù‡Ø©' : 'Ajustement rapide',
       operator: currentUser?.name || 'Admin',
       batchId: `quick-${Date.now()}`
     };
@@ -297,7 +297,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
           className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition whitespace-nowrap flex-1 justify-center ${activeTab === 'database' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}
         >
           <Grid className="w-4 h-4" />
-          {isRtl ? 'قاعدة المنتجات' : 'Base Produits'}
+          {isRtl ? 'Ù‚Ø§Ø¹Ø¯Ø© Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª' : 'Base Produits'}
         </button>
         <button
           onClick={() => {
@@ -307,7 +307,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
           className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition whitespace-nowrap flex-1 justify-center ${activeTab === 'history' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}
         >
           <History className="w-4 h-4" />
-          {isRtl ? 'سجل حركة المخزون' : 'Historique Stock'}
+          {isRtl ? 'Ø³Ø¬Ù„ Ø­Ø±ÙƒØ© Ø§Ù„Ù…Ø®Ø²ÙˆÙ†' : 'Historique Stock'}
         </button>
       </div>
 
@@ -331,10 +331,10 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
               <AlertTriangle className={`w-4 h-4 shrink-0 ${showLowStockOnly ? 'text-rose-600' : 'text-amber-750 animate-bounce'}`} />
               <div className={isRtl ? 'text-right' : 'text-left'}>
                 <span className="block text-[9px] uppercase tracking-wider text-slate-400 font-extrabold leading-none mb-1">
-                  {isRtl ? 'مستويات المخزون' : 'Niveaux de Stock'}
+                  {isRtl ? 'Ù…Ø³ØªÙˆÙŠØ§Øª Ø§Ù„Ù…Ø®Ø²ÙˆÙ†' : 'Niveaux de Stock'}
                 </span>
                 <span className="font-extrabold text-xs block leading-none">
-                  {isRtl ? '⚠️ السلع القريبة من النفاد' : '⚠️ Alerte Stock Critique'}
+                  {isRtl ? 'âš ï¸ Ø§Ù„Ø³Ù„Ø¹ Ø§Ù„Ù‚Ø±ÙŠØ¨Ø© Ù…Ù† Ø§Ù„Ù†ÙØ§Ø¯' : 'âš ï¸ Alerte Stock Critique'}
                 </span>
               </div>
               {showLowStockOnly && (
@@ -342,7 +342,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   onClick={(e) => { e.stopPropagation(); setShowLowStockOnly?.(false); }} 
                   className="w-5 h-5 rounded-full bg-rose-250/25 text-rose-800 hover:bg-rose-300 transition-all flex items-center justify-center font-black text-[10px] cursor-pointer"
                 >
-                  ✕
+                  âœ•
                 </span>
               )}
             </button>
@@ -358,7 +358,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
               </span>
               <input
                 type="text"
-                placeholder={isRtl ? 'ابحث باسم المنتج أو الباركود EAN...' : 'Chercher par nom, code...'}
+                placeholder={isRtl ? 'Ø§Ø¨Ø­Ø« Ø¨Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬ Ø£Ùˆ Ø§Ù„Ø¨Ø§Ø±ÙƒÙˆØ¯ EAN...' : 'Chercher par nom, code...'}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className={`w-full py-2.5 pl-10 pr-10 bg-slate-50 text-xs text-slate-800 font-bold rounded-xl border border-slate-200/80 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all ${
@@ -370,7 +370,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   type="button"
                   onClick={() => setSearchTerm('')}
                   className="absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 hover:text-slate-650 transition-all"
-                  title={isRtl ? 'مسح البحث' : 'Effacer la recherche'}
+                  title={isRtl ? 'Ù…Ø³Ø­ Ø§Ù„Ø¨Ø­Ø«' : 'Effacer la recherche'}
                 >
                   <X className="w-3.5 h-3.5 text-slate-500 hover:text-slate-700" />
                 </button>
@@ -385,7 +385,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 onChange={(e) => setCategoryFilter(e.target.value)}
                 className="bg-transparent text-slate-700 outline-none cursor-pointer text-xs font-extrabold border-none p-0 focus:ring-0"
               >
-                <option value="all">{isRtl ? 'القسم: الكل' : 'Tous les Rayons'}</option>
+                <option value="all">{isRtl ? 'Ø§Ù„Ù‚Ø³Ù…: Ø§Ù„ÙƒÙ„' : 'Tous les Rayons'}</option>
                 {categories.map(c => (
                   <option key={c} value={c}>{c}</option>
                 ))}
@@ -398,10 +398,10 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 type="button"
                 onClick={() => setIsManageModalOpen(true)}
                 className="flex items-center gap-1.5 bg-slate-50 hover:bg-slate-100/80 text-slate-700 border border-slate-200 px-3 py-2.5 rounded-xl text-xs font-black shrink-0 transition"
-                title={isRtl ? "إدارة الأقسام (تعديل أو حذف)" : "Gérer les rayons (Modifier ou Supprimer)"}
+                title={isRtl ? "Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ø£Ù‚Ø³Ø§Ù… (ØªØ¹Ø¯ÙŠÙ„ Ø£Ùˆ Ø­Ø°Ù)" : "GÃ©rer les rayons (Modifier ou Supprimer)"}
               >
                 <Settings className="w-3.5 h-3.5 text-emerald-600" />
-                <span>{isRtl ? "إدارة الأقسام" : "Gérer Rayons"}</span>
+                <span>{isRtl ? "Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ø£Ù‚Ø³Ø§Ù…" : "GÃ©rer Rayons"}</span>
               </button>
             )}
 
@@ -413,9 +413,9 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 onChange={(e) => setSortBy(e.target.value as any)}
                 className="bg-transparent text-slate-700 outline-none cursor-pointer text-xs font-extrabold border-none p-0 focus:ring-0"
               >
-                <option value="name">{isRtl ? 'ترتيب: الاسم' : 'Trier par: Nom'}</option>
-                <option value="stock">{isRtl ? 'ترتيب: المخزن' : 'Trier par: Stock'}</option>
-                <option value="price">{isRtl ? 'ترتيب: السعر' : 'Trier par: Prix'}</option>
+                <option value="name">{isRtl ? 'ØªØ±ØªÙŠØ¨: Ø§Ù„Ø§Ø³Ù…' : 'Trier par: Nom'}</option>
+                <option value="stock">{isRtl ? 'ØªØ±ØªÙŠØ¨: Ø§Ù„Ù…Ø®Ø²Ù†' : 'Trier par: Stock'}</option>
+                <option value="price">{isRtl ? 'ØªØ±ØªÙŠØ¨: Ø§Ù„Ø³Ø¹Ø±' : 'Trier par: Prix'}</option>
               </select>
             </div>
 
@@ -425,7 +425,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 type="button"
                 onClick={() => setViewMode('grid')}
                 className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-white text-emerald-650 shadow-sm' : 'text-slate-400 hover:text-slate-800'}`}
-                title={isRtl ? 'شبكة' : 'Grille'}
+                title={isRtl ? 'Ø´Ø¨ÙƒØ©' : 'Grille'}
               >
                 <Grid className="w-3.5 h-3.5" />
               </button>
@@ -433,7 +433,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 type="button"
                 onClick={() => setViewMode('table')}
                 className={`p-1.5 rounded-md transition-all ${viewMode === 'table' ? 'bg-white text-emerald-650 shadow-sm' : 'text-slate-400 hover:text-slate-800'}`}
-                title={isRtl ? 'جدول' : 'Tableau'}
+                title={isRtl ? 'Ø¬Ø¯ÙˆÙ„' : 'Tableau'}
               >
                 <List className="w-3.5 h-3.5" />
               </button>
@@ -446,7 +446,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-black shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-1.5 shrink-0"
               >
                 <Plus className="w-4 h-4" />
-                <span>{isRtl ? 'بطاقة منتج جديدة' : 'Nouveau Produit'}</span>
+                <span>{isRtl ? 'Ø¨Ø·Ø§Ù‚Ø© Ù…Ù†ØªØ¬ Ø¬Ø¯ÙŠØ¯Ø©' : 'Nouveau Produit'}</span>
               </button>
             )}
           </div>
@@ -483,11 +483,11 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 <div className="mt-4 pt-3 border-t border-gray-100 space-y-3">
                   {/* Stock Level */}
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-gray-400 font-bold">{isRtl ? 'المخزون :' : 'Stock :'}</span>
+                    <span className="text-gray-400 font-bold">{isRtl ? 'Ø§Ù„Ù…Ø®Ø²ÙˆÙ† :' : 'Stock :'}</span>
                     
                     {p.stock === 0 ? (
                       <span className="px-2 py-0.5 bg-rose-100 text-rose-800 text-[9px] font-black uppercase rounded-md shadow-xs border border-rose-200">
-                        {isRtl ? 'منفذ بالكامل' : 'Rupture'}
+                        {isRtl ? 'Ù…Ù†ÙØ° Ø¨Ø§Ù„ÙƒØ§Ù…Ù„' : 'Rupture'}
                       </span>
                     ) : (
                       <span className={`px-2 py-0.5 rounded-md text-[9px] uppercase font-black font-mono shadow-xs ${
@@ -502,7 +502,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
 
                   {/* Pricing displays ONLY Sale Price to avoid displaying buy sensitive costs here */}
                   <div className="flex items-center justify-between bg-slate-50/70 p-2.5 rounded-xl border border-slate-100">
-                    <span className="text-[10px] text-slate-500 font-bold uppercase">{isRtl ? 'ثمن البيع :' : 'Prix Vente :'}:</span>
+                    <span className="text-[10px] text-slate-500 font-bold uppercase">{isRtl ? 'Ø«Ù…Ù† Ø§Ù„Ø¨ÙŠØ¹ :' : 'Prix Vente :'}:</span>
                     <span className="font-mono text-xs font-black text-blue-900">{(p.sellPrice || 0).toFixed(2)}</span>
                   </div>
 
@@ -540,14 +540,14 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
         /* Classic Business Table Layout */
         <div className="md:bg-white md:rounded-2xl md:border md:border-gray-100 md:shadow-sm overflow-hidden">
           <div className="overflow-x-hidden md:overflow-x-auto">
-            <table className="w-full text-left block md:table">
+            <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} block md:table">
               <thead className="hidden md:table-header-group">
                 <tr className="bg-gray-50/60 border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
-                  <th className="py-3 px-4">{isRtl ? 'المنتج' : 'Désignation'}</th>
-                  <th className="py-3 px-4">{isRtl ? 'التصنيف' : 'Rayon / Catégorie'}</th>
-                  <th className="py-3 px-4 text-right">{isRtl ? 'سعر البيع' : 'P. Vente'}</th>
-                  <th className="py-3 px-4 text-center">{isRtl ? 'الكمية' : 'Quantité'}</th>
-                  <th className="py-3 px-4 text-center">{isRtl ? 'إجراء' : 'Actions'}</th>
+                  <th className="py-3 px-4">{isRtl ? 'Ø§Ù„Ù…Ù†ØªØ¬' : 'DÃ©signation'}</th>
+                  <th className="py-3 px-4">{isRtl ? 'Ø§Ù„ØªØµÙ†ÙŠÙ' : 'Rayon / CatÃ©gorie'}</th>
+                  <th className="py-3 px-4 text-right">{isRtl ? 'Ø³Ø¹Ø± Ø§Ù„Ø¨ÙŠØ¹' : 'P. Vente'}</th>
+                  <th className="py-3 px-4 text-center">{isRtl ? 'Ø§Ù„ÙƒÙ…ÙŠØ©' : 'QuantitÃ©'}</th>
+                  <th className="py-3 px-4 text-center">{isRtl ? 'Ø¥Ø¬Ø±Ø§Ø¡' : 'Actions'}</th>
                 </tr>
               </thead>
               <tbody className="block md:table-row-group md:divide-y md:divide-gray-50 space-y-3 md:space-y-0 pb-4 md:pb-0">
@@ -559,17 +559,17 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                         <p className="font-bold text-gray-900 text-[15px] md:text-sm">{p.name}</p>
                       </td>
                       <td className="flex justify-between md:table-cell py-2 md:py-4 md:px-4 font-semibold border-t border-dashed border-gray-100 md:border-none">
-                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'التصنيف' : 'Catégorie'}</span>
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'Ø§Ù„ØªØµÙ†ÙŠÙ' : 'CatÃ©gorie'}</span>
                         <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-md">
                           {p.category}
                         </span>
                       </td>
                       <td className="flex justify-between md:table-cell py-2 md:py-4 md:px-4 text-right font-mono font-bold text-blue-900 border-t border-dashed border-gray-100 md:border-none">
-                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'سعر البيع' : 'Prix Vente'}</span>
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'Ø³Ø¹Ø± Ø§Ù„Ø¨ÙŠØ¹' : 'Prix Vente'}</span>
                         <span className="text-[14px] md:text-[12px]">{(p.sellPrice || 0).toFixed(2)}</span>
                       </td>
                       <td className="flex justify-between md:table-cell py-2 md:py-4 md:px-4 text-center border-t border-dashed border-gray-100 md:border-none">
-                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'الكمية' : 'Qté'}</span>
+                        <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'Ø§Ù„ÙƒÙ…ÙŠØ©' : 'QtÃ©'}</span>
                         <span className={`inline-block px-2.5 py-0.5 rounded-full text-xxs font-bold ${
                           p.stock === 0 
                             ? 'bg-rose-100 text-rose-800' 
@@ -616,7 +616,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
           <div className="flex flex-col lg:flex-row gap-4 items-center justify-between border-b border-gray-100 pb-4">
             <h2 className="text-lg font-black text-slate-800 flex items-center gap-2">
               <History className="w-5 h-5 text-emerald-600" />
-                {isRtl ? 'سجل حركة المخزون' : 'Historique des Mouvements'}
+                {isRtl ? 'Ø³Ø¬Ù„ Ø­Ø±ÙƒØ© Ø§Ù„Ù…Ø®Ø²ÙˆÙ†' : 'Historique des Mouvements'}
               </h2>
               
               {!isCashier && (
@@ -625,7 +625,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   className="flex w-full lg:w-auto px-4 py-2.5 bg-emerald-600 mt-2 lg:mt-0 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow-md hover:shadow-lg transition-all items-center justify-center gap-1.5"
                 >
                   <PackageCheck className="w-4 h-4" />
-                  <span>{isRtl ? 'تسجيل دخول/خروج مخزون' : 'Nouveau Mouvement'}</span>
+                  <span>{isRtl ? 'ØªØ³Ø¬ÙŠÙ„ Ø¯Ø®ÙˆÙ„/Ø®Ø±ÙˆØ¬ Ù…Ø®Ø²ÙˆÙ†' : 'Nouveau Mouvement'}</span>
                 </button>
               )}
             <div className="flex gap-2 w-full lg:w-auto overflow-x-auto no-scrollbar">
@@ -633,49 +633,49 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 onClick={() => setFilterType('all')}
                 className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${filterType === 'all' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
               >
-                {isRtl ? 'الكل' : 'Tout'}
+                {isRtl ? 'Ø§Ù„ÙƒÙ„' : 'Tout'}
               </button>
               <button
                 onClick={() => setFilterType('in')}
                 className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1 ${filterType === 'in' ? 'bg-emerald-600 text-white shadow-md' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'}`}
               >
                 <ArrowDownLeft className="w-3.5 h-3.5" />
-                {isRtl ? 'دخول (+)' : 'Entrée (+)'}
+                {isRtl ? 'Ø¯Ø®ÙˆÙ„ (+)' : 'EntrÃ©e (+)'}
               </button>
               <button
                 onClick={() => setFilterType('out')}
                 className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1 ${filterType === 'out' ? 'bg-rose-600 text-white shadow-md' : 'bg-rose-50 text-rose-700 hover:bg-rose-100'}`}
               >
                 <ArrowUpRight className="w-3.5 h-3.5" />
-                {isRtl ? 'خروج (-)' : 'Sortie (-)'}
+                {isRtl ? 'Ø®Ø±ÙˆØ¬ (-)' : 'Sortie (-)'}
               </button>
               <button
                 onClick={() => setFilterType('sale')}
                 className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1 ${filterType === 'sale' ? 'bg-blue-600 text-white shadow-md' : 'bg-blue-50 text-blue-700 hover:bg-blue-100'}`}
               >
                 <Tag className="w-3.5 h-3.5" />
-                {isRtl ? 'بيع' : 'Vente'}
+                {isRtl ? 'Ø¨ÙŠØ¹' : 'Vente'}
               </button>
             </div>
           </div>
 
           {/* History Table */}
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} border-collapse">
               <thead>
                 <tr className="border-b-2 border-gray-100 text-xs text-gray-400 uppercase tracking-wider">
-                  <th className={`py-3 px-4 font-bold ${isRtl ? 'text-right' : 'text-left'}`}>{isRtl ? 'المنتج' : 'Produit'}</th>
-                  <th className="py-3 px-4 font-bold text-center">{isRtl ? 'النوع' : 'Type'}</th>
-                  <th className="py-3 px-4 font-bold text-center">{isRtl ? 'الكمية' : 'Qté'}</th>
-                  <th className={`py-3 px-4 font-bold ${isRtl ? 'text-right' : 'text-left'}`}>{isRtl ? 'التاريخ' : 'Date'}</th>
-                  <th className={`py-3 px-4 font-bold ${isRtl ? 'text-right' : 'text-left'}`}>{isRtl ? 'السبب / الملاحظة' : 'Motif'}</th>
-                  <th className="py-3 px-4 font-bold text-center">{isRtl ? 'المسؤول' : 'Opérateur'}</th>
+                  <th className={`py-3 px-4 font-bold ${isRtl ? 'text-right' : 'text-left'}`}>{isRtl ? 'Ø§Ù„Ù…Ù†ØªØ¬' : 'Produit'}</th>
+                  <th className="py-3 px-4 font-bold text-center">{isRtl ? 'Ø§Ù„Ù†ÙˆØ¹' : 'Type'}</th>
+                  <th className="py-3 px-4 font-bold text-center">{isRtl ? 'Ø§Ù„ÙƒÙ…ÙŠØ©' : 'QtÃ©'}</th>
+                  <th className={`py-3 px-4 font-bold ${isRtl ? 'text-right' : 'text-left'}`}>{isRtl ? 'Ø§Ù„ØªØ§Ø±ÙŠØ®' : 'Date'}</th>
+                  <th className={`py-3 px-4 font-bold ${isRtl ? 'text-right' : 'text-left'}`}>{isRtl ? 'Ø§Ù„Ø³Ø¨Ø¨ / Ø§Ù„Ù…Ù„Ø§Ø­Ø¸Ø©' : 'Motif'}</th>
+                  <th className="py-3 px-4 font-bold text-center">{isRtl ? 'Ø§Ù„Ù…Ø³Ø¤ÙˆÙ„' : 'OpÃ©rateur'}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50 text-sm">
                 {movements
                   .filter(m => {
-                    const isSale = m.reason?.toLowerCase().includes('vente') || m.reason?.includes('بيع') || m.reason?.toLowerCase().includes('facture');
+                    const isSale = m.reason?.toLowerCase().includes('vente') || m.reason?.includes('Ø¨ÙŠØ¹') || m.reason?.toLowerCase().includes('facture');
                     if (filterType === 'all') return true;
                     if (filterType === 'sale') return isSale;
                     if (filterType === 'out') return m.type === 'out' && !isSale;
@@ -687,16 +687,16 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                     const itemCountInBatch = m.batchId ? arr.filter(item => item.batchId === m.batchId).length : 0;
                     const hasMultipleItemsInBatch = itemCountInBatch > 1;
                     const isFirstInBatch = m.batchId && (!prevItem || prevItem.batchId !== m.batchId);
-                    const isSale = m.reason?.toLowerCase().includes('vente') || m.reason?.includes('بيع') || m.reason?.toLowerCase().includes('facture');
+                    const isSale = m.reason?.toLowerCase().includes('vente') || m.reason?.includes('Ø¨ÙŠØ¹') || m.reason?.toLowerCase().includes('facture');
                     
                     const getBatchTitle = () => {
                       if (isSale) {
-                        return hasMultipleItemsInBatch ? (isRtl ? 'عملية بيع جماعية (لعدة سلع)' : 'Vente groupée (Multi-articles)') : (isRtl ? 'عملية بيع' : 'Vente');
+                        return hasMultipleItemsInBatch ? (isRtl ? 'Ø¹Ù…Ù„ÙŠØ© Ø¨ÙŠØ¹ Ø¬Ù…Ø§Ø¹ÙŠØ© (Ù„Ø¹Ø¯Ø© Ø³Ù„Ø¹)' : 'Vente groupÃ©e (Multi-articles)') : (isRtl ? 'Ø¹Ù…Ù„ÙŠØ© Ø¨ÙŠØ¹' : 'Vente');
                       }
                       if (m.type === 'in') {
-                        return (hasMultipleItemsInBatch || m.batchId?.startsWith('bulk-')) ? (isRtl ? 'عملية دخول جماعية (لعدة سلع)' : 'Entrée groupée (Multi-articles)') : (isRtl ? 'عملية دخول' : 'Entrée');
+                        return (hasMultipleItemsInBatch || m.batchId?.startsWith('bulk-')) ? (isRtl ? 'Ø¹Ù…Ù„ÙŠØ© Ø¯Ø®ÙˆÙ„ Ø¬Ù…Ø§Ø¹ÙŠØ© (Ù„Ø¹Ø¯Ø© Ø³Ù„Ø¹)' : 'EntrÃ©e groupÃ©e (Multi-articles)') : (isRtl ? 'Ø¹Ù…Ù„ÙŠØ© Ø¯Ø®ÙˆÙ„' : 'EntrÃ©e');
                       }
-                      return (hasMultipleItemsInBatch || m.batchId?.startsWith('bulk-')) ? (isRtl ? 'عملية خروج جماعية (لعدة سلع)' : 'Sortie groupée (Multi-articles)') : (isRtl ? 'عملية خروج' : 'Sortie');
+                      return (hasMultipleItemsInBatch || m.batchId?.startsWith('bulk-')) ? (isRtl ? 'Ø¹Ù…Ù„ÙŠØ© Ø®Ø±ÙˆØ¬ Ø¬Ù…Ø§Ø¹ÙŠØ© (Ù„Ø¹Ø¯Ø© Ø³Ù„Ø¹)' : 'Sortie groupÃ©e (Multi-articles)') : (isRtl ? 'Ø¹Ù…Ù„ÙŠØ© Ø®Ø±ÙˆØ¬' : 'Sortie');
                     };
                     const batchTitle = getBatchTitle();
                     
@@ -725,15 +725,15 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                       <td className="py-3 px-4 text-center">
                         {isSale ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-[10px] font-black uppercase tracking-wider">
-                            <Tag className="w-3 h-3" /> {isRtl ? 'بيع' : 'Vente'}
+                            <Tag className="w-3 h-3" /> {isRtl ? 'Ø¨ÙŠØ¹' : 'Vente'}
                           </span>
                         ) : m.type === 'in' ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-wider">
-                            <ArrowDownLeft className="w-3 h-3" /> {isRtl ? 'دخول' : 'Entrée'}
+                            <ArrowDownLeft className="w-3 h-3" /> {isRtl ? 'Ø¯Ø®ÙˆÙ„' : 'EntrÃ©e'}
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-rose-50 text-rose-700 text-[10px] font-black uppercase tracking-wider">
-                            <ArrowUpRight className="w-3 h-3" /> {isRtl ? 'خروج' : 'Sortie'}
+                            <ArrowUpRight className="w-3 h-3" /> {isRtl ? 'Ø®Ø±ÙˆØ¬' : 'Sortie'}
                           </span>
                         )}
                       </td>
@@ -774,7 +774,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 {movements.length === 0 && (
                   <tr>
                     <td colSpan={6} className="py-12 text-center text-slate-400 font-semibold text-sm">
-                      {isRtl ? 'لا يوجد أي حركات مسجلة حالياً.' : 'Aucun mouvement enregistré.'}
+                      {isRtl ? 'Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ø£ÙŠ Ø­Ø±ÙƒØ§Øª Ù…Ø³Ø¬Ù„Ø© Ø­Ø§Ù„ÙŠØ§Ù‹.' : 'Aucun mouvement enregistrÃ©.'}
                     </td>
                   </tr>
                 )}
@@ -792,7 +792,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
             <div className="flex items-center justify-between px-6 py-4.5 border-b border-gray-100 bg-gray-50 rounded-t-2xl">
               <h3 className="text-md font-bold text-gray-900 flex items-center gap-2">
                 <PackageCheck className="w-5 h-5 text-emerald-600" />
-                {isRtl ? 'تسجيل حركة مخزون' : 'Mouvement de Stock'}
+                {isRtl ? 'ØªØ³Ø¬ÙŠÙ„ Ø­Ø±ÙƒØ© Ù…Ø®Ø²ÙˆÙ†' : 'Mouvement de Stock'}
               </h3>
               <button onClick={() => setIsStockModalOpen(false)} className="p-1 hover:bg-gray-200 rounded-lg transition">
                 <X className="w-5 h-5" />
@@ -811,7 +811,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   }`}
                 >
                   <ArrowDownLeft className="w-4 h-4" />
-                  {isRtl ? 'دخول (+)' : 'Entrée'}
+                  {isRtl ? 'Ø¯Ø®ÙˆÙ„ (+)' : 'EntrÃ©e'}
                 </button>
                 <button
                   type="button"
@@ -821,14 +821,14 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   }`}
                 >
                   <ArrowUpRight className="w-4 h-4" />
-                  {isRtl ? 'خروج (-)' : 'Sortie'}
+                  {isRtl ? 'Ø®Ø±ÙˆØ¬ (-)' : 'Sortie'}
                 </button>
               </div>
 
               <div className="space-y-2.5 max-h-[400px] overflow-y-auto pr-1">
                 <div className="flex items-center justify-between text-xxs uppercase text-gray-400 font-bold tracking-wider mb-2">
-                  <span>{isRtl ? 'المنتجات' : 'Produits'}</span>
-                  <span className="w-20 text-center">{isRtl ? 'الكمية' : 'Quantité'}</span>
+                  <span>{isRtl ? 'Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª' : 'Produits'}</span>
+                  <span className="w-20 text-center">{isRtl ? 'Ø§Ù„ÙƒÙ…ÙŠØ©' : 'QuantitÃ©'}</span>
                 </div>
                 
                 {bulkItems.map((item) => (
@@ -839,7 +839,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                       onChange={(e) => updateBulkRow(item.id, 'productId', e.target.value)}
                       className={`flex-1 min-w-0 px-2 py-2 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs font-bold text-slate-800 ${isRtl ? 'text-right' : 'text-left'}`}
                     >
-                      <option value="">-- {isRtl ? 'اختر المنتج' : 'Choisir produit'} --</option>
+                      <option value="">-- {isRtl ? 'Ø§Ø®ØªØ± Ø§Ù„Ù…Ù†ØªØ¬' : 'Choisir produit'} --</option>
                       {products.map(p => (
                         <option key={p.id} value={p.id}>{p.name} ({p.stock})</option>
                       ))}
@@ -870,16 +870,16 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 className="w-full py-2 bg-slate-50 border border-dashed border-slate-200 text-emerald-600 text-xs font-black rounded-xl hover:bg-emerald-50 hover:border-emerald-200 transition-all flex items-center justify-center gap-1.5"
               >
                 <Plus className="w-4 h-4" />
-                <span>{isRtl ? 'إضافة سلعة أخرى للقائمة' : 'Ajouter un autre article'}</span>
+                <span>{isRtl ? 'Ø¥Ø¶Ø§ÙØ© Ø³Ù„Ø¹Ø© Ø£Ø®Ø±Ù‰ Ù„Ù„Ù‚Ø§Ø¦Ù…Ø©' : 'Ajouter un autre article'}</span>
               </button>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-700 block">{isRtl ? 'السبب / الملاحظة' : 'Motif'}</label>
+                <label className="text-xs font-bold text-gray-700 block">{isRtl ? 'Ø§Ù„Ø³Ø¨Ø¨ / Ø§Ù„Ù…Ù„Ø§Ø­Ø¸Ø©' : 'Motif'}</label>
                 <input
                   type="text"
                   value={stockFormReason}
                   onChange={(e) => setStockFormReason(e.target.value)}
-                  placeholder={isRtl ? 'مثال: شراء جديد، تلف، الخ...' : 'Ex: Achat, Casse, etc...'}
+                  placeholder={isRtl ? 'Ù…Ø«Ø§Ù„: Ø´Ø±Ø§Ø¡ Ø¬Ø¯ÙŠØ¯ØŒ ØªÙ„ÙØŒ Ø§Ù„Ø®...' : 'Ex: Achat, Casse, etc...'}
                   className={`w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-emerald-500 block p-3 outline-none transition ${isRtl ? 'text-right' : 'text-left'}`}
                 />
               </div>
@@ -891,7 +891,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                     stockFormType === 'in' ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/30' : 'bg-rose-600 hover:bg-rose-700 shadow-rose-500/30'
                   }`}
                 >
-                  {isRtl ? 'تأكيد العملية لكافة السلع' : 'Confirmer l\'opération groupée'}
+                  {isRtl ? 'ØªØ£ÙƒÙŠØ¯ Ø§Ù„Ø¹Ù…Ù„ÙŠØ© Ù„ÙƒØ§ÙØ© Ø§Ù„Ø³Ù„Ø¹' : 'Confirmer l\'opÃ©ration groupÃ©e'}
                 </button>
               </div>
             </form></div></div></div>)}
@@ -903,7 +903,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
             
             <div className="flex items-center justify-between px-6 py-4.5 border-b border-gray-100 bg-gray-50 rounded-t-2xl">
               <h3 className="text-md font-bold text-gray-900">
-                {editingId ? (isRtl ? 'تعديل بيانات المنتج المعني' : 'Modifier les Fiches Produit') : (isRtl ? 'إضافة منتج تجاري جديد' : 'Création d\'un Nouveau Produit')}
+                {editingId ? (isRtl ? 'ØªØ¹Ø¯ÙŠÙ„ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…Ù†ØªØ¬ Ø§Ù„Ù…Ø¹Ù†ÙŠ' : 'Modifier les Fiches Produit') : (isRtl ? 'Ø¥Ø¶Ø§ÙØ© Ù…Ù†ØªØ¬ ØªØ¬Ø§Ø±ÙŠ Ø¬Ø¯ÙŠØ¯' : 'CrÃ©ation d\'un Nouveau Produit')}
               </h3>
               <button onClick={() => setIsOpenModal(false)} className="p-1 hover:bg-gray-200 rounded-lg transition">
                 <X className="w-5 h-5" />
@@ -915,13 +915,13 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
               
               {/* Product Name */}
               <div className="space-y-1">
-                <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'اسم المنتج أو السلعة *' : 'Intitulé Produit *'}</label>
+                <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬ Ø£Ùˆ Ø§Ù„Ø³Ù„Ø¹Ø© *' : 'IntitulÃ© Produit *'}</label>
                 <input
                   type="text"
                   required
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  placeholder={isRtl ? 'أدخل اسم المنتج بالكامل...' : 'Ex: Huile d\'olive Extra Vierge'}
+                  placeholder={isRtl ? 'Ø£Ø¯Ø®Ù„ Ø§Ø³Ù… Ø§Ù„Ù…Ù†ØªØ¬ Ø¨Ø§Ù„ÙƒØ§Ù…Ù„...' : 'Ex: Huile d\'olive Extra Vierge'}
                   className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold text-slate-800"
                 />
               </div>
@@ -930,7 +930,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
 
               {/* Category selector */}
               <div className="space-y-1.5">
-                <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'تصنيف السلعة (القسم) *' : 'Référencement Rayon *'}</label>
+                <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'ØªØµÙ†ÙŠÙ Ø§Ù„Ø³Ù„Ø¹Ø© (Ø§Ù„Ù‚Ø³Ù…) *' : 'RÃ©fÃ©rencement Rayon *'}</label>
                 <select
                   value={formCategory === "" || !categories.includes(formCategory) ? "NEW_CATEGORY_OPTION" : formCategory}
                   onChange={(e) => {
@@ -948,7 +948,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
                   <option value="NEW_CATEGORY_OPTION" className="text-blue-650 font-black">
-                    {isRtl ? '➕ قسم جديد...' : '➕ Nouveau rayon...'}
+                    {isRtl ? 'âž• Ù‚Ø³Ù… Ø¬Ø¯ÙŠØ¯...' : 'âž• Nouveau rayon...'}
                   </option>
                 </select>
 
@@ -961,7 +961,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                       disabled={isCashier}
                       value={formCategory}
                       onChange={(e) => setFormCategory(e.target.value)}
-                      placeholder={isRtl ? 'اكتب اسم القسم الجديد هنا...' : 'Écrire le nom du nouveau rayon...'}
+                      placeholder={isRtl ? 'Ø§ÙƒØªØ¨ Ø§Ø³Ù… Ø§Ù„Ù‚Ø³Ù… Ø§Ù„Ø¬Ø¯ÙŠØ¯ Ù‡Ù†Ø§...' : 'Ã‰crire le nom du nouveau rayon...'}
                       className={`w-full px-3.5 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold text-xs ${isCashier ? 'bg-slate-100 border-slate-205 text-slate-400 cursor-not-allowed opacity-75' : 'bg-white border-blue-200 text-slate-800'}`}
                     />
                   </div>
@@ -971,7 +971,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
               {/* Prices: Buy and Sell */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'سعر الشراء (الكلفة) *' : 'Prix de Revient Achat (HT) *'}</label>
+                  <label className="text-xxs text-slate-400 uppercase tracking-wide">{isRtl ? 'Ø³Ø¹Ø± Ø§Ù„Ø´Ø±Ø§Ø¡ (Ø§Ù„ÙƒÙ„ÙØ©) *' : 'Prix de Revient Achat (HT) *'}</label>
                   <input
                     type="number"
                     min="0"
@@ -985,7 +985,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xxs text-blue-500 uppercase tracking-wide">{isRtl ? 'سعر البيع المقترح *' : 'Prix de Vente Client *'}</label>
+                  <label className="text-xxs text-blue-500 uppercase tracking-wide">{isRtl ? 'Ø³Ø¹Ø± Ø§Ù„Ø¨ÙŠØ¹ Ø§Ù„Ù…Ù‚ØªØ±Ø­ *' : 'Prix de Vente Client *'}</label>
                   <input
                     type="number"
                     min="0"
@@ -1003,7 +1003,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
               {/* Min Stock Alert (Only when editing) */}
               {editingId !== null && (
                 <div className="space-y-1 mt-4 border-t border-gray-100 pt-4">
-                  <label className="text-xxs text-amber-600 uppercase tracking-wide">{isRtl ? 'حد التنبيه الأدنى' : 'Seuil d\'Alerte Minimum'}</label>
+                  <label className="text-xxs text-amber-600 uppercase tracking-wide">{isRtl ? 'Ø­Ø¯ Ø§Ù„ØªÙ†Ø¨ÙŠÙ‡ Ø§Ù„Ø£Ø¯Ù†Ù‰' : 'Seuil d\'Alerte Minimum'}</label>
                   <input
                     type="number"
                     min="1"
@@ -1039,7 +1039,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
               <div className="flex items-center gap-2">
                 <Settings className="w-5 h-5 text-emerald-600" />
                 <h3 className="font-sans font-extrabold text-sm text-slate-800">
-                  {isRtl ? 'إدارة الأقسام والرفوف' : 'Gestion des Rayons & Catégories'}
+                  {isRtl ? 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ø£Ù‚Ø³Ø§Ù… ÙˆØ§Ù„Ø±ÙÙˆÙ' : 'Gestion des Rayons & CatÃ©gories'}
                 </h3>
               </div>
               <button
@@ -1058,7 +1058,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
             <div className="p-6 space-y-4 max-h-[350px] overflow-y-auto">
               {categories.length === 0 ? (
                 <p className="text-center text-xs text-slate-405 py-6 font-bold">
-                  {isRtl ? 'لا توجد أقسام متوفرة حالياً.' : 'Aucun rayon disponible pour le moment.'}
+                  {isRtl ? 'Ù„Ø§ ØªÙˆØ¬Ø¯ Ø£Ù‚Ø³Ø§Ù… Ù…ØªÙˆÙØ±Ø© Ø­Ø§Ù„ÙŠØ§Ù‹.' : 'Aucun rayon disponible pour le moment.'}
                 </p>
               ) : (
                 <div className="space-y-2.5">
@@ -1087,7 +1087,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                                 setEditingCategoryNewName('');
                               }}
                               className="p-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition"
-                              title={isRtl ? 'حفظ التعديل' : 'Enregistrer'}
+                              title={isRtl ? 'Ø­ÙØ¸ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„' : 'Enregistrer'}
                             >
                               <Check className="w-4 h-4" />
                             </button>
@@ -1095,7 +1095,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                               type="button"
                               onClick={() => setEditingCategoryOldName(null)}
                               className="p-1.5 bg-slate-200 hover:bg-slate-350 text-slate-650 rounded-lg transition"
-                              title={isRtl ? 'إلغاء' : 'Annuler'}
+                              title={isRtl ? 'Ø¥Ù„ØºØ§Ø¡' : 'Annuler'}
                             >
                               <X className="w-4 h-4" />
                             </button>
@@ -1113,7 +1113,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                                   setEditingCategoryNewName(catName);
                                 }}
                                 className="p-1.5 hover:bg-slate-200 text-slate-500 hover:text-slate-800 rounded-lg transition"
-                                title={isRtl ? 'تعديل اسم القسم' : 'Modifier le nom'}
+                                title={isRtl ? 'ØªØ¹Ø¯ÙŠÙ„ Ø§Ø³Ù… Ø§Ù„Ù‚Ø³Ù…' : 'Modifier le nom'}
                               >
                                 <Edit3 className="w-3.5 h-3.5" />
                               </button>
@@ -1123,7 +1123,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                                   setCategoryToDelete(catName);
                                 }}
                                 className="p-1.5 hover:bg-rose-50 text-rose-500 hover:text-rose-700 rounded-lg transition"
-                                title={isRtl ? 'حذف القسم' : 'Supprimer'}
+                                title={isRtl ? 'Ø­Ø°Ù Ø§Ù„Ù‚Ø³Ù…' : 'Supprimer'}
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>
@@ -1140,8 +1140,8 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
             {/* Modal Footer Info */}
             <div className="bg-slate-50 border-t border-slate-100 p-4 text-[10px] text-slate-500 font-medium text-center">
               {isRtl 
-                ? '💡 يؤدي تعديل اسم القسم أو حذفه إلى تحديث كافة المنتجات التابعة له تلقائياً.' 
-                : '💡 Modifier ou supprimer un rayon met à jour automatiquement tous les produits associés.'
+                ? 'ðŸ’¡ ÙŠØ¤Ø¯ÙŠ ØªØ¹Ø¯ÙŠÙ„ Ø§Ø³Ù… Ø§Ù„Ù‚Ø³Ù… Ø£Ùˆ Ø­Ø°ÙÙ‡ Ø¥Ù„Ù‰ ØªØ­Ø¯ÙŠØ« ÙƒØ§ÙØ© Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„ØªØ§Ø¨Ø¹Ø© Ù„Ù‡ ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹.' 
+                : 'ðŸ’¡ Modifier ou supprimer un rayon met Ã  jour automatiquement tous les produits associÃ©s.'
               }
             </div>
           </div>
@@ -1157,14 +1157,14 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 <AlertTriangle className="w-5 h-5 text-amber-600 animate-pulse" />
               </div>
               <h4 className="font-sans font-extrabold text-sm text-slate-950">
-                {isRtl ? 'تأكيد حذف القسم' : 'Confirmer la suppression'}
+                {isRtl ? 'ØªØ£ÙƒÙŠØ¯ Ø­Ø°Ù Ø§Ù„Ù‚Ø³Ù…' : 'Confirmer la suppression'}
               </h4>
             </div>
             
             <p className="text-xs text-slate-600 font-bold leading-relaxed">
               {isRtl 
-                ? `هل أنت متأكد من حذف القسم "${categoryToDelete}"؟ سيتم نقل المنتجات التابعة له تلقائياً إلى قسم "عام".`
-                : `Voulez-vous vraiment supprimer le rayon "${categoryToDelete}" ? Les produits associés seront déplacés vers le rayon "Général".`
+                ? `Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ù…Ù† Ø­Ø°Ù Ø§Ù„Ù‚Ø³Ù… "${categoryToDelete}"ØŸ Ø³ÙŠØªÙ… Ù†Ù‚Ù„ Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„ØªØ§Ø¨Ø¹Ø© Ù„Ù‡ ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹ Ø¥Ù„Ù‰ Ù‚Ø³Ù… "Ø¹Ø§Ù…".`
+                : `Voulez-vous vraiment supprimer le rayon "${categoryToDelete}" ? Les produits associÃ©s seront dÃ©placÃ©s vers le rayon "GÃ©nÃ©ral".`
               }
             </p>
 
@@ -1177,14 +1177,14 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 }}
                 className="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black transition shadow-sm hover:shadow-md"
               >
-                {isRtl ? 'نعم، احذف القسم' : 'Oui, Supprimer'}
+                {isRtl ? 'Ù†Ø¹Ù…ØŒ Ø§Ø­Ø°Ù Ø§Ù„Ù‚Ø³Ù…' : 'Oui, Supprimer'}
               </button>
               <button
                 type="button"
                 onClick={() => setCategoryToDelete(null)}
                 className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-black transition border border-slate-200"
               >
-                {isRtl ? 'إلغاء' : 'Annuler'}
+                {isRtl ? 'Ø¥Ù„ØºØ§Ø¡' : 'Annuler'}
               </button>
             </div>
           </div>
@@ -1200,15 +1200,15 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 <Trash2 className="w-5 h-5 text-rose-600 animate-pulse" />
               </div>
               <h4 className="font-sans font-extrabold text-sm text-slate-950">
-                {isRtl ? 'تأكيد حذف المنتج' : 'Confirmer la suppression'}
+                {isRtl ? 'ØªØ£ÙƒÙŠØ¯ Ø­Ø°Ù Ø§Ù„Ù…Ù†ØªØ¬' : 'Confirmer la suppression'}
               </h4>
             </div>
             
             <div className="space-y-3">
               <p className="text-xs text-slate-600 font-bold leading-relaxed">
                 {isRtl 
-                  ? `هل أنت متأكد من رغبتك في حذف هذا المنتج نهائياً من القائمة؟`
-                  : `Voulez-vous vraiment supprimer définitivement ce produit de la liste ?`
+                  ? `Ù‡Ù„ Ø£Ù†Øª Ù…ØªØ£ÙƒØ¯ Ù…Ù† Ø±ØºØ¨ØªÙƒ ÙÙŠ Ø­Ø°Ù Ù‡Ø°Ø§ Ø§Ù„Ù…Ù†ØªØ¬ Ù†Ù‡Ø§Ø¦ÙŠØ§Ù‹ Ù…Ù† Ø§Ù„Ù‚Ø§Ø¦Ù…Ø©ØŸ`
+                  : `Voulez-vous vraiment supprimer dÃ©finitivement ce produit de la liste ?`
                 }
               </p>
               <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex items-center gap-2.5">
@@ -1231,14 +1231,14 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 }}
                 className="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black transition shadow-sm hover:shadow-md"
               >
-                {isRtl ? 'نعم، احذف المنتج' : 'Oui, Supprimer'}
+                {isRtl ? 'Ù†Ø¹Ù…ØŒ Ø§Ø­Ø°Ù Ø§Ù„Ù…Ù†ØªØ¬' : 'Oui, Supprimer'}
               </button>
               <button
                 type="button"
                 onClick={() => setProductToDelete(null)}
                 className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-black transition border border-slate-200"
               >
-                {isRtl ? 'إلغاء' : 'Annuler'}
+                {isRtl ? 'Ø¥Ù„ØºØ§Ø¡' : 'Annuler'}
               </button>
             </div>
           </div>
@@ -1248,3 +1248,4 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
     </div>
   );
 }
+
