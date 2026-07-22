@@ -180,18 +180,9 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
                 {/* Invoice Header */}
                 <div className="flex justify-between items-start border-b-2 border-emerald-500 pb-6 mb-8">
                   <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-emerald-700 font-trad" style={{ fontFamily: 'Amiri, serif' }}>محل المباركي</h1>
-                    <p className="text-sm font-semibold text-gray-600 italic">lambarki boutique</p>
-                    <div className="mt-4 text-xs text-gray-500 leading-relaxed font-mono">
-                      <p>R.C : 485124 / Patente : 34157829</p>
-                      <p>Dar El Gueddari, Maroc</p>
-                      <p>Contact: lamb.ilyas@gmail.com | +212660035260 / +21219749692</p>
-                    </div>
+                    <h1 className="text-4xl font-bold tracking-tight text-emerald-700 font-trad" style={{ fontFamily: 'Amiri, serif' }}>محل المباركي</h1>
                   </div>
                   <div className="text-right">
-                    <span className="inline-block px-3 py-1 text-xs font-bold uppercase rounded-full bg-blue-100 text-blue-800 mb-3">
-                      {isRtl ? 'مستند تجاري' : 'Document Officiel'}
-                    </span>
                     <h2 className="text-2xl font-bold text-gray-900 uppercase">
                       {isRtl ? 'فاتورة بيع' : 'Facture de Vente'}
                     </h2>
@@ -203,28 +194,17 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
                 </div>
 
                 {/* Tiers / Billing Party address */}
-                <div className="grid grid-cols-2 gap-8 mb-8">
-                  <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
-                    <h4 className="text-xs font-bold uppercase text-gray-400 tracking-wider mb-2">
-                      {isRtl ? 'المُرسِل (الشركة الموزعة)' : 'Émetteur (Vendeur)'}
-                    </h4>
-                    <p className="font-bold text-blue-800 font-trad" style={{ fontFamily: 'Amiri, serif' }}>محل المباركي (LAMBARKI)</p>
-                    <p className="text-xs text-gray-600 mt-1">Plateforme de Gestion Digitale de Magasins</p>
-                    <p className="text-xs text-gray-500 mt-2 leading-relaxed">
-                      Soutien technique Hostinger / OVH Cloud<br />
-                      Support: lamb.ilyas@gmail.com
-                    </p>
-                  </div>
-                  <div className="bg-blue-50/50 rounded-xl p-5 border border-blue-100">
+                <div className="mb-8">
+                  <div className="bg-blue-50/50 rounded-xl p-5 border border-blue-100 max-w-sm">
                     <h4 className="text-xs font-bold uppercase text-blue-400 tracking-wider mb-2">
-                      {isRtl ? 'المُرسَل إليه (الزبون)' : 'Client / Tiers Destinataire'}
+                      {isRtl ? 'المُرسَل إليه (الزبون)' : 'Client'}
                     </h4>
-                    <p className="font-bold text-gray-900">{invoice.clientName}</p>
-                    <p className="text-xs text-gray-600 mt-1">{tLabel.invoiceClient} N° {invoice.clientId || "Passant"}</p>
-                    <p className="text-xs text-gray-500 mt-2 leading-relaxed">
-                      {isRtl ? 'العنوان الموثق:' : 'Adresse de Livraison :'} <br />
-                      Fatima Zahra Belhadj, Boulevard d'Anfa, Casablanca
-                    </p>
+                    <p className="font-bold text-gray-900 text-lg">{invoice.clientName}</p>
+                    {invoice.clientPhone && (
+                      <p className="text-sm font-semibold text-gray-700 mt-2">
+                        {isRtl ? 'رقم الهاتف:' : 'Téléphone:'} {invoice.clientPhone}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -243,8 +223,7 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
                       {invoice.items.map((item, index) => (
                         <tr key={index} className="text-sm">
                           <td className="py-4 px-4">
-                            <p className="font-bold text-gray-900">{item.name}</p>
-                            <p className="text-xs text-gray-400 font-mono">ID: {item.productId}</p>
+                            <p className="font-bold text-gray-900 text-base">{item.name}</p>
                           </td>
                           <td className="py-4 px-4 text-center font-mono font-medium">{item.qty}</td>
                           <td className="py-4 px-4 text-right font-mono">{item.sellPrice.toFixed(2)}</td>
@@ -298,19 +277,15 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
                 {/* Transaction terms */}
                 <div className="mt-12 pt-6 border-t border-gray-100 text-xs text-gray-400 leading-relaxed grid grid-cols-2">
                   <div>
-                    <p className="font-bold text-gray-500 uppercase mb-1">{isRtl ? 'تفاصيل الدفع' : 'Règlement & Conditions'}</p>
-                    <p>{tLabel.invoicePayment} : <span className="font-bold text-gray-700">{getPaymentLabel(invoice.paymentMethod)}</span></p>
-                    <p>{isRtl ? 'البائع مسؤول العملية :' : 'Opérateur caisse :'} <span className="font-bold text-gray-700">{resolveUserName(invoice.cashierName, lang)}</span></p>
                     <p>{isRtl ? 'حالة السداد :' : 'Statut de paie :'} <span className="font-extrabold font-semibold text-indigo-700">
                       {invoice.status === 'cancelled' ? (isRtl ? 'ملغاة' : 'Annulée') :
-                       invoice.paymentStatus === 'unpaid' ? (isRtl ? 'دين بالكامل' : 'À Crédit (Salaf)') :
+                       invoice.paymentStatus === 'unpaid' ? (isRtl ? 'دين بالكامل' : 'À Crédit') :
                        invoice.paymentStatus === 'partial' ? (isRtl ? 'دفعة+دين' : 'Acompte + Reste') :
                        (isRtl ? 'خالص بالكامل' : 'Payée en totalité')}
                     </span></p>
                   </div>
                   <div className="text-right flex flex-col justify-end">
-                    <p className="font-semibold text-gray-600 italic">"Mercy pour votre confiance ! شكراً لزيارتكم وصداقتكم"</p>
-                    <p className="text-xxs mt-2 text-gray-400 font-mono">LAMBARKI CRM - Hostinger & OVH Ready SPA v1.0</p>
+                    <p className="font-semibold text-gray-600 italic">"{isRtl ? 'شكراً لزيارتكم وصداقتكم' : 'Merci pour votre confiance !'}"</p>
                   </div>
                 </div>
 
@@ -318,16 +293,13 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
             ) : (
               /* Heat/Thermal POS Ticket Layout */
               <div className="flex flex-col text-gray-800 text-center font-mono">
-                <h1 className="text-xl font-bold tracking-tight font-trad text-slate-900" style={{ fontFamily: 'Amiri, serif' }}>محل المباركي</h1>
-                <p className="text-xs text-slate-650 italic mb-1">lambarki boutique</p>
-                <p className="text-xs text-gray-500">DAR EL GUEDDARI</p>
-                <p className="text-xxs text-gray-400">TEL: +212660035260 / +21219749692</p>
+                <h1 className="text-3xl font-bold tracking-tight font-trad text-slate-900 mb-4" style={{ fontFamily: 'Amiri, serif' }}>محل المباركي</h1>
                 
-                <div className="border-b border-dashed border-gray-300 my-3 pb-2 text-left text-xxs leading-normal space-y-1">
+                <div className="border-b border-dashed border-gray-300 my-3 pb-2 text-left text-xs leading-normal space-y-1">
                   <p><strong>{isRtl ? 'تذكرة رقم :' : 'TICKET N°:'}</strong> {invoice.invoiceNumber}</p>
                   <p><strong>{isRtl ? 'تاريخ :' : 'DATE:'}</strong> {formattedDate}</p>
                   <p><strong>{isRtl ? 'الزبون :' : 'CLIENT:'}</strong> {invoice.clientName}</p>
-                  <p><strong>{isRtl ? 'البائع مسؤول العملية :' : 'CAISSIER:'}</strong> {resolveUserName(invoice.cashierName, lang)}</p>
+                  {invoice.clientPhone && <p><strong>{isRtl ? 'رقم الهاتف :' : 'TEL:'}</strong> {invoice.clientPhone}</p>}
                 </div>
 
                 {/* Items List */}
@@ -372,17 +344,15 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
                   )}
                 </div>
 
-                <div className="border-t border-dashed border-gray-300 my-3 pt-2 text-center text-xxs text-gray-500 space-y-1">
-                  <p className="strong"><strong>{isRtl ? 'طريقة الدفع :' : 'PAYMENT:'}</strong> {getPaymentLabel(invoice.paymentMethod)}</p>
+                <div className="border-t border-dashed border-gray-300 my-3 pt-2 text-center text-xs text-gray-500 space-y-1">
                   {invoice.paymentStatus === 'unpaid' ? (
-                    <p className="uppercase text-rose-650 font-extrabold">{isRtl ? 'دين بالكامل' : 'À CRÉDIT (SALAF)'}</p>
+                    <p className="uppercase text-rose-650 font-extrabold">{isRtl ? 'دين بالكامل' : 'À CRÉDIT'}</p>
                   ) : invoice.paymentStatus === 'partial' ? (
                     <p className="uppercase text-amber-650 font-extrabold">{isRtl ? 'دفعة+دين' : 'ACOMPTE + RESTE'}</p>
                   ) : (
                     <p className="uppercase text-emerald-700 font-extrabold">{isRtl ? 'خالص بالكامل' : 'PAYÉE EN TOTALITÉ'}</p>
                   )}
-                  <p className="italic mt-3">!!! MERCI DE VOTRE VISITE !!!</p>
-                  <p className="text-xxs text-gray-350">LAMBARKI POS v1.0</p>
+                  <p className="italic mt-3">{isRtl ? 'شكراً لزيارتكم وصداقتكم' : 'MERCI DE VOTRE VISITE !'}</p>
                 </div>
               </div>
             )}
