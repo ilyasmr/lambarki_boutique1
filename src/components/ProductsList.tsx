@@ -680,14 +680,15 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
                   .map((m, idx, arr) => {
                     const prevItem = arr[idx - 1];
-                    const isFirstInBatch = m.batchId && m.batchId.startsWith('bulk-') && (!prevItem || prevItem.batchId !== m.batchId);
+                    const hasMultipleItemsInBatch = m.batchId && arr.some((item, i) => i !== idx && item.batchId === m.batchId);
+                    const isFirstInBatch = m.batchId && hasMultipleItemsInBatch && (!prevItem || prevItem.batchId !== m.batchId);
                     const isSale = m.reason?.toLowerCase().includes('vente') || m.reason?.includes('بيع') || m.reason?.toLowerCase().includes('facture');
                     
                     const batchTitle = isSale ? (isRtl ? 'عملية بيع جماعية (لعدة سلع)' : 'Vente groupée (Multi-articles)') :
                                       m.type === 'in' ? (isRtl ? 'عملية دخول جماعية (لعدة سلع)' : 'Entrée groupée (Multi-articles)') :
                                       (isRtl ? 'عملية خروج جماعية (لعدة سلع)' : 'Sortie groupée (Multi-articles)');
                     
-                    const batchBg = isSale ? 'bg-blue-50/40 border-blue-100/40' : m.type === 'in' ? 'bg-emerald-50/40 border-emerald-100/40' : 'bg-rose-50/40 border-rose-100/40';
+                    const batchBg = isSale ? 'bg-blue-50/80 border-blue-100' : m.type === 'in' ? 'bg-emerald-50/80 border-emerald-100' : 'bg-rose-50/80 border-rose-100';
                     const batchText = isSale ? 'text-blue-700' : m.type === 'in' ? 'text-emerald-700' : 'text-rose-700';
                     const batchDot = isSale ? 'bg-blue-600' : m.type === 'in' ? 'bg-emerald-600' : 'bg-rose-600';
 
@@ -703,8 +704,8 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                             </td>
                           </tr>
                         )}
-                        <tr className={`hover:bg-slate-50/50 transition ${isSale ? 'border-l-4 border-l-blue-500 bg-blue-50/30' : m.batchId?.startsWith('bulk-') ? `border-l-4 ${m.type === 'in' ? 'border-l-emerald-400 bg-emerald-50/10' : 'border-l-rose-400 bg-rose-50/10'}` : ''}`}>
-                      <td className="py-3 px-4 font-mono text-xs text-slate-500">
+                        <tr className={`hover:bg-slate-50/50 transition ${isSale ? 'bg-blue-50/30' : hasMultipleItemsInBatch ? (m.type === 'in' ? 'bg-emerald-50/10' : 'bg-rose-50/10') : ''}`}>
+                      <td className={`py-3 px-4 font-mono text-xs text-slate-500 ${isSale ? 'border-l-4 border-l-blue-500' : hasMultipleItemsInBatch ? (m.type === 'in' ? 'border-l-4 border-l-emerald-400' : 'border-l-4 border-l-rose-400') : ''}`}>
                         {new Date(m.date).toLocaleString(isRtl ? 'ar-MA' : 'fr-FR', {
                           day: '2-digit', month: '2-digit', year: 'numeric',
                           hour: '2-digit', minute: '2-digit'
