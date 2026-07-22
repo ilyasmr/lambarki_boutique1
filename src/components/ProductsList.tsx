@@ -75,7 +75,7 @@ export default function ProductsList({
   const [bulkItems, setBulkItems] = React.useState<{ id: string, productId: string, qty: number }[]>([{ id: 'bulk-0', productId: '', qty: 0 }]);
 
 const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('database');
-  const [filterType, setFilterType] = React.useState<'all' | 'in' | 'out'>('all');
+  const [filterType, setFilterType] = React.useState<'all' | 'in' | 'out' | 'sale'>('all');
   const [viewMode, setViewMode] = React.useState<'grid' | 'table'>('grid');
   const [searchTerm, setSearchTerm] = React.useState(prefilledSearch);
 
@@ -645,6 +645,13 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 <ArrowUpRight className="w-3.5 h-3.5" />
                 {isRtl ? 'خروج (-)' : 'Sortie (-)'}
               </button>
+              <button
+                onClick={() => setFilterType('sale')}
+                className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1 ${filterType === 'sale' ? 'bg-blue-600 text-white shadow-md' : 'bg-blue-50 text-blue-700 hover:bg-blue-100'}`}
+              >
+                <Tag className="w-3.5 h-3.5" />
+                {isRtl ? 'بيع' : 'Vente'}
+              </button>
             </div>
           </div>
 
@@ -663,11 +670,18 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
               </thead>
               <tbody className="divide-y divide-gray-50 text-sm">
                 {movements
-                  .filter(m => filterType === 'all' || m.type === filterType)
+                  .filter(m => {
+                    const isSale = m.reason?.toLowerCase().includes('vente') || m.reason?.includes('بيع') || m.reason?.toLowerCase().includes('facture');
+                    if (filterType === 'all') return true;
+                    if (filterType === 'sale') return isSale;
+                    if (filterType === 'out') return m.type === 'out' && !isSale;
+                    return m.type === filterType;
+                  })
                   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
                   .map((m, idx, arr) => {
                     const prevItem = arr[idx - 1];
                     const isFirstInBatch = m.batchId && m.batchId.startsWith('bulk-') && (!prevItem || prevItem.batchId !== m.batchId);
+                    const isSale = m.reason?.toLowerCase().includes('vente') || m.reason?.includes('بيع') || m.reason?.toLowerCase().includes('facture');
                     
                     return (
                       <React.Fragment key={m.id}>
@@ -681,7 +695,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                             </td>
                           </tr>
                         )}
-                        <tr className={`hover:bg-slate-50/50 transition ${m.batchId?.startsWith('bulk-') ? 'border-l-4 border-l-blue-400 bg-blue-50/5' : ''}`}>
+                        <tr className={`hover:bg-slate-50/50 transition ${isSale ? 'border-l-4 border-l-blue-500 bg-blue-50/30' : m.batchId?.startsWith('bulk-') ? 'border-l-4 border-l-blue-400 bg-blue-50/5' : ''}`}>
                       <td className="py-3 px-4 font-mono text-xs text-slate-500">
                         {new Date(m.date).toLocaleString(isRtl ? 'ar-MA' : 'fr-FR', {
                           day: '2-digit', month: '2-digit', year: 'numeric',
@@ -690,7 +704,11 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                       </td>
                       <td className="py-3 px-4 font-bold text-slate-800">{m.productName}</td>
                       <td className="py-3 px-4 text-center">
-                        {m.type === 'in' ? (
+                        {isSale ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-[10px] font-black uppercase tracking-wider">
+                            <Tag className="w-3 h-3" /> {isRtl ? 'بيع' : 'Vente'}
+                          </span>
+                        ) : m.type === 'in' ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-wider">
                             <ArrowDownLeft className="w-3 h-3" /> {isRtl ? 'دخول' : 'Entrée'}
                           </span>
@@ -700,7 +718,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                           </span>
                         )}
                       </td>
-                      <td className={`py-3 px-4 text-center font-black font-mono ${m.type === 'in' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                      <td className={`py-3 px-4 text-center font-black font-mono ${isSale ? 'text-blue-600' : m.type === 'in' ? 'text-emerald-600' : 'text-rose-600'}`}>
                         {m.type === 'in' ? '+' : '-'}{m.qty}
                       </td>
                       <td className="py-3 px-4 text-xs text-slate-600 font-medium max-w-[200px] truncate" title={m.reason}>
