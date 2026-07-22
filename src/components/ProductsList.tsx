@@ -680,13 +680,21 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
                   .map((m, idx, arr) => {
                     const prevItem = arr[idx - 1];
-                    const hasMultipleItemsInBatch = m.batchId && arr.some((item, i) => i !== idx && item.batchId === m.batchId);
-                    const isFirstInBatch = m.batchId && hasMultipleItemsInBatch && (!prevItem || prevItem.batchId !== m.batchId);
+                    const itemCountInBatch = m.batchId ? arr.filter(item => item.batchId === m.batchId).length : 0;
+                    const hasMultipleItemsInBatch = itemCountInBatch > 1;
+                    const isFirstInBatch = m.batchId && (!prevItem || prevItem.batchId !== m.batchId);
                     const isSale = m.reason?.toLowerCase().includes('vente') || m.reason?.includes('بيع') || m.reason?.toLowerCase().includes('facture');
                     
-                    const batchTitle = isSale ? (isRtl ? 'عملية بيع جماعية (لعدة سلع)' : 'Vente groupée (Multi-articles)') :
-                                      m.type === 'in' ? (isRtl ? 'عملية دخول جماعية (لعدة سلع)' : 'Entrée groupée (Multi-articles)') :
-                                      (isRtl ? 'عملية خروج جماعية (لعدة سلع)' : 'Sortie groupée (Multi-articles)');
+                    const getBatchTitle = () => {
+                      if (isSale) {
+                        return hasMultipleItemsInBatch ? (isRtl ? 'عملية بيع جماعية (لعدة سلع)' : 'Vente groupée (Multi-articles)') : (isRtl ? 'عملية بيع' : 'Vente');
+                      }
+                      if (m.type === 'in') {
+                        return (hasMultipleItemsInBatch || m.batchId?.startsWith('bulk-')) ? (isRtl ? 'عملية دخول جماعية (لعدة سلع)' : 'Entrée groupée (Multi-articles)') : (isRtl ? 'عملية دخول' : 'Entrée');
+                      }
+                      return (hasMultipleItemsInBatch || m.batchId?.startsWith('bulk-')) ? (isRtl ? 'عملية خروج جماعية (لعدة سلع)' : 'Sortie groupée (Multi-articles)') : (isRtl ? 'عملية خروج' : 'Sortie');
+                    };
+                    const batchTitle = getBatchTitle();
                     
                     const batchBg = isSale ? 'bg-blue-50/80 border-blue-100' : m.type === 'in' ? 'bg-emerald-50/80 border-emerald-100' : 'bg-rose-50/80 border-rose-100';
                     const batchText = isSale ? 'text-blue-700' : m.type === 'in' ? 'text-emerald-700' : 'text-rose-700';
