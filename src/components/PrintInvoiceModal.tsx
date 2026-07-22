@@ -15,6 +15,7 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
   const t = translations[lang];
   const tLabel = arabicDashboardLabels[lang];
   const isRtl = lang === 'ar';
+  const displayClientName = invoice.clientName ? invoice.clientName.replace('(صندوق)', '').trim() : (isRtl ? 'زبون عابر' : 'Client Comptoir');
 
   const handlePrint = () => {
     window.print();
@@ -36,7 +37,7 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
 
     // Prepare message contents
     let msg = `*LAMBARKI - FACTURE ${invoice.invoiceNumber}*\n\n`;
-    msg += `👤 *Client :* ${invoice.clientName}\n`;
+    msg += `👤 *Client :* ${displayClientName}\n`;
     msg += `📅 *Date d'émission :* ${new Date(invoice.date).toLocaleString(lang === 'ar' ? 'ar-MA' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}\n`;
     msg += `💰 *Montant TTC :* ${invoice.total.toFixed(2)}\n`;
     
@@ -182,7 +183,7 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
                   <div>
                     <h1 className="text-4xl font-bold tracking-tight text-emerald-700 font-trad" style={{ fontFamily: 'Amiri, serif' }}>محل المباركي</h1>
                     <div className="mt-3 text-gray-900">
-                      <p className="font-bold text-xl">{invoice.clientName || (isRtl ? 'زبون عابر' : 'Client Comptoir')}</p>
+                      <p className="font-bold text-xl">{displayClientName}</p>
                       {invoice.clientPhone && (
                         <p className="text-sm font-semibold text-gray-600 mt-0.5">{invoice.clientPhone}</p>
                       )}
@@ -291,7 +292,7 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
                 <div className="border-b border-dashed border-gray-300 my-3 pb-2 text-left text-xs leading-normal space-y-1">
                   <p><strong>{isRtl ? 'تذكرة رقم :' : 'TICKET N°:'}</strong> {invoice.invoiceNumber}</p>
                   <p><strong>{isRtl ? 'تاريخ :' : 'DATE:'}</strong> {formattedDate}</p>
-                  <p><strong>{isRtl ? 'الزبون :' : 'CLIENT:'}</strong> {invoice.clientName}</p>
+                  <p><strong>{isRtl ? 'الزبون :' : 'CLIENT:'}</strong> {displayClientName}</p>
                   {invoice.clientPhone && <p><strong>{isRtl ? 'رقم الهاتف :' : 'TEL:'}</strong> {invoice.clientPhone}</p>}
                 </div>
 

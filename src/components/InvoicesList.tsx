@@ -434,7 +434,7 @@ export default function InvoicesList({
                     </td>
                     <td className="flex justify-between md:table-cell py-2 md:py-3.5 md:px-3 text-gray-900 font-bold border-t border-dashed border-gray-100 md:border-none mt-3 md:mt-0 pt-3 md:pt-3.5">
                       <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{tLabel.invoiceClient}</span>
-                      <span className="text-sm md:text-xs">{invoice.clientName}</span>
+                      <span className="text-sm md:text-xs">{invoice.clientName?.replace('(صندوق)', '').trim()}</span>
                     </td>
                     <td className="flex justify-between md:table-cell py-2 md:py-3.5 md:px-3 text-gray-500 font-medium border-t border-dashed border-gray-100 md:border-none">
                       <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{tLabel.invoiceDate}</span>
@@ -549,8 +549,9 @@ export default function InvoicesList({
                 <h3 className="text-sm font-black text-slate-900 uppercase">
                   {isRtl ? 'تأكيد حذف الفاتورة بصفة نهائية' : 'Confirmer la suppression'}
                 </h3>
-                <p className="text-xxs text-gray-400 mt-0.5">
-                  {isRtl ? 'هذه العملية لا يمكن التراجع عنها لاحقاً!' : 'Cette action est irréversible.'}
+                <p className="text-gray-600 text-sm mb-6 bg-rose-50 p-4 rounded-xl border border-rose-100/50 leading-relaxed text-center">
+                  {isRtl ? 'هل أنت متأكد أنك تريد حذف الفاتورة الخاصة بالزبون' : 'Êtes-vous sûr de vouloir supprimer la facture du client'} <br/>
+                  <span className="text-slate-800 font-extrabold">{invoiceToDelete.clientName?.replace('(صندوق)', '').trim()}</span> ?
                 </p>
               </div>
             </div>
