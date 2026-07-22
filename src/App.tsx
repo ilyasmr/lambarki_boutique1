@@ -936,6 +936,8 @@ export default function App() {
           <ProductsList
             products={products}
             movements={stockMovements}
+            invoices={invoices}
+            onViewInvoice={setPreviewedInvoice}
             lang={lang}
             onAddProduct={handleAddProduct}
             onEditProduct={handleEditProduct}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Product, User, StockMovement } from '../types';
+import { Product, User, StockMovement, Invoice } from '../types';
 import { translations, arabicDashboardLabels } from '../translations';
 import { 
   Plus, 
@@ -40,6 +40,8 @@ interface ProductsListProps {
   onUpdateStocksBulk?: (updates: { productId: string; newQty: number; movement: StockMovement }[]) => void;
   onDeleteMovement?: (id: string) => void;
   onEditMovement?: (id: string, qty: number, reason: string) => void;
+  invoices?: Invoice[];
+  onViewInvoice?: (invoice: Invoice) => void;
 }
 
 
@@ -60,7 +62,9 @@ export default function ProductsList({
   onUpdateStock,
   onUpdateStocksBulk,
   onDeleteMovement,
-  onEditMovement
+  onEditMovement,
+  invoices = [],
+  onViewInvoice
 }: ProductsListProps) {
 
   const isRtl = lang === 'ar';
@@ -696,6 +700,10 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                     };
                     const batchTitle = getBatchTitle();
                     
+                    const invoiceMatch = m.reason?.match(/\(([^)]+)\)/);
+                    const invoiceNumber = invoiceMatch ? invoiceMatch[1] : null;
+                    const linkedInvoice = invoiceNumber ? invoices.find(inv => inv.invoiceNumber === invoiceNumber) : null;
+                    
                     const batchBg = isSale ? 'bg-blue-50/80 border-blue-100' : m.type === 'in' ? 'bg-emerald-50/80 border-emerald-100' : 'bg-rose-50/80 border-rose-100';
                     const batchText = isSale ? 'text-blue-700' : m.type === 'in' ? 'text-emerald-700' : 'text-rose-700';
                     const batchDot = isSale ? 'bg-blue-600' : m.type === 'in' ? 'bg-emerald-600' : 'bg-rose-600';
@@ -739,7 +747,20 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                         })}
                       </td>
                       <td className="py-3 px-4 text-xs text-slate-600 font-medium max-w-[200px] truncate" title={m.reason}>
-                        {m.reason || '-'}
+                        {linkedInvoice && onViewInvoice ? (
+                          <span className="flex items-center gap-1">
+                            {m.reason.split(`(${invoiceNumber})`)[0]}
+                            <button 
+                              onClick={() => onViewInvoice(linkedInvoice)}
+                              className="text-blue-600 hover:text-blue-800 hover:underline font-bold transition-colors cursor-pointer"
+                            >
+                              ({invoiceNumber})
+                            </button>
+                            {m.reason.split(`(${invoiceNumber})`)[1]}
+                          </span>
+                        ) : (
+                          m.reason || '-'
+                        )}
                       </td>
                       <td className="py-3 px-4 text-center">
                         <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold border border-slate-200">
