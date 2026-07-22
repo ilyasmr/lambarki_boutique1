@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Invoice, AppTranslation, User, InvoiceItem, PaymentMethod } from '../types';
 import { translations, arabicDashboardLabels, resolveUserName } from '../translations';
 import { 
@@ -137,7 +137,7 @@ export default function InvoicesList({
   const handleSaveInvoiceEdits = () => {
     if (!originalInvoice || !editingInvoice || !onEditInvoice) return;
     if (editItems.length === 0) {
-      alert(isRtl ? 'âš ï¸ Ø§Ù„ÙØ§ØªÙˆØ±Ø© ÙŠØ¬Ø¨ Ø£Ù† ØªØ­ØªÙˆÙŠ Ø¹Ù„Ù‰ Ù…Ù†ØªØ¬ ÙˆØ§Ø­Ø¯ Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„!' : 'âš ï¸ La facture doit contenir au moins un produit !');
+      alert(isRtl ? '⚠️ الفاتورة يجب أن تحتوي على منتج واحد على الأقل!' : '⚠️ La facture doit contenir au moins un produit !');
       return;
     }
 
@@ -247,11 +247,11 @@ export default function InvoicesList({
         <div>
           <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
             <FileText className="w-5 h-5 text-indigo-600" />
-            <span>{isRtl ? 'Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„ÙÙˆØ§ØªÙŠØ± ÙˆÙ‚Ø§Ø¦Ù…Ø© Ø§Ù„Ù…Ø¨ÙŠØ¹Ø§Øª' : 'Gestion des Factures & Ventes'}</span>
+            <span>{isRtl ? 'إدارة الفواتير وقائمة المبيعات' : 'Gestion des Factures & Ventes'}</span>
           </h2>
           <p className="text-xs text-gray-500 mt-1">
             {isRtl 
-              ? 'ØªØµÙØ­ØŒ ØªØªØ¨Ø¹ ÙˆØ¨Ø­Ø« Ø´Ø§Ù…Ù„ ÙÙŠ Ø³Ø¬Ù„ ÙƒØ§ÙØ© Ø§Ù„Ù…Ø¨ÙŠØ¹Ø§Øª ÙˆØ§Ù„ÙˆØµÙˆÙ„Ø§Øª Ø§Ù„ØµØ§Ø¯Ø±Ø© Ù…Ù† Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚.' 
+              ? 'تصفح، تتبع وبحث شامل في سجل كافة المبيعات والوصولات الصادرة من الصندوق.' 
               : 'Consultez, recherchez et filtrez l\'historique de toutes vos factures de ventes.'}
           </p>
         </div>
@@ -264,13 +264,13 @@ export default function InvoicesList({
         <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-xxs uppercase font-black text-gray-400 tracking-wider">
-              {isRtl ? 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø¹Ø¯Ø¯ Ø§Ù„ÙÙˆØ§ØªÙŠØ±' : 'Nombre de Factures'}
+              {isRtl ? 'إجمالي عدد الفواتير' : 'Nombre de Factures'}
             </p>
             <h4 className="text-lg font-black text-slate-800 font-mono mt-1">
-              {stats.totalCount} {isRtl ? 'ÙØ§ØªÙˆØ±Ø©' : 'factures'}
+              {stats.totalCount} {isRtl ? 'فاتورة' : 'factures'}
             </h4>
             <p className="text-xxs text-slate-500 mt-1">
-              {isRtl ? 'Ø³Ø¬Ù„ Ø§Ù„Ø¹Ù…Ù„ÙŠØ§Øª Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠ' : 'Historique complet des ventes'}
+              {isRtl ? 'سجل العمليات الإجمالي' : 'Historique complet des ventes'}
             </p>
           </div>
           <span className="p-3 bg-indigo-50 text-indigo-600 rounded-xl">
@@ -282,13 +282,13 @@ export default function InvoicesList({
         <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
           <div>
             <p className="text-xxs uppercase font-black text-gray-400 tracking-wider">
-              {isRtl ? 'Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„Ù…Ø¯Ø§Ø®ÙŠÙ„ Ø§Ù„Ù…ØºÙ„Ù‚Ø© (Ø§Ù„ÙÙˆØ§ØªÙŠØ± Ø§Ù„Ù…Ø¯ÙÙˆØ¹Ø©)' : 'Chiffre d\'Affaires EncaissÃ©'}
+              {isRtl ? 'إجمالي المداخيل المغلقة (الفواتير المدفوعة)' : 'Chiffre d\'Affaires Encaissé'}
             </p>
             <h4 className="text-lg font-black text-emerald-600 font-mono mt-1">
               {stats.totalPaid.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </h4>
             <p className="text-xxs text-emerald-600/80 mt-1">
-              {isRtl ? 'Ù…ØºÙ„Ù‚Ø© Ø¨Ø§Ù„ÙƒØ§Ù…Ù„ ÙÙŠ Ø§Ù„ØµÙ†Ø¯ÙˆÙ‚' : 'EncaissÃ© en caisse avec succÃ¨s'}
+              {isRtl ? 'مغلقة بالكامل في الصندوق' : 'Encaissé en caisse avec succès'}
             </p>
           </div>
           <span className="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
@@ -300,15 +300,15 @@ export default function InvoicesList({
         <div className="bg-gradient-to-br from-indigo-600 to-indigo-700 p-5 rounded-2xl shadow-sm text-white flex items-center justify-between">
           <div className="space-y-1">
             <p className="text-xxs uppercase font-black text-indigo-100 tracking-wider">
-              {isRtl ? 'ØªÙØµÙŠÙ„ Ø§Ù„Ø³ÙŠÙˆÙ„Ø© Ø§Ù„Ù†Ù‚Ø¯ÙŠØ© ÙˆØ§Ù„Ø´ÙŠÙƒØ§Øª' : 'Ratios de RÃ¨glement'}
+              {isRtl ? 'تفصيل السيولة النقدية والشيكات' : 'Ratios de Règlement'}
             </p>
             <div className="text-xs space-y-0.5 mt-1 font-semibold text-indigo-100">
               <div className="flex justify-between gap-4 font-mono">
-                <span>{isRtl ? 'Ø§Ù„Ù†Ù‚Ø¯ (EspÃ¨ces) :' : 'EspÃ¨ces :'}</span>
+                <span>{isRtl ? 'النقد (Espèces) :' : 'Espèces :'}</span>
                 <span className="font-extrabold">{stats.cashTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
               </div>
               <div className="flex justify-between gap-4 font-mono">
-                <span>{isRtl ? 'Ø§Ù„Ø´ÙŠÙƒØ§Øª (ChÃ¨ques) :' : 'ChÃ¨ques :'}</span>
+                <span>{isRtl ? 'الشيكات (Chèques) :' : 'Chèques :'}</span>
                 <span className="font-extrabold">{stats.checkTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
               </div>
             </div>
@@ -324,9 +324,9 @@ export default function InvoicesList({
         {/* Title & Reset filter button */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-50 pb-4">
           <h3 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-            <span>{isRtl ? 'Ø³Ø¬Ù„ Ø§Ù„ÙÙˆØ§ØªÙŠØ± ÙˆØ§Ù„Ù…Ø¨ÙŠØ¹Ø§Øª Ø§Ù„ØªÙØµÙŠÙ„ÙŠØ©' : 'Savoir-Faire Factures RÃ©centes'}</span>
+            <span>{isRtl ? 'سجل الفواتير والمبيعات التفصيلية' : 'Savoir-Faire Factures Récentes'}</span>
             <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full font-mono text-[10px]">
-              {filteredInvoices.length} {isRtl ? 'Ø§Ù„Ù†ØªØ§Ø¦Ø¬' : 'rÃ©sultats'}
+              {filteredInvoices.length} {isRtl ? 'النتائج' : 'résultats'}
             </span>
           </h3>
 
@@ -336,7 +336,7 @@ export default function InvoicesList({
               className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-900 border border-gray-200 rounded-xl text-xs font-bold transition cursor-pointer self-start md:self-auto"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>{isRtl ? 'Ø¥Ø¹Ø§Ø¯Ø© ØªØ¹ÙŠÙŠÙ† Ø§Ù„ØªØµÙÙŠØ©' : 'RÃ©initialiser'}</span>
+              <span>{isRtl ? 'إعادة تعيين التصفية' : 'Réinitialiser'}</span>
             </button>
           )}
         </div>
@@ -353,7 +353,7 @@ export default function InvoicesList({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={isRtl ? 'Ø§Ù„Ø¨Ø­Ø« Ø¨Ø§Ù„Ø§Ø³Ù…ØŒ Ø±Ù‚Ù… Ø§Ù„ÙØ§ØªÙˆØ±Ø© Ø£Ùˆ Ø§Ù„Ø¨Ø§Ø¦Ø¹...' : 'Recherche nom, nÂ° facture, caissier...'}
+              placeholder={isRtl ? 'البحث بالاسم، رقم الفاتورة أو البائع...' : 'Recherche nom, n° facture, caissier...'}
               className={`w-full py-2 bg-slate-50 border border-slate-200/80 rounded-xl text-xs font-semibold text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition ${
                 isRtl ? 'pr-9 pl-3 text-right' : 'pl-9 pr-3 text-left'
               }`}
@@ -372,10 +372,10 @@ export default function InvoicesList({
                 isRtl ? 'pr-9 pl-3 text-right' : 'pl-9 pr-3 text-left'
               }`}
             >
-              <option value="all">{isRtl ? 'ÙƒÙ„ Ø§Ù„ØªÙˆØ§Ø±ÙŠØ® ÙˆØ§Ù„Ø´Ù‡ÙˆØ±' : 'Toutes les dates'}</option>
-              <option value="today">{isRtl ? 'Ø§Ù„ÙŠÙˆÙ… Ø§Ù„Ø­Ø§Ù„ÙŠ' : 'Aujourd\'hui'}</option>
-              <option value="week">{isRtl ? 'Ø¢Ø®Ø± 7 Ø£ÙŠØ§Ù…' : '7 derniers jours'}</option>
-              <option value="month">{isRtl ? 'Ø¢Ø®Ø± 30 ÙŠÙˆÙ…Ø§Ù‹' : '30 derniers jours'}</option>
+              <option value="all">{isRtl ? 'كل التواريخ والشهور' : 'Toutes les dates'}</option>
+              <option value="today">{isRtl ? 'اليوم الحالي' : 'Aujourd\'hui'}</option>
+              <option value="week">{isRtl ? 'آخر 7 أيام' : '7 derniers jours'}</option>
+              <option value="month">{isRtl ? 'آخر 30 يوماً' : '30 derniers jours'}</option>
             </select>
           </div>
 
@@ -391,7 +391,7 @@ export default function InvoicesList({
                 isRtl ? 'pr-9 pl-3 text-right' : 'pl-9 pr-3 text-left'
               }`}
             >
-              <option value="all">{isRtl ? 'ÙƒÙ„ Ø·Ø±Ù‚ Ø§Ù„Ø¯ÙØ¹' : 'Tous les modes de rÃ¨glement'}</option>
+              <option value="all">{isRtl ? 'كل طرق الدفع' : 'Tous les modes de règlement'}</option>
               <option value="cash">{tLabel.paymentCash}</option>
               <option value="card">{tLabel.paymentCard}</option>
               <option value="transfer">{tLabel.paymentTransfer}</option>
@@ -404,17 +404,17 @@ export default function InvoicesList({
         {/* Invoice List Table */}
         <div className="md:bg-white md:rounded-2xl md:border md:border-gray-100 md:shadow-sm overflow-hidden">
           <div className="overflow-x-hidden md:overflow-x-auto">
-            <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} block md:table`}>
+            <table className="w-full text-left block md:table">
               <thead className="hidden md:table-header-group">
               <tr className="border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
                 <th className="py-3 px-3">{tLabel.invoiceNum}</th>
                 <th className="py-3 px-3">{tLabel.invoiceClient}</th>
                 <th className="py-3 px-3">{tLabel.invoiceDate}</th>
-                <th className="py-3 px-3 text-right">{isRtl ? 'Ù‚ÙŠÙ…Ø© Ø§Ù„Ø®ØµÙ…' : 'Remise Applied'}</th>
+                <th className="py-3 px-3 text-right">{isRtl ? 'قيمة الخصم' : 'Remise Applied'}</th>
                 <th className="py-3 px-3 text-right">{tLabel.invoiceTotal}</th>
                 <th className="py-3 px-3 text-center">{tLabel.invoiceStatus}</th>
                 <th className="py-3 px-3 text-center">{tLabel.invoicePayment}</th>
-                <th className="py-3 px-3 text-center">{isRtl ? 'Ø§Ù„Ø¨Ø§Ø¦Ø¹ Ù…Ø³Ø¤ÙˆÙ„ Ø§Ù„Ø¹Ù…Ù„ÙŠØ©' : 'Caissier'}</th>
+                <th className="py-3 px-3 text-center">{isRtl ? 'البائع مسؤول العملية' : 'Caissier'}</th>
                 <th className="py-3 px-3 text-center">{t.actions}</th>
               </tr>
             </thead>
@@ -422,7 +422,7 @@ export default function InvoicesList({
               {filteredInvoices.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="py-12 text-center text-gray-400 text-xs font-bold">
-                    {isRtl ? 'Ù„Ù… ÙŠØªÙ… Ø§Ù„Ø¹Ø«ÙˆØ± Ø¹Ù„Ù‰ Ø£ÙŠ ÙÙˆØ§ØªÙŠØ± Ù…Ø·Ø§Ø¨Ù‚Ø© Ù„Ù„ØªØµÙÙŠØ©.' : 'Aucune facture ne correspond.'}
+                    {isRtl ? 'لم يتم العثور على أي فواتير مطابقة للتصفية.' : 'Aucune facture ne correspond.'}
                   </td>
                 </tr>
               ) : (
@@ -445,7 +445,7 @@ export default function InvoicesList({
                       </span>
                     </td>
                     <td className="flex justify-between md:table-cell py-2 md:py-3.5 md:px-3 text-right font-mono font-bold text-amber-600 md:bg-amber-50/20 border-t border-dashed border-gray-100 md:border-none">
-                      <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'Ù‚ÙŠÙ…Ø© Ø§Ù„Ø®ØµÙ…' : 'Remise'}</span>
+                      <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'قيمة الخصم' : 'Remise'}</span>
                       <span className="bg-amber-50/50 md:bg-transparent px-2 py-0.5 md:p-0 rounded">
                         {invoice.discount && invoice.discount > 0 ? `-${invoice.discount.toFixed(2)}` : '-'}
                       </span>
@@ -458,19 +458,19 @@ export default function InvoicesList({
                       <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{tLabel.invoiceStatus}</span>
                       {invoice.status === 'cancelled' ? (
                         <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-gray-100 text-gray-800 border border-gray-200">
-                          {isRtl ? 'Ù…Ù„ØºØ§Ø©' : 'AnnulÃ©e'}
+                          {isRtl ? 'ملغاة' : 'Annulée'}
                         </span>
                       ) : invoice.paymentStatus === 'unpaid' ? (
                         <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-rose-50 text-rose-800 border border-rose-100">
-                          {isRtl ? 'Ø¯ÙŠÙ† Ø¨Ø§Ù„ÙƒØ§Ù…Ù„' : 'Ã€ CrÃ©dit (Salaf)'}
+                          {isRtl ? 'دين بالكامل' : 'À Crédit (Salaf)'}
                         </span>
                       ) : invoice.paymentStatus === 'partial' ? (
                         <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-50 text-amber-850 border border-amber-100 font-extrabold">
-                          {isRtl ? 'Ø¯ÙØ¹Ø©+Ø¯ÙŠÙ†' : 'Acompte + Reste'}
+                          {isRtl ? 'دفعة+دين' : 'Acompte + Reste'}
                         </span>
                       ) : (
                         <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-50 text-emerald-800 border border-emerald-100">
-                          {isRtl ? 'Ø®Ø§Ù„Øµ Ø¨Ø§Ù„ÙƒØ§Ù…Ù„' : 'PayÃ©e en totalitÃ©'}
+                          {isRtl ? 'خالص بالكامل' : 'Payée en totalité'}
                         </span>
                       )}
                     </td>
@@ -486,7 +486,7 @@ export default function InvoicesList({
                       </span>
                     </td>
                     <td className="flex justify-between md:table-cell py-2 md:py-3.5 md:px-3 text-center text-slate-600 font-medium truncate max-w-[120px] md:max-w-[120px] w-full md:w-auto border-t border-dashed border-gray-100 md:border-none">
-                      <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase shrink-0">{isRtl ? 'Ø§Ù„Ø¨Ø§Ø¦Ø¹' : 'Caissier'}</span>
+                      <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase shrink-0">{isRtl ? 'البائع' : 'Caissier'}</span>
                       <span className="truncate">{resolveUserName(invoice.cashierName, lang)}</span>
                     </td>
                     <td className="flex md:table-cell py-3 md:py-3.5 md:px-3 text-center border-t border-dashed border-gray-100 md:border-none bg-slate-50 md:bg-transparent rounded-xl mt-3 md:mt-0 px-3 md:px-4">
@@ -494,7 +494,7 @@ export default function InvoicesList({
                         <button
                           onClick={() => onViewInvoice(invoice)}
                           className="flex-1 md:flex-none p-2 md:p-1 md:px-2 bg-white md:bg-indigo-50 text-indigo-750 font-bold rounded-lg border border-indigo-100 md:border-none hover:bg-indigo-100 text-[11px] md:text-[10px] transition cursor-pointer inline-flex items-center justify-center gap-1.5 md:gap-1 shadow-xxs md:shadow-none"
-                          title={isRtl ? 'Ù…Ø´Ø§Ù‡Ø¯Ø© ÙˆØ·Ø¨Ø§Ø¹Ø© Ø§Ù„ÙØ§ØªÙˆØ±Ø©' : 'Voir & Imprimer'}
+                          title={isRtl ? 'مشاهدة وطباعة الفاتورة' : 'Voir & Imprimer'}
                         >
                           <Printer className="w-4 h-4 md:w-3 md:h-3 text-indigo-600" />
                           <span className="md:hidden sm:inline">{t.print}</span>
@@ -505,10 +505,10 @@ export default function InvoicesList({
                             <button
                               onClick={() => handleStartEdit(invoice)}
                               className="flex-1 md:flex-none p-2 md:p-1 md:px-2 bg-white md:bg-amber-50 text-amber-700 font-bold rounded-lg border border-amber-100 md:border-none hover:bg-amber-100 text-[11px] md:text-[10px] transition cursor-pointer inline-flex items-center justify-center gap-1.5 md:gap-1 shadow-xxs md:shadow-none"
-                              title={isRtl ? 'ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„ÙØ§ØªÙˆØ±Ø©' : 'Modifier'}
+                              title={isRtl ? 'تعديل الفاتورة' : 'Modifier'}
                             >
                               <Edit3 className="w-4 h-4 md:w-3 md:h-3 text-amber-600" />
-                              <span className="md:hidden sm:inline">{isRtl ? 'ØªØ¹Ø¯ÙŠÙ„' : 'Modifier'}</span>
+                              <span className="md:hidden sm:inline">{isRtl ? 'تعديل' : 'Modifier'}</span>
                             </button>
 
                             <button
@@ -517,10 +517,10 @@ export default function InvoicesList({
                                 setConfirmDelete(true);
                               }}
                               className="flex-1 md:flex-none p-2 md:p-1 md:px-2 bg-white md:bg-rose-50 text-rose-700 font-bold rounded-lg border border-rose-100 md:border-none hover:bg-rose-100 text-[11px] md:text-[10px] transition cursor-pointer inline-flex items-center justify-center gap-1.5 md:gap-1 shadow-xxs md:shadow-none"
-                              title={isRtl ? 'Ø­Ø°Ù Ø§Ù„ÙØ§ØªÙˆØ±Ø©' : 'Supprimer'}
+                              title={isRtl ? 'حذف الفاتورة' : 'Supprimer'}
                             >
                               <Trash2 className="w-4 h-4 md:w-3 md:h-3 text-rose-600" />
-                              <span className="md:hidden sm:inline">{isRtl ? 'Ø­Ø°Ù' : 'Supprimer'}</span>
+                              <span className="md:hidden sm:inline">{isRtl ? 'حذف' : 'Supprimer'}</span>
                             </button>
                           </>
                         )}
@@ -547,25 +547,25 @@ export default function InvoicesList({
               </span>
               <div>
                 <h3 className="text-sm font-black text-slate-900 uppercase">
-                  {isRtl ? 'ØªØ£ÙƒÙŠØ¯ Ø­Ø°Ù Ø§Ù„ÙØ§ØªÙˆØ±Ø© Ø¨ØµÙØ© Ù†Ù‡Ø§Ø¦ÙŠØ©' : 'Confirmer la suppression'}
+                  {isRtl ? 'تأكيد حذف الفاتورة بصفة نهائية' : 'Confirmer la suppression'}
                 </h3>
                 <p className="text-xxs text-gray-400 mt-0.5">
-                  {isRtl ? 'Ù‡Ø°Ù‡ Ø§Ù„Ø¹Ù…Ù„ÙŠØ© Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø§Ù„ØªØ±Ø§Ø¬Ø¹ Ø¹Ù†Ù‡Ø§ Ù„Ø§Ø­Ù‚Ø§Ù‹!' : 'Cette action est irrÃ©versible.'}
+                  {isRtl ? 'هذه العملية لا يمكن التراجع عنها لاحقاً!' : 'Cette action est irréversible.'}
                 </p>
               </div>
             </div>
 
             <div className={`space-y-3 p-4 bg-slate-50 rounded-xl text-xs font-semibold ${isRtl ? 'text-right' : 'text-left'}`}>
               <div className="flex justify-between">
-                <span className="text-gray-450">{isRtl ? 'Ø±Ù‚Ù… Ø§Ù„ÙØ§ØªÙˆØ±Ø© :' : 'NÂ° Facture :'}</span>
+                <span className="text-gray-450">{isRtl ? 'رقم الفاتورة :' : 'N° Facture :'}</span>
                 <span className="font-mono text-indigo-600 font-extrabold">{invoiceToDelete.invoiceNumber}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-450">{isRtl ? 'Ø§Ù„Ø²Ø¨ÙˆÙ† :' : 'Client :'}</span>
+                <span className="text-gray-450">{isRtl ? 'الزبون :' : 'Client :'}</span>
                 <span className="text-slate-800 font-extrabold">{invoiceToDelete.clientName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-450">{isRtl ? 'Ø§Ù„ØªØ§Ø±ÙŠØ® :' : 'Date :'}</span>
+                <span className="text-gray-450">{isRtl ? 'التاريخ :' : 'Date :'}</span>
                 <span className="text-slate-600 font-bold">
                   {new Date(invoiceToDelete.date).toLocaleDateString(isRtl ? 'ar-MA' : 'fr', {
                     day: '2-digit', month: 'short', year: 'numeric'
@@ -573,7 +573,7 @@ export default function InvoicesList({
                 </span>
               </div>
               <div className="flex justify-between border-t border-gray-200/60 pt-2 font-black">
-                <span className="text-gray-900">{isRtl ? 'Ø§Ù„Ù…Ø¨Ù„Øº Ø§Ù„Ø¥Ø¬Ù…Ø§Ù„ÙŠ :' : 'Montant Total :'}</span>
+                <span className="text-gray-900">{isRtl ? 'المبلغ الإجمالي :' : 'Montant Total :'}</span>
                 <span className="text-rose-600 font-mono text-sm">{invoiceToDelete.total.toFixed(2)}</span>
               </div>
             </div>
@@ -588,12 +588,12 @@ export default function InvoicesList({
               />
               <div className={`text-xxs ${isRtl ? 'text-right' : 'text-left'}`}>
                 <span className="font-extrabold text-slate-800 group-hover:text-rose-600 transition-colors">
-                  {isRtl ? 'Ø¥Ø±Ø¬Ø§Ø¹ ÙƒÙ…ÙŠØ§Øª Ø§Ù„Ø³Ù„Ø¹ ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹ Ù„Ù„Ù…Ø®Ø²Ù†' : 'RÃ©intÃ©grer automatiquement les articles au stock'}
+                  {isRtl ? 'إرجاع كميات السلع تلقائياً للمخزن' : 'Réintégrer automatiquement les articles au stock'}
                 </span>
                 <p className="text-[10px] text-gray-400 font-medium">
                   {isRtl 
-                    ? 'Ø³ÙŠØªÙ… ØªØ²ÙˆÙŠØ¯ Ø§Ù„Ù…Ø®Ø²Ù† ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹ Ø¨Ø§Ù„ÙƒÙ…ÙŠØ§Øª Ø§Ù„ØªÙŠ ÙƒØ§Ù†Øª Ù…Ø¹Ø¨Ø£Ø© ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„ÙØ§ØªÙˆØ±Ø© ÙˆØ¥Ù„ØºØ§Ø¡ Ø®Ø±ÙˆØ¬Ù‡Ø§.' 
-                    : 'Les unitÃ©s vendues dans cette facture seront rÃ©injectÃ©es dans les stocks physiques.'}
+                    ? 'سيتم تزويد المخزن تلقائياً بالكميات التي كانت معبأة في هذه الفاتورة وإلغاء خروجها.' 
+                    : 'Les unités vendues dans cette facture seront réinjectées dans les stocks physiques.'}
                 </p>
               </div>
             </label>
@@ -607,14 +607,14 @@ export default function InvoicesList({
                 }}
                 className="flex-1 py-3 border border-gray-200 hover:bg-slate-50 text-slate-700 font-bold rounded-xl text-xs transition cursor-pointer"
               >
-                {isRtl ? 'ØªØ±Ø§Ø¬Ø¹ ÙˆØ¥Ù„ØºØ§Ø¡' : 'Annuler'}
+                {isRtl ? 'تراجع وإلغاء' : 'Annuler'}
               </button>
               <button
                 type="button"
                 onClick={handleConfirmDeleteInvoice}
                 className="flex-1 py-3 bg-rose-600 hover:bg-rose-700 text-white font-extrabold rounded-xl text-xs transition shadow-sm hover:shadow-lg cursor-pointer"
               >
-                {isRtl ? 'Ù†Ø¹Ù…ØŒ Ø­Ø°Ù Ø§Ù„ÙØ§ØªÙˆØ±Ø©' : 'Oui, Supprimer'}
+                {isRtl ? 'نعم، حذف الفاتورة' : 'Oui, Supprimer'}
               </button>
             </div>
 
@@ -635,7 +635,7 @@ export default function InvoicesList({
                 </span>
                 <div>
                   <h3 className="text-sm font-black text-slate-900 uppercase">
-                    {isRtl ? 'ØªØ¹Ø¯ÙŠÙ„ ØªÙØ§ØµÙŠÙ„ Ø§Ù„ÙØ§ØªÙˆØ±Ø© ÙˆØ§Ù„Ù…Ø¨ÙŠØ¹Ø§Øª' : 'Modifier la Facture'}
+                    {isRtl ? 'تعديل تفاصيل الفاتورة والمبيعات' : 'Modifier la Facture'}
                   </h3>
                   <p className="text-[10px] text-indigo-650 font-mono mt-0.5">
                      Code: {editingInvoice.invoiceNumber}
@@ -661,7 +661,7 @@ export default function InvoicesList({
                 {/* Client Name Input */}
                 <div className="space-y-1">
                   <label className="text-xxs uppercase font-black text-gray-400 tracking-wider">
-                    {isRtl ? 'Ø§Ø³Ù… Ø§Ù„Ø²Ø¨ÙˆÙ† Ø§Ù„Ù…Ø¹Ù†ÙŠ Ø§Ù„ÙØ§ØªÙˆØ±Ø© *' : 'Nom du Client *'}
+                    {isRtl ? 'اسم الزبون المعني الفاتورة *' : 'Nom du Client *'}
                   </label>
                   <input
                     type="text"
@@ -675,7 +675,7 @@ export default function InvoicesList({
                 {/* Edit Date Input */}
                 <div className="space-y-1">
                   <label className="text-xxs uppercase font-black text-gray-400 tracking-wider">
-                    {isRtl ? 'ØªØ§Ø±ÙŠØ® Ø§Ù„Ù…Ø¹Ø§Ù…Ù„Ø© ÙˆØ§Ù„ÙˆÙ‚Øª *' : 'Date de la transaction *'}
+                    {isRtl ? 'تاريخ المعاملة والوقت *' : 'Date de la transaction *'}
                   </label>
                   <input
                     type="datetime-local"
@@ -689,7 +689,7 @@ export default function InvoicesList({
                 {/* Edit Payment Method Dropdown */}
                 <div className="space-y-1">
                   <label className="text-xxs uppercase font-black text-gray-400 tracking-wider">
-                    {isRtl ? 'Ø·Ø±ÙŠÙ‚Ø© Ø§Ù„Ø³Ø¯Ø§Ø¯ ÙˆØ§Ù„ØªØ³ÙˆÙŠØ© *' : 'Mode de RÃ©glement *'}
+                    {isRtl ? 'طريقة السداد والتسوية *' : 'Mode de Réglement *'}
                   </label>
                   <select
                     value={editPaymentMethod}
@@ -707,16 +707,16 @@ export default function InvoicesList({
               {/* Items editing table container */}
               <div className="border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
                 <div className="bg-slate-50 px-4 py-2 text-xxs uppercase font-black text-slate-500 tracking-wider border-b border-slate-100">
-                  {isRtl ? 'Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ù…Ù†ØªØ¬Ø§Øª Ø§Ù„Ù…Ø´ØªØ±Ø§Ø© ÙˆØªØ¹Ø¯ÙŠÙ„ ÙƒÙ…ÙŠØ§ØªÙ‡Ø§' : 'Articles & QuantitÃ©s Ã  modifier'}
+                  {isRtl ? 'قائمة المنتجات المشتراة وتعديل كمياتها' : 'Articles & Quantités à modifier'}
                 </div>
                 <div className="overflow-x-auto">
-                  <table className={`w-full ${isRtl ? 'text-right' : 'text-left'}`}>
+                  <table className="w-full text-left">
                     <thead>
                       <tr className="bg-slate-50/50 border-b border-slate-100 text-[10px] font-bold uppercase text-gray-400">
-                        <th className="py-2.5 px-4">{isRtl ? 'Ø§Ù„Ù…Ù†ØªØ¬' : 'Article'}</th>
-                        <th className="py-2.5 px-4 w-32 text-center">{isRtl ? 'Ø³Ø¹Ø± Ø§Ù„Ø¨ÙŠØ¹ ' : 'P.U. Vente '}</th>
-                        <th className="py-2.5 px-4 w-40 text-center">{isRtl ? 'Ø§Ù„ÙƒÙ…ÙŠØ© Ø§Ù„Ù…Ø¨Ø§Ø¹Ø©' : 'QuantitÃ© vendue'}</th>
-                        <th className="py-2.5 px-4 w-32 text-right">{isRtl ? 'Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹ Ø§Ù„ÙØ±Ø¹ÙŠ' : 'Montant Total'}</th>
+                        <th className="py-2.5 px-4">{isRtl ? 'المنتج' : 'Article'}</th>
+                        <th className="py-2.5 px-4 w-32 text-center">{isRtl ? 'سعر البيع ' : 'P.U. Vente '}</th>
+                        <th className="py-2.5 px-4 w-40 text-center">{isRtl ? 'الكمية المباعة' : 'Quantité vendue'}</th>
+                        <th className="py-2.5 px-4 w-32 text-right">{isRtl ? 'المجموع الفرعي' : 'Montant Total'}</th>
                         <th className="py-2.5 px-4 w-16 text-center">{t.actions}</th>
                       </tr>
                     </thead>
@@ -763,7 +763,7 @@ export default function InvoicesList({
                               type="button"
                               onClick={() => handleRemoveItem(item.productId)}
                               className="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-500 hover:text-rose-700 rounded-lg transition"
-                              title={isRtl ? 'Ø¥Ø²Ø§Ù„Ø© Ù‡Ø°Ø§ Ø§Ù„Ù…Ù†ØªØ¬' : 'Retirer l\'article'}
+                              title={isRtl ? 'إزالة هذا المنتج' : 'Retirer l\'article'}
                             >
                               <X className="w-3.5 h-3.5" />
                             </button>
@@ -783,12 +783,12 @@ export default function InvoicesList({
                   {/* Notes Area */}
                   <div className="space-y-1">
                     <label className="text-xxs uppercase font-black text-gray-400 tracking-wider">
-                      {isRtl ? 'Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø§Ù„ÙØ§ØªÙˆØ±Ø© ÙˆØ§Ù„ØªØ¹Ù„ÙŠÙ‚Ø§Øª' : 'Notes publiques / Commentaires'}
+                      {isRtl ? 'ملاحظات الفاتورة والتعليقات' : 'Notes publiques / Commentaires'}
                     </label>
                     <textarea
                       value={editNotes}
                       onChange={(e) => setEditNotes(e.target.value)}
-                      placeholder={isRtl ? 'Ù…Ø«Ø§Ù„: ØªÙ…Øª ØªØ³ÙˆÙŠØ© Ø§Ù„Ù…Ø¹Ø§Ù…Ù„Ø© Ø¨ØªØ±Ø­ÙŠØ¨...' : 'Notes imprimÃ©es sur le ticket...'}
+                      placeholder={isRtl ? 'مثال: تمت تسوية المعاملة بترحيب...' : 'Notes imprimées sur le ticket...'}
                       rows={2}
                       className="w-full bg-slate-50 border border-slate-200 focus:border-blue-500 rounded-xl px-3 py-2 outline-none font-semibold text-slate-800 transition"
                     />
@@ -804,12 +804,12 @@ export default function InvoicesList({
                     />
                     <div>
                       <span className="font-extrabold text-slate-800 group-hover:text-amber-700 transition-colors">
-                        {isRtl ? 'Ù…Ø²Ø§Ù…Ù†Ø© ÙˆØªØ¹Ø¯ÙŠÙ„ ÙƒÙ…ÙŠØ§Øª Ø§Ù„Ù…Ø®Ø²Ù† ØªÙ„Ù‚Ø§Ø¦ÙŠØ§Ù‹' : 'RÃ©ajuster automatiquement les stocks physiques'}
+                        {isRtl ? 'مزامنة وتعديل كميات المخزن تلقائياً' : 'Réajuster automatiquement les stocks physiques'}
                       </span>
                       <p className="text-[10px] text-gray-400 font-medium leading-relaxed mt-0.5">
                         {isRtl 
-                          ? 'Ø¹Ù†Ø¯ ØªØ¹Ø¯ÙŠÙ„ ÙƒÙ…ÙŠØ© Ù…Ø¨ÙŠØ¹Ø§Øª Ø£ÙŠ Ø¹Ù†ØµØ±ØŒ Ø³ÙŠØªÙ… Ø¥Ø¶Ø§ÙØ© Ø£Ùˆ Ø³Ø­Ø¨ Ø§Ù„ÙØ§Ø±Ù‚ Ù…Ù† Ø§Ù„Ù…Ø®Ø²Ù† Ø§Ù„ÙØ¹Ù„ÙŠ Ù„Ù„Ø³Ù„Ø¹Ø© Ù„ØªÙØ§Ø¯ÙŠ Ø£ÙŠ Ø®Ù„Ù„.' 
-                          : 'Le stock disponible sera diminuÃ© ou crÃ©ditÃ© selon la diffÃ©rence nette des quantitÃ©s Ã©ditÃ©es.'}
+                          ? 'عند تعديل كمية مبيعات أي عنصر، سيتم إضافة أو سحب الفارق من المخزن الفعلي للسلعة لتفادي أي خلل.' 
+                          : 'Le stock disponible sera diminué ou crédité selon la différence nette des quantités éditées.'}
                       </p>
                     </div>
                   </label>
@@ -818,11 +818,11 @@ export default function InvoicesList({
                 {/* Dynamic live calculation summary card */}
                 <div className="p-5 bg-slate-50 rounded-2xl space-y-3 font-semibold border border-slate-100">
                   <div className="flex justify-between">
-                    <span className="text-slate-500">{isRtl ? 'Ø§Ù„Ù…Ø¬Ù…ÙˆØ¹ Ø§Ù„Ø£ÙˆÙ„ÙŠ :' : 'Sous-total :'}</span>
+                    <span className="text-slate-500">{isRtl ? 'المجموع الأولي :' : 'Sous-total :'}</span>
                     <span className="font-mono text-slate-700">{liveTotals.subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between items-center py-1 border-y border-gray-150">
-                    <span className="text-slate-500">{isRtl ? 'Ù‚ÙŠÙ…Ø© Ø§Ù„Ø®ØµÙ… Ø§Ù„Ù…Ù…Ù†ÙˆØ­  :' : 'Remise Ã  appliquer  :'}</span>
+                    <span className="text-slate-500">{isRtl ? 'قيمة الخصم الممنوح  :' : 'Remise à appliquer  :'}</span>
                     <input
                       type="number"
                       min="0"
@@ -832,7 +832,7 @@ export default function InvoicesList({
                     />
                   </div>
                   <div className="flex justify-between items-center py-1 border-b border-gray-150">
-                    <span className="text-slate-500">{isRtl ? 'Ù†Ø³Ø¨Ø© Ø§Ù„Ø¶Ø±ÙŠØ¨Ø© Ø§Ù„Ù…Ø·Ø¨Ù‚Ø© (%) :' : 'Taux TVA Ã  appliquer (%) :'}</span>
+                    <span className="text-slate-500">{isRtl ? 'نسبة الضريبة المطبقة (%) :' : 'Taux TVA à appliquer (%) :'}</span>
                     <input
                       type="number"
                       min="0"
@@ -843,15 +843,15 @@ export default function InvoicesList({
                     />
                   </div>
                   <div className="flex justify-between text-indigo-700 font-bold">
-                    <span>{isRtl ? 'Ù‚ÙŠÙ…Ø© Ø§Ù„Ø¶Ø±ÙŠØ¨Ø© Ø§Ù„Ù…Ø­Ø³ÙˆØ¨Ø© :' : 'Montant TVA calculÃ© :'}</span>
+                    <span>{isRtl ? 'قيمة الضريبة المحسوبة :' : 'Montant TVA calculé :'}</span>
                     <span className="font-mono">{liveTotals.tax.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between border-t border-gray-250 pt-2 font-black text-sm text-slate-900">
-                    <span>{isRtl ? 'Ù…Ø¬Ù…ÙˆØ¹ Ø§Ù„ÙØ§ØªÙˆØ±Ø© Ø§Ù„Ø­Ø§Ù„ÙŠ :' : 'Montant Total RÃ©gler :'}</span>
+                    <span>{isRtl ? 'مجموع الفاتورة الحالي :' : 'Montant Total Régler :'}</span>
                     <span className="font-mono text-indigo-600 text-base">{liveTotals.total.toFixed(2)}</span>
                   </div>
                   <div className="bg-emerald-50 text-emerald-800 p-2.5 rounded-xl text-[10px] font-bold border border-emerald-100/50 flex justify-between">
-                    <span>{isRtl ? 'Ø±Ø¨Ø­ ØªÙ‚Ø¯ÙŠØ±ÙŠ Ù„Ù„Ø¹Ù…Ù„ÙŠØ© :' : 'Marge commerciale brute estimÃ©e :'}</span>
+                    <span>{isRtl ? 'ربح تقديري للعملية :' : 'Marge commerciale brute estimée :'}</span>
                     <span className="font-mono font-black">{liveTotals.profit.toFixed(2)}</span>
                   </div>
                 </div>
@@ -871,14 +871,14 @@ export default function InvoicesList({
                 }}
                 className="px-4 py-2.5 border border-gray-200 hover:bg-slate-50 text-slate-705 font-bold rounded-xl text-xs transition cursor-pointer"
               >
-                {isRtl ? 'ØªØ±Ø§Ø¬Ø¹ ÙˆØ¥Ù„ØºØ§Ø¡' : 'Annuler'}
+                {isRtl ? 'تراجع وإلغاء' : 'Annuler'}
               </button>
               <button
                 type="button"
                 onClick={handleSaveInvoiceEdits}
                 className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-xl text-xs transition shadow-sm hover:shadow-lg flex items-center gap-1 cursor-pointer"
               >
-                <span>{isRtl ? 'Ø­ÙØ¸ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„Ø§Øª' : 'Enregistrer'}</span>
+                <span>{isRtl ? 'حفظ التعديلات' : 'Enregistrer'}</span>
               </button>
             </div>
 
@@ -889,5 +889,3 @@ export default function InvoicesList({
     </div>
   );
 }
-
-
