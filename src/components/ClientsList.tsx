@@ -1151,7 +1151,7 @@ export default function ClientsList({
                                 ))}
                               </div>
 
-<table className={`w-full ${isRtl ? 'text-right' : 'text-left'} border-collapse hidden lg:table">
+<table className={`w-full ${isRtl ? 'text-right' : 'text-left'} border-collapse hidden lg:table`}>
                                 <thead>
                                   <tr className="border-b border-gray-200 text-[9px] font-bold text-gray-400 uppercase tracking-wider">
                                     <th className={`pb-2 ${isRtl ? 'text-right' : 'text-left'} font-medium`}>{isRtl ? 'Ø§Ù„Ø³Ù„Ø¹Ø©' : 'Produit'}</th>
@@ -1586,4 +1586,5 @@ export default function ClientsList({
     </div>
   );
 }
+
 

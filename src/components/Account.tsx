@@ -1096,7 +1096,7 @@ export default function Account({
               </div>
 
               <div className="overflow-x-auto no-scrollbar max-h-[320px] pr-1">
-                <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} whitespace-nowrap">
+                <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} whitespace-nowrap`}>
                   <thead className="bg-white">
                     <tr className="border-b border-gray-100 text-[10px] font-bold uppercase text-gray-400">
                       <th className="py-2.5 px-2">{isRtl ? 'Ø§Ù„Ù…Ø±Ø¬Ø¹' : 'RÃ©f'}</th>
@@ -1597,7 +1597,7 @@ export default function Account({
 
             {/* Product verification list table */}
             <div className="overflow-x-auto no-scrollbar">
-              <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} whitespace-nowrap">
+              <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} whitespace-nowrap`}>
                 <thead className="bg-white">
                   <tr className="border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
                     <th className="py-2.5 px-2">{isRtl ? 'Ø§Ù„Ù…Ù†ØªØ¬ ÙˆØ§Ù„ØµÙ†Ù' : 'DÃ©signation de l\'article'}</th>
@@ -1788,7 +1788,7 @@ export default function Account({
             </div>
 
             <div className="overflow-x-auto no-scrollbar">
-              <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} whitespace-nowrap">
+              <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} whitespace-nowrap`}>
                 <thead className="bg-white">
                   <tr className="border-b border-gray-100 text-[10px] font-bold uppercase text-gray-400">
                     <th className="py-2 px-2">{isRtl ? 'Ù…Ø¹Ø±Ù Ø§Ù„ØªÙØªÙŠØ´' : 'Session ID'}</th>
@@ -2817,5 +2817,6 @@ export default function Account({
     </div>
   );
 }
+
 
 

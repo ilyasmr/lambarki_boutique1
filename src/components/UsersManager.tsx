@@ -133,7 +133,7 @@ export default function UsersManager({
           </h3>
 
           <div className="overflow-x-hidden md:overflow-x-auto">
-            <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} block md:table">
+            <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} block md:table`}>
               <thead className="hidden md:table-header-group">
                 <tr className="bg-gray-50/60 border-b border-gray-100 text-xs font-semibold uppercase text-gray-400">
                   <th className="py-3 px-3">{tLabel.username}</th>
@@ -202,4 +202,5 @@ export default function UsersManager({
     </div>
   );
 }
+
 
