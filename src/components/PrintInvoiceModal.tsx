@@ -181,6 +181,12 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
                 <div className="flex justify-between items-start border-b-2 border-emerald-500 pb-6 mb-8">
                   <div>
                     <h1 className="text-4xl font-bold tracking-tight text-emerald-700 font-trad" style={{ fontFamily: 'Amiri, serif' }}>محل المباركي</h1>
+                    <div className="mt-3 text-gray-900">
+                      <p className="font-bold text-xl">{invoice.clientName || (isRtl ? 'زبون عابر' : 'Client Comptoir')}</p>
+                      {invoice.clientPhone && (
+                        <p className="text-sm font-semibold text-gray-600 mt-0.5">{invoice.clientPhone}</p>
+                      )}
+                    </div>
                   </div>
                   <div className="text-right">
                     <h2 className="text-2xl font-bold text-gray-900 uppercase">
@@ -193,20 +199,7 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
                   </div>
                 </div>
 
-                {/* Tiers / Billing Party address */}
-                <div className="mb-8">
-                  <div className="bg-blue-50/50 rounded-xl p-5 border border-blue-100 max-w-sm">
-                    <h4 className="text-xs font-bold uppercase text-blue-400 tracking-wider mb-2">
-                      {isRtl ? 'المُرسَل إليه (الزبون)' : 'Client'}
-                    </h4>
-                    <p className="font-bold text-gray-900 text-lg">{invoice.clientName}</p>
-                    {invoice.clientPhone && (
-                      <p className="text-sm font-semibold text-gray-700 mt-2">
-                        {isRtl ? 'رقم الهاتف:' : 'Téléphone:'} {invoice.clientPhone}
-                      </p>
-                    )}
-                  </div>
-                </div>
+
 
                 {/* Items Table */}
                 <div className="flex-1 overflow-x-auto">
