@@ -200,7 +200,7 @@ export default function PosCaisse({
 
     // Identify associated client
     const client = clients.find(c => c.id === selectedClientId);
-    const clientName = client ? client.name : (isRtl ? 'زبون عابر (صندوق)' : 'Client de Passage');
+    const clientName = client ? client.name : (isRtl ? 'زبون عابر' : 'Client de Passage');
 
     // Prepare Invoice items
     const invoiceItems: InvoiceItem[] = cart.map(item => ({
@@ -566,7 +566,7 @@ export default function PosCaisse({
                     onChange={(e) => setSelectedClientId(e.target.value)}
                     className="flex-1 px-3 py-2 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold"
                   >
-                    <option value="">-- {isRtl ? 'زبون عابر (صندوق)' : 'Client de Passage (Walk-in)'} --</option>
+                    <option value="">-- {isRtl ? 'زبون عابر' : 'Client de Passage (Walk-in)'} --</option>
                     {clients.map(c => (
                       <option key={c.id} value={c.id}>
                         {c.name} ({c.phone})
