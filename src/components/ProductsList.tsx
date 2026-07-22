@@ -683,19 +683,27 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                     const isFirstInBatch = m.batchId && m.batchId.startsWith('bulk-') && (!prevItem || prevItem.batchId !== m.batchId);
                     const isSale = m.reason?.toLowerCase().includes('vente') || m.reason?.includes('بيع') || m.reason?.toLowerCase().includes('facture');
                     
+                    const batchTitle = isSale ? (isRtl ? 'عملية بيع جماعية (لعدة سلع)' : 'Vente groupée (Multi-articles)') :
+                                      m.type === 'in' ? (isRtl ? 'عملية دخول جماعية (لعدة سلع)' : 'Entrée groupée (Multi-articles)') :
+                                      (isRtl ? 'عملية خروج جماعية (لعدة سلع)' : 'Sortie groupée (Multi-articles)');
+                    
+                    const batchBg = isSale ? 'bg-blue-50/40 border-blue-100/40' : m.type === 'in' ? 'bg-emerald-50/40 border-emerald-100/40' : 'bg-rose-50/40 border-rose-100/40';
+                    const batchText = isSale ? 'text-blue-700' : m.type === 'in' ? 'text-emerald-700' : 'text-rose-700';
+                    const batchDot = isSale ? 'bg-blue-600' : m.type === 'in' ? 'bg-emerald-600' : 'bg-rose-600';
+
                     return (
                       <React.Fragment key={m.id}>
                         {isFirstInBatch && (
-                          <tr className="bg-blue-50/20 border-y border-blue-100/40">
-                            <td colSpan={6} className="py-2 px-4 text-xs font-black text-blue-700 tracking-wider">
+                          <tr className={`${batchBg} border-y`}>
+                            <td colSpan={6} className={`py-2 px-4 text-xs font-black ${batchText} tracking-wider`}>
                               <span className="flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
-                                {isRtl ? 'عملية جماعية (دخول/خروج لعدة سلع)' : 'Opération groupée (Multi-articles)'}
+                                <span className={`w-1.5 h-1.5 rounded-full ${batchDot} animate-pulse`}></span>
+                                {batchTitle}
                               </span>
                             </td>
                           </tr>
                         )}
-                        <tr className={`hover:bg-slate-50/50 transition ${isSale ? 'border-l-4 border-l-blue-500 bg-blue-50/30' : m.batchId?.startsWith('bulk-') ? 'border-l-4 border-l-blue-400 bg-blue-50/5' : ''}`}>
+                        <tr className={`hover:bg-slate-50/50 transition ${isSale ? 'border-l-4 border-l-blue-500 bg-blue-50/30' : m.batchId?.startsWith('bulk-') ? `border-l-4 ${m.type === 'in' ? 'border-l-emerald-400 bg-emerald-50/10' : 'border-l-rose-400 bg-rose-50/10'}` : ''}`}>
                       <td className="py-3 px-4 font-mono text-xs text-slate-500">
                         {new Date(m.date).toLocaleString(isRtl ? 'ar-MA' : 'fr-FR', {
                           day: '2-digit', month: '2-digit', year: 'numeric',
