@@ -1096,7 +1096,7 @@ export default function Account({
               </div>
 
               <div className="overflow-x-auto no-scrollbar max-h-[320px] pr-1">
-                <table className="w-full text-left whitespace-nowrap">
+                <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} whitespace-nowrap`}>
                   <thead className="bg-white">
                     <tr className="border-b border-gray-100 text-[10px] font-bold uppercase text-gray-400">
                       <th className="py-2.5 px-2">{isRtl ? 'المرجع' : 'Réf'}</th>
@@ -1597,7 +1597,7 @@ export default function Account({
 
             {/* Product verification list table */}
             <div className="overflow-x-auto no-scrollbar">
-              <table className="w-full text-left whitespace-nowrap">
+              <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} whitespace-nowrap`}>
                 <thead className="bg-white">
                   <tr className="border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
                     <th className="py-2.5 px-2">{isRtl ? 'المنتج والصنف' : 'Désignation de l\'article'}</th>
@@ -1788,7 +1788,7 @@ export default function Account({
             </div>
 
             <div className="overflow-x-auto no-scrollbar">
-              <table className="w-full text-left whitespace-nowrap">
+              <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} whitespace-nowrap`}>
                 <thead className="bg-white">
                   <tr className="border-b border-gray-100 text-[10px] font-bold uppercase text-gray-400">
                     <th className="py-2 px-2">{isRtl ? 'معرف التفتيش' : 'Session ID'}</th>
@@ -2177,7 +2177,7 @@ export default function Account({
             {/* View A: Detail Table (Chronological Transactions) */}
             {profitGroupBy === 'none' && (
               <div className="overflow-x-auto">
-                <table className="w-full text-right sm:text-right">
+                <table className={`w-full sm:text-right ${isRtl ? 'text-right' : 'text-left'}`}>
                   <thead>
                     <tr className="border-b border-slate-100 text-[10px] font-extrabold uppercase text-gray-400 whitespace-nowrap">
                       <th className="py-3 px-2 text-right">{isRtl ? 'تاريخ المعاملة' : 'Date de Vente'}</th>
@@ -2260,7 +2260,7 @@ export default function Account({
             {/* View B: Grouped By Product Table */}
             {profitGroupBy === 'product' && (
               <div className="overflow-x-auto animate-fade-in">
-                <table className="w-full text-right sm:text-right">
+                <table className={`w-full sm:text-right ${isRtl ? 'text-right' : 'text-left'}`}>
                   <thead>
                     <tr className="border-b border-slate-100 text-[10px] font-extrabold uppercase text-gray-400 whitespace-nowrap">
                       <th className="py-3 px-3 text-right">{isRtl ? 'المنتوج والسلعة' : 'Produit'}</th>
@@ -2319,7 +2319,7 @@ export default function Account({
             {/* View C: Grouped By Category Table */}
             {profitGroupBy === 'category' && (
               <div className="overflow-x-auto animate-fade-in">
-                <table className="w-full text-right sm:text-right">
+                <table className={`w-full sm:text-right ${isRtl ? 'text-right' : 'text-left'}`}>
                   <thead>
                     <tr className="border-b border-slate-100 text-[10px] font-extrabold uppercase text-gray-400 whitespace-nowrap">
                       <th className="py-3 px-4 text-right">{isRtl ? 'الفئة المستهدفة' : 'Catégorie'}</th>
@@ -2817,3 +2817,4 @@ export default function Account({
     </div>
   );
 }
+

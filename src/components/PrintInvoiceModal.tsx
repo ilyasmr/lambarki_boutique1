@@ -210,7 +210,7 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
 
                 {/* Items Table */}
                 <div className="flex-1 overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
+                  <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} border-collapse`}>
                     <thead>
                       <tr className="border-b border-gray-200 bg-gray-50 text-xs font-semibold uppercase text-gray-600">
                         <th className="py-3 px-4">{isRtl ? 'المنتج / الوصف' : "Désignation Produit"}</th>
@@ -381,3 +381,4 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
     </div>
   );
 }
+

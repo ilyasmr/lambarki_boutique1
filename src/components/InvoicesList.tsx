@@ -404,7 +404,7 @@ export default function InvoicesList({
         {/* Invoice List Table */}
         <div className="md:bg-white md:rounded-2xl md:border md:border-gray-100 md:shadow-sm overflow-hidden">
           <div className="overflow-x-hidden md:overflow-x-auto">
-            <table className="w-full text-left block md:table">
+            <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} block md:table`}>
               <thead className="hidden md:table-header-group">
               <tr className="border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
                 <th className="py-3 px-3">{tLabel.invoiceNum}</th>
@@ -710,7 +710,7 @@ export default function InvoicesList({
                   {isRtl ? 'قائمة المنتجات المشتراة وتعديل كمياتها' : 'Articles & Quantités à modifier'}
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left">
+                  <table className={`w-full ${isRtl ? 'text-right' : 'text-left'}`}>
                     <thead>
                       <tr className="bg-slate-50/50 border-b border-slate-100 text-[10px] font-bold uppercase text-gray-400">
                         <th className="py-2.5 px-4">{isRtl ? 'المنتج' : 'Article'}</th>
@@ -889,3 +889,4 @@ export default function InvoicesList({
     </div>
   );
 }
+

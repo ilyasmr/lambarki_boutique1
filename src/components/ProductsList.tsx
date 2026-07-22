@@ -540,7 +540,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
         /* Classic Business Table Layout */
         <div className="md:bg-white md:rounded-2xl md:border md:border-gray-100 md:shadow-sm overflow-hidden">
           <div className="overflow-x-hidden md:overflow-x-auto">
-            <table className="w-full text-left block md:table">
+            <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} block md:table`}>
               <thead className="hidden md:table-header-group">
                 <tr className="bg-gray-50/60 border-b border-gray-100 text-xs font-bold uppercase text-gray-400">
                   <th className="py-3 px-4">{isRtl ? 'المنتج' : 'Désignation'}</th>
@@ -661,7 +661,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
 
           {/* History Table */}
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} border-collapse`}>
               <thead>
                 <tr className="border-b-2 border-gray-100 text-xs text-gray-400 uppercase tracking-wider">
                   <th className={`py-3 px-4 font-bold ${isRtl ? 'text-right' : 'text-left'}`}>{isRtl ? 'المنتج' : 'Produit'}</th>
@@ -1248,3 +1248,4 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
     </div>
   );
 }
+
