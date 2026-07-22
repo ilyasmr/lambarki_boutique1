@@ -660,10 +660,10 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b-2 border-gray-100 text-xs text-gray-400 uppercase tracking-wider">
-                  <th className={`py-3 px-4 font-bold ${isRtl ? 'text-right' : 'text-left'}`}>{isRtl ? 'التاريخ' : 'Date'}</th>
                   <th className={`py-3 px-4 font-bold ${isRtl ? 'text-right' : 'text-left'}`}>{isRtl ? 'المنتج' : 'Produit'}</th>
                   <th className="py-3 px-4 font-bold text-center">{isRtl ? 'النوع' : 'Type'}</th>
                   <th className="py-3 px-4 font-bold text-center">{isRtl ? 'الكمية' : 'Qté'}</th>
+                  <th className={`py-3 px-4 font-bold ${isRtl ? 'text-right' : 'text-left'}`}>{isRtl ? 'التاريخ' : 'Date'}</th>
                   <th className={`py-3 px-4 font-bold ${isRtl ? 'text-right' : 'text-left'}`}>{isRtl ? 'السبب / الملاحظة' : 'Motif'}</th>
                   <th className="py-3 px-4 font-bold text-center">{isRtl ? 'المسؤول' : 'Opérateur'}</th>
                 </tr>
@@ -705,13 +705,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                           </tr>
                         )}
                         <tr className={`hover:bg-slate-50/50 transition ${isSale ? 'bg-blue-50/30' : hasMultipleItemsInBatch ? (m.type === 'in' ? 'bg-emerald-50/10' : 'bg-rose-50/10') : ''}`}>
-                      <td className={`py-3 px-4 font-mono text-xs text-slate-500 ${isSale ? 'border-l-4 border-l-blue-500' : hasMultipleItemsInBatch ? (m.type === 'in' ? 'border-l-4 border-l-emerald-400' : 'border-l-4 border-l-rose-400') : ''}`}>
-                        {new Date(m.date).toLocaleString(isRtl ? 'ar-MA' : 'fr-FR', {
-                          day: '2-digit', month: '2-digit', year: 'numeric',
-                          hour: '2-digit', minute: '2-digit'
-                        })}
-                      </td>
-                      <td className="py-3 px-4 font-bold text-slate-800">{m.productName}</td>
+                      <td className={`py-3 px-4 font-bold text-slate-800 ${isSale ? 'border-l-4 border-l-blue-500' : m.type === 'in' ? 'border-l-4 border-l-emerald-400' : 'border-l-4 border-l-rose-400'}`}>{m.productName}</td>
                       <td className="py-3 px-4 text-center">
                         {isSale ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-[10px] font-black uppercase tracking-wider">
@@ -729,6 +723,12 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                       </td>
                       <td className={`py-3 px-4 text-center font-black font-mono ${isSale ? 'text-blue-600' : m.type === 'in' ? 'text-emerald-600' : 'text-rose-600'}`}>
                         {m.type === 'in' ? '+' : '-'}{m.qty}
+                      </td>
+                      <td className="py-3 px-4 font-mono text-xs text-slate-500">
+                        {new Date(m.date).toLocaleString(isRtl ? 'ar-MA' : 'fr-FR', {
+                          day: '2-digit', month: '2-digit', year: 'numeric',
+                          hour: '2-digit', minute: '2-digit'
+                        })}
                       </td>
                       <td className="py-3 px-4 text-xs text-slate-600 font-medium max-w-[200px] truncate" title={m.reason}>
                         {m.reason || '-'}
