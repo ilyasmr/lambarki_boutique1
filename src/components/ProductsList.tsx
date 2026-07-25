@@ -771,15 +771,30 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                         </span>
                       </td>
                       <td className="py-3 px-4 text-center">
-                        {!isCashier && (
-                          <button 
-                            onClick={() => { setEditingMovement(m); setIsEditMovementModalOpen(true); }}
-                            className="p-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors inline-flex justify-center"
-                            title={isRtl ? 'تعديل الحركة' : 'Modifier'}
-                          >
-                            <Edit3 className="w-4 h-4" />
-                          </button>
-                        )}
+                        <div className="flex gap-2 justify-center">
+                          {!isCashier && (
+                            <button 
+                              onClick={() => { setEditingMovement(m); setIsEditMovementModalOpen(true); }}
+                              className="p-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors inline-flex justify-center"
+                              title={isRtl ? 'تعديل الحركة' : 'Modifier'}
+                            >
+                              <Edit3 className="w-4 h-4" />
+                            </button>
+                          )}
+                          {!isCashier && (
+                            <button 
+                              onClick={() => { 
+                                if (window.confirm(isRtl ? 'هل أنت متأكد من حذف هذه الحركة نهائياً؟ سيتم تعديل المخزون بناءً على ذلك.' : 'Voulez-vous vraiment supprimer ce mouvement ? Le stock sera ajusté.')) {
+                                  if (onDeleteMovement) onDeleteMovement(m.id);
+                                }
+                              }}
+                              className="p-1.5 bg-rose-50 text-rose-600 rounded-md hover:bg-rose-100 transition-colors inline-flex justify-center"
+                              title={isRtl ? 'مسح الحركة' : 'Supprimer'}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                       </td>
                         </tr>
                       </React.Fragment>

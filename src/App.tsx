@@ -530,7 +530,7 @@ export default function App() {
       if (targetMov) {
         const diff = targetMov.type === 'in' ? -targetMov.qty : targetMov.qty;
         setProducts(prev => prev.map(p => p.id === targetMov.productId ? { ...p, stock: p.stock + diff } : p));
-        enqueueSync('products', 'adjust_stock', { id: targetMov.productId, diff });
+        // NOTE: removed enqueueSync('products', 'adjust_stock') because the backend deleteMovement API already adjusts the stock in the DB.
         
         logActivity(
           'product_delete',
