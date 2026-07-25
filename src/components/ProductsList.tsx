@@ -39,7 +39,7 @@ interface ProductsListProps {
   onUpdateStock?: (productId: string, newQty: number, movement: StockMovement) => void;
   onUpdateStocksBulk?: (updates: { productId: string; newQty: number; movement: StockMovement }[]) => void;
   onDeleteMovement?: (id: string) => void;
-  onEditMovement?: (id: string, qty: number, reason: string) => void;
+  onEditMovement?: (id: string, updatedData: Partial<StockMovement>) => void;
   invoices?: Invoice[];
   onViewInvoice?: (invoice: Invoice) => void;
 }
@@ -73,7 +73,9 @@ export default function ProductsList({
   const isCashier = currentUser?.role === 'cashier';
 
   // States
-    const [isStockModalOpen, setIsStockModalOpen] = React.useState(false);
+  const [isStockModalOpen, setIsStockModalOpen] = React.useState(false);
+  const [isEditMovementModalOpen, setIsEditMovementModalOpen] = React.useState(false);
+  const [editingMovement, setEditingMovement] = React.useState<Partial<StockMovement> | null>(null);
   const [stockFormType, setStockFormType] = React.useState<'in' | 'out'>('in');
   const [stockFormReason, setStockFormReason] = React.useState('');
   const [bulkItems, setBulkItems] = React.useState<{ id: string, productId: string, qty: number }[]>([{ id: 'bulk-0', productId: '', qty: 0 }]);
@@ -670,6 +672,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   <th className={`py-3 px-4 font-bold ${isRtl ? 'text-right' : 'text-left'}`}>{isRtl ? 'التاريخ' : 'Date'}</th>
                   <th className={`py-3 px-4 font-bold ${isRtl ? 'text-right' : 'text-left'}`}>{isRtl ? 'السبب / الملاحظة' : 'Motif'}</th>
                   <th className="py-3 px-4 font-bold text-center">{isRtl ? 'المسؤول' : 'Opérateur'}</th>
+                  <th className="py-3 px-4 font-bold text-center">{isRtl ? 'إجراءات' : 'Actions'}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50 text-sm">
@@ -712,7 +715,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                       <React.Fragment key={m.id}>
                         {isFirstInBatch && (
                           <tr className={`${batchBg} border-y`}>
-                            <td colSpan={6} className={`py-2 px-4 text-xs font-black ${batchText} tracking-wider`}>
+                            <td colSpan={7} className={`py-2 px-4 text-xs font-black ${batchText} tracking-wider`}>
                               <span className="flex items-center gap-1.5">
                                 <span className={`w-1.5 h-1.5 rounded-full ${batchDot} animate-pulse`}></span>
                                 {batchTitle}
@@ -767,13 +770,24 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                           {m.operator || 'Admin'}
                         </span>
                       </td>
+                      <td className="py-3 px-4 text-center">
+                        {!isCashier && (
+                          <button 
+                            onClick={() => { setEditingMovement(m); setIsEditMovementModalOpen(true); }}
+                            className="p-1.5 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors inline-flex justify-center"
+                            title={isRtl ? 'تعديل الحركة' : 'Modifier'}
+                          >
+                            <Edit3 className="w-4 h-4" />
+                          </button>
+                        )}
+                      </td>
                         </tr>
                       </React.Fragment>
                     )
                   })}
                 {movements.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="py-12 text-center text-slate-400 font-semibold text-sm">
+                    <td colSpan={7} className="py-12 text-center text-slate-400 font-semibold text-sm">
                       {isRtl ? 'لا يوجد أي حركات مسجلة حالياً.' : 'Aucun mouvement enregistré.'}
                     </td>
                   </tr>
@@ -1245,6 +1259,88 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
         </div>
       )}
 
+      {/* MODAL: EDIT STOCK MOVEMENT */}
+      {isEditMovementModalOpen && editingMovement && (
+        <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-[70]">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 space-y-4">
+            <h3 className="text-md font-bold text-gray-900 flex items-center gap-2">
+              <Edit3 className="w-5 h-5 text-blue-600" />
+              {isRtl ? 'تعديل حركة المخزون' : 'Modifier le Mouvement'}
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">{isRtl ? 'المنتج' : 'Produit'}</label>
+                <select
+                  value={editingMovement.productId || ''}
+                  onChange={e => {
+                    const prod = products.find(p => p.id === e.target.value);
+                    if (prod) {
+                      setEditingMovement({ ...editingMovement, productId: prod.id, productName: prod.name });
+                    }
+                  }}
+                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                >
+                  {products.map(p => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">{isRtl ? 'النوع' : 'Type'}</label>
+                  <select
+                    value={editingMovement.type || 'in'}
+                    onChange={e => setEditingMovement({ ...editingMovement, type: e.target.value as 'in' | 'out' })}
+                    className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                  >
+                    <option value="in">{isRtl ? 'دخول (+)' : 'Entrée (+)'}</option>
+                    <option value="out">{isRtl ? 'خروج (-)' : 'Sortie (-)'}</option>
+                  </select>
+                </div>
+                <div className="flex-1">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">{isRtl ? 'الكمية' : 'Quantité'}</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={editingMovement.qty || 1}
+                    onChange={e => setEditingMovement({ ...editingMovement, qty: parseInt(e.target.value) || 1 })}
+                    className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">{isRtl ? 'السبب / الملاحظة' : 'Motif'}</label>
+                <input
+                  type="text"
+                  value={editingMovement.reason || ''}
+                  onChange={e => setEditingMovement({ ...editingMovement, reason: e.target.value })}
+                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5"
+                />
+              </div>
+            </div>
+            <div className="flex gap-3 pt-4">
+              <button
+                onClick={() => {
+                  if (onEditMovement && editingMovement.id) {
+                    onEditMovement(editingMovement.id, editingMovement);
+                  }
+                  setIsEditMovementModalOpen(false);
+                  setEditingMovement(null);
+                }}
+                className="flex-1 bg-blue-600 text-white font-bold py-2.5 rounded-xl hover:bg-blue-700 transition"
+              >
+                {isRtl ? 'حفظ التغييرات' : 'Enregistrer'}
+              </button>
+              <button
+                onClick={() => setIsEditMovementModalOpen(false)}
+                className="flex-1 bg-slate-100 text-slate-700 font-bold py-2.5 rounded-xl hover:bg-slate-200 transition"
+              >
+                {isRtl ? 'إلغاء' : 'Annuler'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

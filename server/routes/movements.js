@@ -55,7 +55,7 @@ export async function deleteMovement(req, res) {
 
 export async function updateMovement(req, res) {
   const { id } = req.params;
-  const { qty, reason } = req.body;
+  const { qty, reason, type, productId, productName, date } = req.body;
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -66,23 +66,38 @@ export async function updateMovement(req, res) {
     }
     const m = mRes.rows[0];
     const oldQty = parseInt(m.qty);
-    const newQty = parseInt(qty);
-    
-    // If the quantity changed, calculate how much to update the product's stock
-    if (oldQty !== newQty) {
-      let diff = 0;
-      if (m.type === 'in') {
-        diff = newQty - oldQty;
-      } else {
-        diff = oldQty - newQty;
+    const newQty = qty !== undefined ? parseInt(qty) : oldQty;
+    const oldType = m.type;
+    const newType = type || m.type;
+    const oldProductId = m.product_id;
+    const newProductId = productId || m.product_id;
+    const newProductName = productName || m.product_name;
+    const newReason = reason !== undefined ? reason : m.reason;
+    const newDate = date || m.date;
+
+    // 2. Adjust products stock
+    if (oldProductId === newProductId) {
+      // Same product, calculate the net difference
+      let oldEffect = oldType === 'in' ? oldQty : -oldQty;
+      let newEffect = newType === 'in' ? newQty : -newQty;
+      let diff = newEffect - oldEffect;
+      if (diff !== 0) {
+        await client.query('UPDATE products SET stock = stock + $1 WHERE id=$2', [diff, oldProductId]);
       }
-      await client.query('UPDATE products SET stock = stock + $1 WHERE id=$2', [diff, m.product_id]);
+    } else {
+      // Different product
+      // Revert old product
+      let revertEffect = oldType === 'in' ? -oldQty : oldQty;
+      await client.query('UPDATE products SET stock = stock + $1 WHERE id=$2', [revertEffect, oldProductId]);
+      // Apply new product
+      let applyEffect = newType === 'in' ? newQty : -newQty;
+      await client.query('UPDATE products SET stock = stock + $1 WHERE id=$2', [applyEffect, newProductId]);
     }
 
-    // 2. Update the movement record
+    // 3. Update the movement record
     const result = await client.query(
-      'UPDATE stock_movements SET qty=$1, reason=$2 WHERE id=$3 RETURNING *',
-      [newQty, reason, id]
+      'UPDATE stock_movements SET qty=$1, reason=$2, type=$3, product_id=$4, product_name=$5, date=$6 WHERE id=$7 RETURNING *',
+      [newQty, newReason, newType, newProductId, newProductName, newDate, id]
     );
 
     await client.query('COMMIT');

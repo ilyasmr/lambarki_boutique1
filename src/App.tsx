@@ -545,31 +545,51 @@ export default function App() {
   };
 
   // Edit a stock movement and update local state + enqueue sync
-  const handleEditMovement = (id: string, qty: number, reason: string) => {
+  const handleEditMovement = (id: string, updatedData: Partial<StockMovement>) => {
     try {
       const targetMov = stockMovements.find(m => m.id === id);
-      enqueueSync('movements', 'update', { id, data: { qty, reason } });
+      if (!targetMov) return;
       
-      if (targetMov) {
-        const oldQty = targetMov.qty;
-        const newQty = qty;
-        let diff = 0;
-        if (targetMov.type === 'in') {
-          diff = newQty - oldQty;
-        } else {
-          diff = oldQty - newQty;
-        }
-        setProducts(prev => prev.map(p => p.id === targetMov.productId ? { ...p, stock: p.stock + diff } : p));
-        setStockMovements(prev => prev.map(m => m.id === id ? { ...m, qty, reason } : m));
-        enqueueSync('products', 'adjust_stock', { id: targetMov.productId, diff });
+      enqueueSync('movements', 'update', { id, data: updatedData });
+      
+      const oldQty = targetMov.qty;
+      const newQty = updatedData.qty !== undefined ? updatedData.qty : oldQty;
+      const oldType = targetMov.type;
+      const newType = updatedData.type || targetMov.type;
+      const oldProductId = targetMov.productId;
+      const newProductId = updatedData.productId || targetMov.productId;
 
-        logActivity(
-          'product_edit',
-          `تعديل كمية حركة مخزون للمنتج "${targetMov.productName}" من ${targetMov.qty} إلى ${qty}`,
-          `Modification de la quantité du mouvement pour "${targetMov.productName}" de ${targetMov.qty} à ${qty}`,
-          targetMov.productId
-        );
-      }
+      // Adjust Products local state
+      setProducts(prev => {
+        let newProducts = [...prev];
+        if (oldProductId === newProductId) {
+          let oldEffect = oldType === 'in' ? oldQty : -oldQty;
+          let newEffect = newType === 'in' ? newQty : -newQty;
+          let diff = newEffect - oldEffect;
+          if (diff !== 0) {
+            newProducts = newProducts.map(p => p.id === oldProductId ? { ...p, stock: p.stock + diff } : p);
+          }
+        } else {
+          let revertEffect = oldType === 'in' ? -oldQty : oldQty;
+          let applyEffect = newType === 'in' ? newQty : -newQty;
+          newProducts = newProducts.map(p => {
+            if (p.id === oldProductId) return { ...p, stock: p.stock + revertEffect };
+            if (p.id === newProductId) return { ...p, stock: p.stock + applyEffect };
+            return p;
+          });
+        }
+        return newProducts;
+      });
+
+      // Update movement local state
+      setStockMovements(prev => prev.map(m => m.id === id ? { ...m, ...updatedData } : m));
+
+      logActivity(
+        'product_edit',
+        `تعديل حركة مخزون للمنتج "${updatedData.productName || targetMov.productName}"`,
+        `Modification du mouvement de stock pour "${updatedData.productName || targetMov.productName}"`,
+        newProductId
+      );
     } catch (err) {
       console.error('Failed to edit movement:', err);
     }
