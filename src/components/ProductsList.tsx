@@ -496,16 +496,16 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                     <span className="text-gray-400 font-bold">{isRtl ? 'المخزون :' : 'Stock :'}</span>
                     
                     {p.stock === 0 ? (
-                      <span className="px-2 py-0.5 bg-rose-100 text-rose-800 text-[9px] font-black uppercase rounded-md shadow-xs border border-rose-200">
+                      <span className="px-3 py-1 bg-rose-100 text-rose-800 text-xs font-black uppercase rounded-lg shadow-sm border border-rose-200">
                         {isRtl ? 'منفذ بالكامل' : 'Rupture'}
                       </span>
                     ) : (
-                      <span className={`px-2 py-0.5 rounded-md text-[9px] uppercase font-black font-mono shadow-xs ${
+                      <span className={`px-3 py-1 rounded-lg text-xs uppercase font-black font-mono shadow-sm border ${
                         isLowStock 
-                          ? 'bg-amber-100 text-amber-800 border border-amber-200 animate-pulse' 
-                          : 'bg-emerald-50 text-emerald-800 border border-emerald-100'
+                          ? 'bg-amber-100 text-amber-800 border-amber-200 animate-pulse' 
+                          : 'bg-emerald-50 text-emerald-800 border-emerald-100'
                       }`}>
-                        {p.stock} units
+                        {isRtl ? 'وحدة' : 'UNITS'} {p.stock}
                       </span>
                     )}
                   </div>
@@ -580,12 +580,12 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                       </td>
                       <td className="flex justify-between md:table-cell py-2 md:py-4 md:px-4 text-center border-t border-dashed border-gray-100 md:border-none">
                         <span className="md:hidden text-gray-400 font-medium text-[10px] uppercase">{isRtl ? 'الكمية' : 'Qté'}</span>
-                        <span className={`inline-block px-2.5 py-0.5 rounded-full text-xxs font-bold ${
+                        <span className={`inline-block px-3 py-1 rounded-lg text-xs font-black shadow-sm border ${
                           p.stock === 0 
-                            ? 'bg-rose-100 text-rose-800' 
+                            ? 'bg-rose-100 text-rose-800 border-rose-200' 
                             : isLowStock 
-                              ? 'bg-amber-100 text-amber-800' 
-                              : 'bg-emerald-100 text-emerald-800'
+                              ? 'bg-amber-100 text-amber-800 border-amber-200' 
+                              : 'bg-emerald-50 text-emerald-800 border-emerald-100'
                         }`}>
                           {p.stock}
                         </span>
