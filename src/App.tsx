@@ -538,6 +538,52 @@ export default function App() {
           `Suppression d'un mouvement de stock pour "${targetMov.productName}" de ${targetMov.qty} (Date: ${new Date(targetMov.date).toLocaleDateString()})`,
           targetMov.productId
         );
+
+        // Sync with Invoice if it's a sale
+        if (targetMov.batchId?.startsWith('sale-')) {
+          const invoiceId = targetMov.batchId.replace('sale-', '');
+          const targetInv = invoices.find(inv => inv.id === invoiceId);
+          if (targetInv) {
+            const newItems = targetInv.items.filter(item => item.productId !== targetMov.productId);
+            if (newItems.length === 0) {
+              handleDeleteInvoice(invoiceId, false);
+            } else {
+              const newSubtotal = newItems.reduce((sum, item) => sum + (item.sellPrice * item.qty), 0);
+              const taxPercent = targetInv.subtotal > 0 ? (targetInv.tax / targetInv.subtotal) : 0;
+              const newTax = newSubtotal * taxPercent;
+              const newTotal = Math.max(0, newSubtotal + newTax - targetInv.discount);
+              const newProfit = newItems.reduce((sum, item) => sum + ((item.sellPrice - item.buyPrice) * item.qty), 0) - targetInv.discount;
+              
+              let newAmountPaid = targetInv.amountPaid;
+              let newAmountDue = targetInv.amountDue;
+              if (targetInv.paymentStatus === 'paid') {
+                 newAmountPaid = newTotal;
+                 newAmountDue = 0;
+              } else if (targetInv.paymentStatus === 'unpaid') {
+                 newAmountPaid = 0;
+                 newAmountDue = newTotal;
+              } else {
+                 newAmountDue = newTotal - (targetInv.amountPaid || 0);
+                 if (newAmountDue < 0) {
+                   newAmountPaid = newTotal;
+                   newAmountDue = 0;
+                 }
+              }
+
+              const updatedInvoice: Invoice = {
+                ...targetInv,
+                items: newItems,
+                subtotal: newSubtotal,
+                tax: newTax,
+                total: newTotal,
+                profit: newProfit,
+                amountPaid: newAmountPaid,
+                amountDue: newAmountDue,
+              };
+              handleEditInvoice(updatedInvoice, targetInv, false);
+            }
+          }
+        }
       }
     } catch (err) {
       console.error('Failed to delete movement:', err);
@@ -583,6 +629,68 @@ export default function App() {
 
       // Update movement local state
       setStockMovements(prev => prev.map(m => m.id === id ? { ...m, ...updatedData } : m));
+
+      // Sync with Invoice if it's a sale
+      if (targetMov.batchId?.startsWith('sale-')) {
+        const invoiceId = targetMov.batchId.replace('sale-', '');
+        const targetInv = invoices.find(inv => inv.id === invoiceId);
+        if (targetInv) {
+          const itemIndex = targetInv.items.findIndex(item => item.productId === oldProductId);
+          if (itemIndex !== -1) {
+            let newItems = [...targetInv.items];
+            if (newProductId === oldProductId) {
+              newItems[itemIndex] = { ...newItems[itemIndex], qty: newQty };
+            } else {
+              const newProd = products.find(p => p.id === newProductId);
+              if (newProd) {
+                 newItems[itemIndex] = {
+                   ...newItems[itemIndex],
+                   productId: newProd.id,
+                   name: newProd.name,
+                   qty: newQty,
+                   sellPrice: newProd.sellPrice,
+                   buyPrice: newProd.buyPrice
+                 };
+              }
+            }
+            
+            const newSubtotal = newItems.reduce((sum, item) => sum + (item.sellPrice * item.qty), 0);
+            const taxPercent = targetInv.subtotal > 0 ? (targetInv.tax / targetInv.subtotal) : 0;
+            const newTax = newSubtotal * taxPercent;
+            const newTotal = Math.max(0, newSubtotal + newTax - targetInv.discount);
+            const newProfit = newItems.reduce((sum, item) => sum + ((item.sellPrice - item.buyPrice) * item.qty), 0) - targetInv.discount;
+            
+            let newAmountPaid = targetInv.amountPaid;
+            let newAmountDue = targetInv.amountDue;
+            if (targetInv.paymentStatus === 'paid') {
+               newAmountPaid = newTotal;
+               newAmountDue = 0;
+            } else if (targetInv.paymentStatus === 'unpaid') {
+               newAmountPaid = 0;
+               newAmountDue = newTotal;
+            } else {
+               newAmountDue = newTotal - (targetInv.amountPaid || 0);
+               if (newAmountDue < 0) {
+                 newAmountPaid = newTotal;
+                 newAmountDue = 0;
+               }
+            }
+
+            const updatedInvoice: Invoice = {
+              ...targetInv,
+              items: newItems,
+              subtotal: newSubtotal,
+              tax: newTax,
+              total: newTotal,
+              profit: newProfit,
+              amountPaid: newAmountPaid,
+              amountDue: newAmountDue,
+            };
+
+            handleEditInvoice(updatedInvoice, targetInv, false);
+          }
+        }
+      }
 
       logActivity(
         'product_edit',

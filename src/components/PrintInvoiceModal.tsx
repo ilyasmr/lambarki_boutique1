@@ -15,7 +15,7 @@ export default function PrintInvoiceModal({ invoice, lang, onClose }: PrintInvoi
   const t = translations[lang];
   const tLabel = arabicDashboardLabels[lang];
   const isRtl = lang === 'ar';
-  const displayClientName = invoice.clientName ? invoice.clientName.replace('(صندوق)', '').trim() : (isRtl ? 'زبون عابر' : 'Client Comptoir');
+  const displayClientName = invoice.clientName ? invoice.clientName.replace(/\(?صندوق\)?/g, '').trim() : (isRtl ? 'زبون عابر' : 'Client Comptoir');
 
   const handlePrint = () => {
     window.print();

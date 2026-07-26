@@ -1332,8 +1332,11 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   <input
                     type="number"
                     min="1"
-                    value={editingMovement.qty || 1}
-                    onChange={e => setEditingMovement({ ...editingMovement, qty: parseInt(e.target.value) || 1 })}
+                    value={editingMovement.qty === undefined ? '' : editingMovement.qty}
+                    onChange={e => {
+                      const val = parseInt(e.target.value);
+                      setEditingMovement({ ...editingMovement, qty: isNaN(val) ? undefined as any : val });
+                    }}
                     className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block p-2.5"
                   />
                 </div>
