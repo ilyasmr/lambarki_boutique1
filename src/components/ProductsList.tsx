@@ -76,6 +76,8 @@ export default function ProductsList({
   const [isStockModalOpen, setIsStockModalOpen] = React.useState(false);
   const [isEditMovementModalOpen, setIsEditMovementModalOpen] = React.useState(false);
   const [editingMovement, setEditingMovement] = React.useState<Partial<StockMovement> | null>(null);
+  const [isProductHistoryModalOpen, setIsProductHistoryModalOpen] = React.useState(false);
+  const [historyProduct, setHistoryProduct] = React.useState<Product | null>(null);
   const [stockFormType, setStockFormType] = React.useState<'in' | 'out'>('in');
   const [stockFormReason, setStockFormReason] = React.useState('');
   const [bulkItems, setBulkItems] = React.useState<{ id: string, productId: string, qty: number }[]>([{ id: 'bulk-0', productId: '', qty: 0 }]);
@@ -511,6 +513,13 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   {/* Actions (Pencil is "ta3dil" / edit where they inspect everything) */}
                   <div className="flex gap-2">
                     <button
+                      onClick={() => { setHistoryProduct(p); setIsProductHistoryModalOpen(true); }}
+                      className="p-1.5 bg-emerald-50 hover:bg-emerald-600 hover:text-white border border-emerald-100 text-emerald-600 rounded-lg transition-all flex items-center justify-center gap-1 group/btn cursor-pointer"
+                      title={isRtl ? 'سجل الحركات' : 'Historique'}
+                    >
+                      <History className="w-3.5 h-3.5" />
+                    </button>
+                    <button
                       onClick={() => handleEditClick(p)}
                       className="flex-1 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white border border-slate-200 text-slate-700 font-bold text-xxs rounded-lg transition-all flex items-center justify-center gap-1 group/btn cursor-pointer"
                     >
@@ -584,6 +593,13 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                       </td>
                       <td className="flex md:table-cell py-3 md:py-4 md:px-4 text-center border-t border-dashed border-gray-100 md:border-none bg-slate-50 md:bg-transparent rounded-xl mt-3 md:mt-0 px-3 md:px-4">
                         <div className="flex gap-2 justify-center w-full">
+                          <button
+                            onClick={() => { setHistoryProduct(p); setIsProductHistoryModalOpen(true); }}
+                            className="flex-none p-2 px-3 bg-white md:bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 rounded-lg transition duration-150 flex justify-center items-center"
+                            title={isRtl ? 'سجل الحركات' : 'Historique'}
+                          >
+                            <History className="w-4 h-4 md:w-3.5 md:h-3.5" />
+                          </button>
                           <button
                             onClick={() => handleEditClick(p)}
                             className="flex-1 md:flex-none p-2 px-4 bg-white md:bg-gray-50 hover:bg-gray-150 border border-gray-200 md:border-gray-105 text-gray-650 rounded-lg text-[11px] md:text-[10px] font-bold transition duration-150 shadow-xxs md:shadow-none flex justify-center items-center gap-1.5"
@@ -1352,6 +1368,78 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
               >
                 {isRtl ? 'إلغاء' : 'Annuler'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* MODAL: PRODUCT SPECIFIC HISTORY */}
+      {isProductHistoryModalOpen && historyProduct && (
+        <div className="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-[80]">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50 rounded-t-2xl">
+              <h3 className="text-md font-bold text-gray-900 flex items-center gap-2">
+                <History className="w-5 h-5 text-emerald-600" />
+                {isRtl ? `سجل حركات المنتج: ${historyProduct.name}` : `Historique: ${historyProduct.name}`}
+              </h3>
+              <button onClick={() => setIsProductHistoryModalOpen(false)} className="p-1 hover:bg-gray-200 rounded-lg transition">
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-0">
+              <table className={`w-full ${isRtl ? 'text-right' : 'text-left'} border-collapse text-sm`}>
+                <thead className="bg-slate-50 sticky top-0 shadow-sm">
+                  <tr className="border-b border-gray-200 text-xs text-gray-500 uppercase">
+                    <th className="py-3 px-4 font-bold text-center">{isRtl ? 'النوع' : 'Type'}</th>
+                    <th className="py-3 px-4 font-bold text-center">{isRtl ? 'الكمية' : 'Qté'}</th>
+                    <th className="py-3 px-4 font-bold">{isRtl ? 'التاريخ' : 'Date'}</th>
+                    <th className="py-3 px-4 font-bold">{isRtl ? 'الملاحظة' : 'Motif'}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {movements
+                    .filter(m => m.productId === historyProduct.id)
+                    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                    .map((m) => {
+                      const isSale = m.reason?.toLowerCase().includes('vente') || m.reason?.includes('بيع') || m.reason?.toLowerCase().includes('facture');
+                      return (
+                        <tr key={m.id} className="hover:bg-slate-50/50 transition">
+                          <td className="py-3 px-4 text-center">
+                            {isSale ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[10px] font-black uppercase">
+                                <Tag className="w-3 h-3" /> {isRtl ? 'بيع' : 'Vente'}
+                              </span>
+                            ) : m.type === 'in' ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase">
+                                <ArrowDownLeft className="w-3 h-3" /> {isRtl ? 'دخول' : 'Entrée'}
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 text-[10px] font-black uppercase">
+                                <ArrowUpRight className="w-3 h-3" /> {isRtl ? 'خروج' : 'Sortie'}
+                              </span>
+                            )}
+                          </td>
+                          <td className={`py-3 px-4 text-center font-black font-mono ${isSale ? 'text-blue-600' : m.type === 'in' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                            {m.type === 'in' ? '+' : '-'}{m.qty}
+                          </td>
+                          <td className="py-3 px-4 font-mono text-xs text-slate-500">
+                            {new Date(m.date).toLocaleString(isRtl ? 'ar-MA' : 'fr-FR', {
+                              day: '2-digit', month: '2-digit', year: 'numeric',
+                              hour: '2-digit', minute: '2-digit'
+                            })}
+                          </td>
+                          <td className="py-3 px-4 text-xs text-slate-600 font-medium">{m.reason || '-'}</td>
+                        </tr>
+                      );
+                    })}
+                  {movements.filter(m => m.productId === historyProduct.id).length === 0 && (
+                    <tr>
+                      <td colSpan={4} className="py-12 text-center text-slate-400 font-semibold text-sm">
+                        {isRtl ? 'لا يوجد أي حركات مسجلة لهذا المنتج.' : 'Aucun mouvement pour ce produit.'}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
