@@ -475,7 +475,13 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                     <span className={`px-2.5 py-0.5 text-[9px] font-bold rounded-md shadow-sm bg-slate-900/80 text-white`}>
                       {p.category}
                     </span>
-                    
+                    <button
+                      onClick={() => { setHistoryProduct(p); setIsProductHistoryModalOpen(true); }}
+                      className="p-1.5 bg-emerald-50 hover:bg-emerald-600 hover:text-white border border-emerald-100 text-emerald-600 rounded-lg transition-all flex items-center justify-center cursor-pointer shadow-sm"
+                      title={isRtl ? 'سجل الحركات' : 'Historique'}
+                    >
+                      <History className="w-3 h-3" />
+                    </button>
                   </div>
 
                   {/* Product name and barcode */}
@@ -512,13 +518,6 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
 
                   {/* Actions (Pencil is "ta3dil" / edit where they inspect everything) */}
                   <div className="flex gap-2">
-                    <button
-                      onClick={() => { setHistoryProduct(p); setIsProductHistoryModalOpen(true); }}
-                      className="p-1.5 bg-emerald-50 hover:bg-emerald-600 hover:text-white border border-emerald-100 text-emerald-600 rounded-lg transition-all flex items-center justify-center gap-1 group/btn cursor-pointer"
-                      title={isRtl ? 'سجل الحركات' : 'Historique'}
-                    >
-                      <History className="w-3.5 h-3.5" />
-                    </button>
                     <button
                       onClick={() => handleEditClick(p)}
                       className="flex-1 py-1.5 bg-slate-100 hover:bg-blue-600 hover:text-white border border-slate-200 text-slate-700 font-bold text-xxs rounded-lg transition-all flex items-center justify-center gap-1 group/btn cursor-pointer"
@@ -1391,16 +1390,40 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   <tr className="border-b border-gray-200 text-xs text-gray-500 uppercase">
                     <th className="py-3 px-4 font-bold text-center">{isRtl ? 'النوع' : 'Type'}</th>
                     <th className="py-3 px-4 font-bold text-center">{isRtl ? 'الكمية' : 'Qté'}</th>
+                    <th className="py-3 px-4 font-bold text-center">{isRtl ? 'المتبقي' : 'Restant'}</th>
                     <th className="py-3 px-4 font-bold">{isRtl ? 'التاريخ' : 'Date'}</th>
                     <th className="py-3 px-4 font-bold">{isRtl ? 'الملاحظة' : 'Motif'}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                  {movements
-                    .filter(m => m.productId === historyProduct.id)
-                    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                    .map((m) => {
+                  {(() => {
+                    const sortedMovements = [...movements]
+                      .filter(m => m.productId === historyProduct.id)
+                      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                    
+                    let runningStock = historyProduct.stock;
+                    
+                    if (sortedMovements.length === 0) {
+                      return (
+                        <tr>
+                          <td colSpan={5} className="py-12 text-center text-slate-400 font-semibold text-sm">
+                            {isRtl ? 'لا يوجد أي حركات مسجلة لهذا المنتج.' : 'Aucun mouvement pour ce produit.'}
+                          </td>
+                        </tr>
+                      );
+                    }
+
+                    return sortedMovements.map((m) => {
                       const isSale = m.reason?.toLowerCase().includes('vente') || m.reason?.includes('بيع') || m.reason?.toLowerCase().includes('facture');
+                      const currentRemaining = runningStock;
+                      
+                      // Calculate stock for the NEXT row (older movement)
+                      if (m.type === 'in') {
+                        runningStock -= m.qty;
+                      } else {
+                        runningStock += m.qty;
+                      }
+
                       return (
                         <tr key={m.id} className="hover:bg-slate-50/50 transition">
                           <td className="py-3 px-4 text-center">
@@ -1421,6 +1444,9 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                           <td className={`py-3 px-4 text-center font-black font-mono ${isSale ? 'text-blue-600' : m.type === 'in' ? 'text-emerald-600' : 'text-rose-600'}`}>
                             {m.type === 'in' ? '+' : '-'}{m.qty}
                           </td>
+                          <td className="py-3 px-4 text-center font-black font-mono text-slate-700">
+                            {currentRemaining}
+                          </td>
                           <td className="py-3 px-4 font-mono text-xs text-slate-500">
                             {new Date(m.date).toLocaleString(isRtl ? 'ar-MA' : 'fr-FR', {
                               day: '2-digit', month: '2-digit', year: 'numeric',
@@ -1430,14 +1456,8 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                           <td className="py-3 px-4 text-xs text-slate-600 font-medium">{m.reason || '-'}</td>
                         </tr>
                       );
-                    })}
-                  {movements.filter(m => m.productId === historyProduct.id).length === 0 && (
-                    <tr>
-                      <td colSpan={4} className="py-12 text-center text-slate-400 font-semibold text-sm">
-                        {isRtl ? 'لا يوجد أي حركات مسجلة لهذا المنتج.' : 'Aucun mouvement pour ce produit.'}
-                      </td>
-                    </tr>
-                  )}
+                    });
+                  })()}
                 </tbody>
               </table>
             </div>
