@@ -122,12 +122,18 @@ export default function App() {
         await api[entity].create(payload);
         break;
       case 'update':
+        let updatedResult;
         if (payload.id && payload.data) {
-          await api[entity].update(payload.id, payload.data);
+          updatedResult = await api[entity].update(payload.id, payload.data);
         } else if (payload.id) {
-          await api[entity].update(payload.id, payload);
+          updatedResult = await api[entity].update(payload.id, payload);
         } else {
           throw new Error('Update payload requires an ID');
+        }
+        
+        // Update local version for optimistic concurrency
+        if (updatedResult && entity === 'products' && updatedResult.version) {
+          setProducts(prev => prev.map(p => p.id === payload.id ? { ...p, version: updatedResult.version } : p));
         }
         break;
       case 'adjust_stock':
