@@ -502,7 +502,7 @@ export default function PosCaisse({
             {cart.map((item) => (
               <div key={item.product.id} className="flex gap-3 justify-between items-center text-xs">
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-extrabold text-gray-900 truncate">{item.product.name}</h4>
+                  <h4 className="font-extrabold text-gray-900 line-clamp-2 leading-tight">{item.product.name}</h4>
                   <p className="text-xxs text-gray-400 font-mono">
                     {(item.product.sellPrice || 0).toFixed(2)} / unit
                   </p>
