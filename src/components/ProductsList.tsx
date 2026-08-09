@@ -187,9 +187,10 @@ const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('databa
       if (!ok) return;
     }
 
+    const p = products.find(x => x.id === editingId);
     const payload: Product = {
-      id: editingId || `prod-${Date.now()}`,
-      name: formName,
+      id: editingId || `prod-${Date.now()}-${Math.random()}`,
+      name: formName.trim(),
       sku: formSku,
       buyPrice: Number(formBuyPrice),
       sellPrice: Number(formSellPrice),
@@ -197,7 +198,8 @@ const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('databa
       stock: editingId ? Number(formStock) : 0,
       minStockAlert: Number(formMinStock),
       description: formDesc,
-      image: ''
+      image: p?.image || '',
+      version: p?.version || 1
     };
 
     if (editingId) {
