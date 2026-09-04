@@ -657,7 +657,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   className="flex items-center gap-1.5 px-3 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-xl text-xs font-bold transition shrink-0 shadow-sm"
                 >
                   <History className="w-3.5 h-3.5" />
-                  {isRtl ? 'استرجاع أرشيف السجلات' : 'Restaurer l\'archive'}
+                  {isRtl ? 'الأرشيف' : 'Archive'}
                 </button>
               )}
             </div>
@@ -1424,7 +1424,7 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                     className="ml-auto mr-4 rtl:mr-auto rtl:ml-4 flex items-center gap-1 px-2.5 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-lg text-[10px] font-bold transition shadow-sm"
                   >
                     <History className="w-3 h-3" />
-                    {isRtl ? 'استرجاع الأرشيف' : 'Restaurer l\'archive'}
+                    {isRtl ? 'الأرشيف' : 'Archive'}
                   </button>
                 )}
                 <button onClick={() => setIsProductHistoryModalOpen(false)} className="p-1 hover:bg-gray-200 rounded-lg transition">
