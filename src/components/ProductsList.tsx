@@ -1,6 +1,7 @@
 import React from 'react';
 import { Product, User, StockMovement, Invoice } from '../types';
 import { translations, arabicDashboardLabels } from '../translations';
+import { api } from '../api';
 import { 
   Plus, 
   Search, 
@@ -82,7 +83,33 @@ export default function ProductsList({
   const [stockFormReason, setStockFormReason] = React.useState('');
   const [bulkItems, setBulkItems] = React.useState<{ id: string, productId: string, qty: number }[]>([{ id: 'bulk-0', productId: '', qty: 0 }]);
 
-const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('database');
+const [showFullArchive, setShowFullArchive] = React.useState(false);
+  const [checkpointDate, setCheckpointDate] = React.useState<Date | null>(() => {
+    const saved = localStorage.getItem('stock_archive_checkpoint');
+    return saved ? new Date(saved) : null;
+  });
+
+  const handleSetCheckpoint = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value) {
+      const d = new Date(e.target.value);
+      setCheckpointDate(d);
+      localStorage.setItem('stock_archive_checkpoint', d.toISOString());
+    } else {
+      setCheckpointDate(null);
+      localStorage.removeItem('stock_archive_checkpoint');
+    }
+  };
+
+  const handleStartNewLog = () => {
+    if (window.confirm(isRtl ? 'هل أنت متأكد من بدء سجل جديد؟ (سيتم إخفاء الحركات السابقة ويمكن تصفحها عبر "عرض الأرشيف")' : 'Voulez-vous vraiment commencer un nouveau journal ? (Les anciens mouvements seront cachés mais accessibles via "Archive complète")')) {
+      const now = new Date();
+      setCheckpointDate(now);
+      localStorage.setItem('stock_archive_checkpoint', now.toISOString());
+      setShowFullArchive(false);
+    }
+  };
+
+  const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('database');
   const [filterType, setFilterType] = React.useState<'all' | 'in' | 'out' | 'sale'>('all');
   const [viewMode, setViewMode] = React.useState<'grid' | 'table'>('grid');
   const [searchTerm, setSearchTerm] = React.useState(prefilledSearch);
@@ -637,6 +664,33 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
               <History className="w-5 h-5 text-emerald-600" />
                 {isRtl ? 'سجل حركة المخزون' : 'Historique des Mouvements'}
               </h2>
+            <div className="flex items-center gap-4 w-full md:w-auto overflow-x-auto no-scrollbar">
+              <button 
+                onClick={handleStartNewLog}
+                className="flex items-center gap-1.5 px-3 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-xl text-xs font-bold transition shrink-0 shadow-sm"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                {isRtl ? 'بدء سجل جديد' : 'Nouveau Journal'}
+              </button>
+              <div className="flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 shrink-0">
+                <span className="text-xs font-bold text-slate-700">{isRtl ? 'بداية السجلات:' : 'Début:'}</span>
+                <input 
+                  type="date"
+                  value={checkpointDate ? checkpointDate.toISOString().split('T')[0] : ''}
+                  onChange={handleSetCheckpoint}
+                  className="bg-transparent text-sm font-bold text-slate-800 outline-none cursor-pointer"
+                />
+              </div>
+              <label className="flex items-center gap-2 cursor-pointer bg-slate-50 px-4 py-2 rounded-xl border border-slate-200 shrink-0 hover:bg-slate-100 transition">
+                <input 
+                  type="checkbox" 
+                  checked={showFullArchive} 
+                  onChange={(e) => setShowFullArchive(e.target.checked)}
+                  className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 cursor-pointer"
+                />
+                <span className="text-sm font-bold text-slate-700">{isRtl ? 'عرض الأرشيف كامل' : 'Archive complète'}</span>
+              </label>
+            </div>
               
               {!isCashier && (
                 <button
@@ -695,6 +749,9 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
               <tbody className="divide-y divide-gray-50 text-sm">
                 {movements
                   .filter(m => {
+                    if (!showFullArchive && checkpointDate) {
+                      if (new Date(m.date) < checkpointDate) return false;
+                    }
                     const isSale = m.reason?.toLowerCase().includes('vente') || m.reason?.includes('بيع') || m.reason?.toLowerCase().includes('facture');
                     if (filterType === 'all') return true;
                     if (filterType === 'sale') return isSale;
@@ -1385,7 +1442,32 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 <History className="w-5 h-5 text-emerald-600" />
                 {isRtl ? `سجل حركات المنتج: ${historyProduct.name}` : `Historique: ${historyProduct.name}`}
               </h3>
-              <button onClick={() => setIsProductHistoryModalOpen(false)} className="p-1 hover:bg-gray-200 rounded-lg transition">
+                <button 
+                  onClick={handleStartNewLog}
+                  className="ml-auto mr-4 rtl:mr-auto rtl:ml-4 flex items-center gap-1 px-2.5 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-lg text-[10px] font-bold transition shadow-sm"
+                >
+                  <Plus className="w-3 h-3" />
+                  {isRtl ? 'بدء سجل جديد' : 'Nouveau Journal'}
+                </button>
+                <div className="flex items-center gap-2 bg-white/50 px-2 py-1 rounded-lg border border-gray-200">
+                  <span className="text-[10px] font-bold text-slate-700">{isRtl ? 'بداية السجلات:' : 'Début:'}</span>
+                  <input 
+                    type="date"
+                    value={checkpointDate ? checkpointDate.toISOString().split('T')[0] : ''}
+                    onChange={handleSetCheckpoint}
+                    className="bg-transparent text-xs font-bold text-slate-800 outline-none"
+                  />
+                </div>
+                <label className="flex items-center gap-2 cursor-pointer bg-white/50 px-3 py-1.5 rounded-lg border border-gray-200">
+                  <input 
+                    type="checkbox" 
+                    checked={showFullArchive} 
+                    onChange={(e) => setShowFullArchive(e.target.checked)}
+                    className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500"
+                  />
+                  <span className="text-xs font-bold text-slate-700">{isRtl ? 'عرض الأرشيف الكامل' : 'Archive complète'}</span>
+                </label>
+                <button onClick={() => setIsProductHistoryModalOpen(false)} className="p-1 hover:bg-gray-200 rounded-lg transition">
                 <X className="w-5 h-5 text-gray-500" />
               </button>
             </div>
@@ -1404,7 +1486,13 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                   {(() => {
                     const sortedMovements = [...movements]
                       .filter(m => m.productId === historyProduct.id)
-                      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                      .filter(m => {
+                          if (!showFullArchive && checkpointDate) {
+                            return new Date(m.date) >= checkpointDate;
+                          }
+                          return true;
+                        })
+                        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
                     
                     let runningStock = historyProduct.stock;
                     
