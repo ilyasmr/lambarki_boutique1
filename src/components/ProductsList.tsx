@@ -89,26 +89,6 @@ const [showFullArchive, setShowFullArchive] = React.useState(false);
     return saved ? new Date(saved) : null;
   });
 
-  const handleSetCheckpoint = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value) {
-      const d = new Date(e.target.value);
-      setCheckpointDate(d);
-      localStorage.setItem('stock_archive_checkpoint', d.toISOString());
-    } else {
-      setCheckpointDate(null);
-      localStorage.removeItem('stock_archive_checkpoint');
-    }
-  };
-
-  const handleStartNewLog = () => {
-    if (window.confirm(isRtl ? 'هل أنت متأكد من بدء سجل جديد؟ (سيتم إخفاء الحركات السابقة ويمكن تصفحها عبر "عرض الأرشيف")' : 'Voulez-vous vraiment commencer un nouveau journal ? (Les anciens mouvements seront cachés mais accessibles via "Archive complète")')) {
-      const now = new Date();
-      setCheckpointDate(now);
-      localStorage.setItem('stock_archive_checkpoint', now.toISOString());
-      setShowFullArchive(false);
-    }
-  };
-
   const [activeTab, setActiveTab] = React.useState<'database' | 'history'>('database');
   const [filterType, setFilterType] = React.useState<'all' | 'in' | 'out' | 'sale'>('all');
   const [viewMode, setViewMode] = React.useState<'grid' | 'table'>('grid');
@@ -665,31 +645,21 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 {isRtl ? 'سجل حركة المخزون' : 'Historique des Mouvements'}
               </h2>
             <div className="flex items-center gap-4 w-full md:w-auto overflow-x-auto no-scrollbar">
-              <button 
-                onClick={handleStartNewLog}
-                className="flex items-center gap-1.5 px-3 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-xl text-xs font-bold transition shrink-0 shadow-sm"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                {isRtl ? 'بدء سجل جديد' : 'Nouveau Journal'}
-              </button>
-              <div className="flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 shrink-0">
-                <span className="text-xs font-bold text-slate-700">{isRtl ? 'بداية السجلات:' : 'Début:'}</span>
-                <input 
-                  type="date"
-                  value={checkpointDate ? checkpointDate.toISOString().split('T')[0] : ''}
-                  onChange={handleSetCheckpoint}
-                  className="bg-transparent text-sm font-bold text-slate-800 outline-none cursor-pointer"
-                />
-              </div>
-              <label className="flex items-center gap-2 cursor-pointer bg-slate-50 px-4 py-2 rounded-xl border border-slate-200 shrink-0 hover:bg-slate-100 transition">
-                <input 
-                  type="checkbox" 
-                  checked={showFullArchive} 
-                  onChange={(e) => setShowFullArchive(e.target.checked)}
-                  className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 cursor-pointer"
-                />
-                <span className="text-sm font-bold text-slate-700">{isRtl ? 'عرض الأرشيف كامل' : 'Archive complète'}</span>
-              </label>
+              {checkpointDate && (
+                <button 
+                  onClick={() => {
+                    if (window.confirm(isRtl ? 'هل أنت متأكد من استرجاع أرشيف السجلات القديمة؟' : 'Voulez-vous vraiment restaurer les anciennes archives ?')) {
+                      setCheckpointDate(null);
+                      localStorage.removeItem('stock_archive_checkpoint');
+                      setShowFullArchive(true);
+                    }
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-xl text-xs font-bold transition shrink-0 shadow-sm"
+                >
+                  <History className="w-3.5 h-3.5" />
+                  {isRtl ? 'استرجاع أرشيف السجلات' : 'Restaurer l\'archive'}
+                </button>
+              )}
             </div>
               
               {!isCashier && (
@@ -1442,31 +1412,21 @@ const handleInlineStockUpdate = (p: Product, diff: number) => {
                 <History className="w-5 h-5 text-emerald-600" />
                 {isRtl ? `سجل حركات المنتج: ${historyProduct.name}` : `Historique: ${historyProduct.name}`}
               </h3>
-                <button 
-                  onClick={handleStartNewLog}
-                  className="ml-auto mr-4 rtl:mr-auto rtl:ml-4 flex items-center gap-1 px-2.5 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-lg text-[10px] font-bold transition shadow-sm"
-                >
-                  <Plus className="w-3 h-3" />
-                  {isRtl ? 'بدء سجل جديد' : 'Nouveau Journal'}
-                </button>
-                <div className="flex items-center gap-2 bg-white/50 px-2 py-1 rounded-lg border border-gray-200">
-                  <span className="text-[10px] font-bold text-slate-700">{isRtl ? 'بداية السجلات:' : 'Début:'}</span>
-                  <input 
-                    type="date"
-                    value={checkpointDate ? checkpointDate.toISOString().split('T')[0] : ''}
-                    onChange={handleSetCheckpoint}
-                    className="bg-transparent text-xs font-bold text-slate-800 outline-none"
-                  />
-                </div>
-                <label className="flex items-center gap-2 cursor-pointer bg-white/50 px-3 py-1.5 rounded-lg border border-gray-200">
-                  <input 
-                    type="checkbox" 
-                    checked={showFullArchive} 
-                    onChange={(e) => setShowFullArchive(e.target.checked)}
-                    className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500"
-                  />
-                  <span className="text-xs font-bold text-slate-700">{isRtl ? 'عرض الأرشيف الكامل' : 'Archive complète'}</span>
-                </label>
+                {checkpointDate && (
+                  <button 
+                    onClick={() => {
+                      if (window.confirm(isRtl ? 'هل أنت متأكد من استرجاع أرشيف السجلات القديمة؟' : 'Voulez-vous vraiment restaurer les anciennes archives ?')) {
+                        setCheckpointDate(null);
+                        localStorage.removeItem('stock_archive_checkpoint');
+                        setShowFullArchive(true);
+                      }
+                    }}
+                    className="ml-auto mr-4 rtl:mr-auto rtl:ml-4 flex items-center gap-1 px-2.5 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 rounded-lg text-[10px] font-bold transition shadow-sm"
+                  >
+                    <History className="w-3 h-3" />
+                    {isRtl ? 'استرجاع الأرشيف' : 'Restaurer l\'archive'}
+                  </button>
+                )}
                 <button onClick={() => setIsProductHistoryModalOpen(false)} className="p-1 hover:bg-gray-200 rounded-lg transition">
                 <X className="w-5 h-5 text-gray-500" />
               </button>

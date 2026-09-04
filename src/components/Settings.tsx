@@ -136,7 +136,23 @@ export default function Settings({
               className="py-3 px-4 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-black shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              <span>{isRtl ? 'تصفير حسابات الصندوق' : 'Réinitialiser la Caisse'}</span>
+              <span>{isRtl ? 'تصفير الصندوق' : 'Réinit. Caisse'}</span>
+            </button>
+            <button
+              onClick={() => {
+                const yes = window.confirm(isRtl
+                  ? 'هل أنت متأكد من تصفير سجلات حركة المخزون والمنتجات؟ (سيتم إخفاؤها من الواجهة ويمكن استرجاعها لاحقاً من الأرشيف)'
+                  : 'Voulez-vous vraiment réinitialiser les journaux de stock ? (Ils seront cachés mais récupérables depuis l\'archive)'
+                );
+                if (yes) {
+                  localStorage.setItem('stock_archive_checkpoint', new Date().toISOString());
+                  alert(isRtl ? 'تم تصفير السجلات بنجاح.' : 'Journaux réinitialisés avec succès.');
+                }
+              }}
+              className="py-3 px-4 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-black shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>{isRtl ? 'تصفير السجلات' : 'Réinit. Journaux'}</span>
             </button>
           </div>
 
