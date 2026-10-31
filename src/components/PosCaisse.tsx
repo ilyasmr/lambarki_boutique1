@@ -113,7 +113,7 @@ export default function PosCaisse({
           item.product.id === product.id ? { ...item, qty: item.qty + 1 } : item
         );
       }
-      return [...prev, { product, qty: 1 }];
+      return [...prev, { product: { ...product }, qty: 1 }];
     });
     setLastCompletedInvoice(null);
   };
@@ -123,6 +123,38 @@ export default function PosCaisse({
     setCart(prev => prev.map(item => {
       if (item.product.id === productId) {
         return { ...item, qty: Math.max(1, item.qty - 1) };
+      }
+      return item;
+    }));
+  };
+
+  // Action: Update Qty directly via input
+  const updateQty = (productId: string, newQty: number) => {
+    setCheckoutError(null);
+    setPosWarning(null);
+    setCart(prev => prev.map(item => {
+      if (item.product.id === productId) {
+        if (newQty > item.product.stock) {
+          const msg = isRtl 
+            ? 'لا توجد كميات كافية في المستودع حالياً !' 
+            : 'Le stock actuel est insuffisant !';
+          setPosWarning(msg);
+          return { ...item, qty: item.product.stock };
+        }
+        return { ...item, qty: newQty < 0 ? 0 : newQty };
+      }
+      return item;
+    }));
+  };
+
+  // Action: Update Price directly via input
+  const updatePrice = (productId: string, newPrice: number) => {
+    setCart(prev => prev.map(item => {
+      if (item.product.id === productId) {
+        return { 
+          ...item, 
+          product: { ...item.product, sellPrice: newPrice < 0 ? 0 : newPrice } 
+        };
       }
       return item;
     }));
@@ -332,18 +364,18 @@ export default function PosCaisse({
         <div className={`lg:col-span-7 flex-col gap-6 ${mobileTab === 'catalog' ? 'flex' : 'hidden lg:flex'}`}>
         
         {/* Search header & categories */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm space-y-4">
+        <div className="bg-white rounded-2xl border border-gray-100 p-4 sm:p-5 shadow-sm space-y-4">
           {/* Modern Polished Search Box matching the products list style */}
           <div className="relative w-full">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
-              <Search className="w-4 h-4" />
+              <Search className="w-5 h-5" />
             </span>
             <input
               type="text"
               placeholder={isRtl ? 'البحث عن منتج بالاسم أو الباركود...' : 'Chercher un produit par nom ou code...'}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={`w-full py-2.5 pl-10 pr-10 bg-slate-50 text-xs text-slate-800 font-bold rounded-xl border border-slate-200/85 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all ${
+              className={`w-full py-3.5 pl-11 pr-11 bg-slate-50 text-sm sm:text-base text-slate-800 font-bold rounded-xl border border-slate-200/85 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 transition-all ${
                 isRtl ? 'text-right' : 'text-left'
               }`}
             />
@@ -351,21 +383,21 @@ export default function PosCaisse({
               <button
                 type="button"
                 onClick={() => setSearchTerm('')}
-                className="absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 hover:text-slate-650 transition-all cursor-pointer"
+                className="absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 hover:text-slate-650 transition-all cursor-pointer"
                 title={isRtl ? 'مسح البحث' : 'Effacer la recherche'}
               >
-                <span className="text-[10px] font-black bg-slate-200/60 text-slate-505 hover:text-slate-700 w-5 h-5 rounded-full flex items-center justify-center">✕</span>
+                <span className="text-xs font-black bg-slate-200/60 text-slate-505 hover:text-slate-700 w-6 h-6 rounded-full flex items-center justify-center">✕</span>
               </button>
             )}
           </div>
 
           {/* Quick Categories filter buttons */}
-          <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-none">
+          <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-none">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 text-xs font-bold rounded-xl whitespace-nowrap transition-all ${
+                className={`px-5 py-2.5 text-sm font-bold rounded-xl whitespace-nowrap transition-all ${
                   selectedCategory === cat 
                     ? 'bg-blue-600 text-white shadow' 
                     : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
@@ -393,22 +425,21 @@ export default function PosCaisse({
               >
                 <div>
                   {/* Product Header with category badge */}
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between mb-2">
                     <span className="px-2 py-0.5 text-[9px] font-bold rounded shadow-sm bg-slate-900/80 text-white">
                       {p.category}
                     </span>
-                    
                   </div>
 
                   {/* Product name */}
                   <div className="space-y-1">
-                    <h4 className="font-extrabold text-xs sm:text-sm text-gray-900 leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors">{p.name}</h4>
+                    <h4 className="font-extrabold text-[10px] sm:text-xs text-gray-900 leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors">{p.name}</h4>
                   </div>
                 </div>
 
                 <div className="mt-3 pt-2.5 border-t border-gray-100 space-y-2">
                   {/* Stock Level */}
-                  <div className="flex items-center justify-between text-[11px]">
+                  <div className="flex items-center justify-between text-[10px] sm:text-[11px]">
                     <span className="text-slate-500 font-bold">{isRtl ? 'المخزون :' : 'Stock :'}</span>
                     
                     {p.stock === 0 ? (
@@ -427,8 +458,8 @@ export default function PosCaisse({
                   </div>
 
                   {/* Pricing displays ONLY Sale Price to avoid sensitive buy prices */}
-                  <div className="flex items-center justify-between bg-slate-50/70 p-2 rounded-lg border border-slate-100">
-                    <span className="text-[10px] text-slate-500 font-bold uppercase">{isRtl ? 'ثمن البيع :' : 'Prix Vente :'}</span>
+                  <div className="flex items-center justify-between bg-slate-50/70 p-1.5 sm:p-2 rounded-lg border border-slate-100">
+                    <span className="text-[9px] sm:text-[10px] text-slate-500 font-bold uppercase">{isRtl ? 'البيع :' : 'Prix :'}</span>
                     <span className="font-mono text-xs sm:text-sm font-black text-blue-900">{(p.sellPrice || 0).toFixed(2)}</span>
                   </div>
                 </div>
@@ -498,47 +529,75 @@ export default function PosCaisse({
           </div>
 
           {/* Cart ledger lists */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 min-h-[220px]">
+          <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 min-h-[220px]">
             {cart.map((item) => (
-              <div key={item.product.id} className="flex gap-3 justify-between items-center text-xs">
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-extrabold text-gray-900 line-clamp-2 leading-tight">{item.product.name}</h4>
-                  <p className="text-xxs text-gray-400 font-mono">
-                    {(item.product.sellPrice || 0).toFixed(2)} / unit
-                  </p>
-                </div>
-
-                {/* Qty action adjusters */}
-                <div className="flex items-center gap-1 bg-gray-50 p-1 rounded-xl">
+              <div key={item.product.id} className="bg-white border border-gray-100 rounded-xl p-3 shadow-sm hover:shadow-md transition flex flex-col gap-2.5">
+                
+                {/* Top Row: Product Name & Delete */}
+                <div className="flex justify-between items-start gap-2">
+                  <h4 className="font-extrabold text-gray-900 text-[11px] sm:text-xs leading-snug line-clamp-2 pr-1">{item.product.name}</h4>
                   <button
-                    onClick={() => decrementQty(item.product.id)}
-                    className="p-1 hover:bg-gray-200 text-gray-600 hover:text-gray-900 rounded transition"
+                    onClick={() => removeFromCart(item.product.id)}
+                    className="p-1.5 bg-red-50 hover:bg-red-100 border border-red-100 text-red-500 hover:text-red-700 rounded-lg transition shrink-0"
                   >
-                    <Minus className="w-3.5 h-3.5" />
-                  </button>
-                  <span className="w-7 text-center font-black text-gray-800 text-xs font-mono">
-                    {item.qty}
-                  </span>
-                  <button
-                    onClick={() => incrementQty(item.product.id, item.product.stock)}
-                    className="p-1 hover:bg-gray-200 text-gray-600 hover:text-gray-900 rounded transition"
-                  >
-                    <Plus className="w-3.5 h-3.5" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
-                <div className="text-right w-24">
-                  <span className="font-black text-gray-900 font-mono">
-                    {(item.product.sellPrice * item.qty).toFixed(2)}
-                  </span>
-                </div>
+                {/* Bottom Row: PU, Qty, Total */}
+                <div className="flex items-center justify-between gap-2 border-t border-gray-50 pt-2.5">
+                  
+                  {/* PU Input */}
+                  <div className="flex items-center gap-1">
+                    <span className="text-[9px] text-gray-400 font-bold uppercase">{isRtl ? 'ثمن' : 'PU'}</span>
+                    <input 
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={item.product.sellPrice === 0 ? '' : item.product.sellPrice}
+                      onChange={(e) => updatePrice(item.product.id, parseFloat(e.target.value) || 0)}
+                      onBlur={(e) => {
+                        if (!e.target.value) updatePrice(item.product.id, 0);
+                      }}
+                      className="w-12 sm:w-16 text-center font-black text-blue-800 font-mono text-xs bg-gray-50 border border-gray-200 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 rounded p-1 hide-arrows"
+                    />
+                  </div>
 
-                <button
-                  onClick={() => removeFromCart(item.product.id)}
-                  className="p-1.5 hover:bg-red-50 text-red-400 hover:text-red-700 rounded-lg transition"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                  {/* Qty action adjusters */}
+                  <div className="flex items-center gap-0.5 sm:gap-1 bg-gray-50 p-1 rounded-lg border border-gray-100">
+                    <button
+                      onClick={() => decrementQty(item.product.id)}
+                      className="p-1 sm:p-1.5 bg-white shadow-sm border border-gray-200 hover:bg-gray-100 text-gray-700 rounded-md transition"
+                    >
+                      <Minus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                    </button>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={item.qty === 0 ? '' : item.qty}
+                      onChange={(e) => updateQty(item.product.id, parseFloat(e.target.value) || 0)}
+                      onBlur={(e) => {
+                        if (!e.target.value) updateQty(item.product.id, 1);
+                      }}
+                      className="w-10 sm:w-12 text-center font-black text-gray-800 text-xs sm:text-sm font-mono bg-white border border-gray-200 rounded-md p-1 hide-arrows focus:ring-1 focus:ring-blue-500 outline-none shadow-inner"
+                    />
+                    <button
+                      onClick={() => incrementQty(item.product.id, item.product.stock)}
+                      className="p-1 sm:p-1.5 bg-white shadow-sm border border-gray-200 hover:bg-gray-100 text-gray-700 rounded-md transition"
+                    >
+                      <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Total */}
+                  <div className="text-right flex-1 min-w-0">
+                    <span className="font-black text-emerald-700 text-xs sm:text-sm font-mono truncate block">
+                      {(item.product.sellPrice * item.qty).toFixed(2)}
+                    </span>
+                  </div>
+
+                </div>
               </div>
             ))}
 
@@ -631,11 +690,12 @@ export default function PosCaisse({
                     <input
                       type="number"
                       min="1"
+                      step="0.01"
                       max={totalAmount - 1}
                       value={amountPaidUpfront || ''}
                       onChange={(e) => setAmountPaidUpfront(Number(e.target.value))}
                       placeholder="0.00"
-                      className="w-full px-3 py-1.5 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono font-bold text-xs"
+                      className="w-full px-3 py-2 sm:py-2.5 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono font-bold text-sm sm:text-base hide-arrows"
                     />
                     <p className="text-[10px] text-slate-500 mt-1">
                       {isRtl ? 'الباقي كدين على ذمة الزبون :' : 'Reste dû en crédit :'} <span className="font-extrabold text-blue-950">{(totalAmount - amountPaidUpfront).toFixed(2)}</span>
@@ -655,11 +715,12 @@ export default function PosCaisse({
                 <input
                   type="number"
                   min="0"
+                  step="0.01"
                   max={subtotal > 0 ? subtotal : 9999}
                   value={discountValue || ''}
                   onChange={(e) => setDiscountValue(Number(e.target.value))}
                   placeholder="0.00"
-                  className="w-full px-3 py-2 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#22c55e] font-mono font-bold"
+                  className="w-full px-3 py-2 sm:py-2.5 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#22c55e] font-mono font-bold text-sm sm:text-base hide-arrows"
                 />
               </div>
 

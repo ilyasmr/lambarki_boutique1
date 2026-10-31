@@ -143,7 +143,7 @@ async function seedInitialData(client) {
   // Users
   const users = [
     { id: 'usr-1', username: 'admin', name: 'Ilias Lambarki', role: 'admin', email: 'lamb.ilyas@gmail.com', active: true, password: 'ilyas_mr3' },
-    { id: 'usr-2', username: 'caissier', name: 'Yassine Alami', role: 'cashier', email: 'yassine.alami@lambarki.ma', active: true, password: 'yassine123' },
+    { id: 'usr-2', username: 'caissier', name: 'Rachid', role: 'cashier', email: 'boutique@gmail.com', active: true, password: '5321' },
     { id: 'usr-3', username: 'rachida', name: 'Fouad Lambarki', role: 'admin', email: 'fouad.l@lambarki.ma', active: true, password: 'fouad123' }
   ];
   for (const u of users) {
