@@ -103,16 +103,22 @@ export default function App() {
   // Online status state
   const [isOnline, setIsOnline] = React.useState(navigator.onLine);
   
-  // Sync queue state
-  const [syncQueue, setSyncQueue] = React.useState<SyncItem[]>(() => {
+  // Sync queue state (ref = source of truth, state = for UI rendering)
+  const syncQueueRef = React.useRef<SyncItem[]>((() => {
     try {
       return JSON.parse(localStorage.getItem('sync_queue') || '[]');
     } catch (e) {
       return [];
     }
-  });
+  })());
+  const [syncQueue, setSyncQueue] = React.useState<SyncItem[]>(syncQueueRef.current);
+  const persistQueue = () => {
+    localStorage.setItem('sync_queue', JSON.stringify(syncQueueRef.current));
+    setSyncQueue([...syncQueueRef.current]);
+  };
 
   const [isSyncing, setIsSyncing] = React.useState(false);
+  const isSyncingRef = React.useRef(false);
 
   // Sync execution helper
   const executeSyncItem = async (item: SyncItem) => {
@@ -147,45 +153,50 @@ export default function App() {
     }
   };
 
-  // Sync queue runner
-  const processSyncQueue = async (currentQueue?: SyncItem[]) => {
-    const queueToProcess = currentQueue || syncQueue;
-    if (queueToProcess.length === 0 || isSyncing || !navigator.onLine) return;
+  // Sync queue runner (single instance, always reads the latest queue from the ref)
+  const processSyncQueue = async () => {
+    if (syncQueueRef.current.length === 0 || isSyncingRef.current) return;
 
+    isSyncingRef.current = true;
     setIsSyncing(true);
-    const updatedQueue = [...queueToProcess];
 
     try {
-      while (updatedQueue.length > 0) {
-        const item = updatedQueue[0];
+      while (syncQueueRef.current.length > 0) {
+        const item = syncQueueRef.current[0];
         try {
           await executeSyncItem(item);
           // Successfully synced, remove from queue
-          updatedQueue.shift();
-          setSyncQueue([...updatedQueue]);
-          localStorage.setItem('sync_queue', JSON.stringify(updatedQueue));
+          syncQueueRef.current = syncQueueRef.current.filter(q => q.id !== item.id);
+          persistQueue();
+          setIsOnline(true);
         } catch (err: any) {
           console.error(`Failed to sync item ${item.id}:`, err);
           if (err.message && err.message.includes('Conflict')) {
              alert('تم تعديل هذا المنتج من قبل شخص آخر. يرجى تحديث الصفحة للحصول على أحدث البيانات والمحاولة من جديد.');
-             updatedQueue.shift();
-             setSyncQueue([...updatedQueue]);
+             syncQueueRef.current = syncQueueRef.current.filter(q => q.id !== item.id);
+             persistQueue();
              continue;
           }
-          // If it's a network error, stop processing. If it's another error, skip it to avoid blocking the queue
-          const isNetworkError = !err.status || err.message?.includes('fetch') || err.message?.includes('Network');
-          if (isNetworkError) {
+          // No HTTP status = no internet / server unreachable -> keep everything and retry later
+          if (!err.status) {
+            setIsOnline(false);
             break;
-          } else {
-            updatedQueue.shift();
-            setSyncQueue([...updatedQueue]);
-            localStorage.setItem('sync_queue', JSON.stringify(updatedQueue));
           }
+          // 5xx = server/DB temporary problem -> retry later, give up after 5 attempts
+          const attempts = ((item as any).attempts || 0) + 1;
+          if (err.status >= 500 && attempts < 5) {
+            (item as any).attempts = attempts;
+            persistQueue();
+            break;
+          }
+          // 4xx or too many failures -> drop this item so it doesn't block the queue
+          syncQueueRef.current = syncQueueRef.current.filter(q => q.id !== item.id);
+          persistQueue();
         }
       }
       
       // Refresh all data from API after successful sync
-      if (updatedQueue.length === 0) {
+      if (syncQueueRef.current.length === 0) {
         const [loadedUsers, loadedClients, loadedProducts, loadedInvoices, loadedMovements, loadedActivities] = await Promise.all([
           api.users.getAll(),
           api.clients.getAll(),
@@ -211,6 +222,7 @@ export default function App() {
     } catch (e) {
       console.error('Error during database sync:', e);
     } finally {
+      isSyncingRef.current = false;
       setIsSyncing(false);
     }
   };
@@ -222,24 +234,22 @@ export default function App() {
     payload: any
   ) => {
     const newItem: SyncItem = {
-      id: `sync-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+      id: `sync-${Date.now()}-${Math.floor(Math.random() * 1000000)}`,
       entity,
       action,
       payload,
       timestamp: Date.now()
     };
 
-    const newQueue = [...syncQueue, newItem];
-    setSyncQueue(newQueue);
-    localStorage.setItem('sync_queue', JSON.stringify(newQueue));
+    // Append to the ref so several enqueues in the same handler are never lost
+    syncQueueRef.current = [...syncQueueRef.current, newItem];
+    persistQueue();
 
-    // Try to process immediately if online
-    if (navigator.onLine && !isSyncing) {
-      processSyncQueue(newQueue);
-    }
+    // Try to send right away (if offline it just stays in the queue)
+    setTimeout(() => processSyncQueue(), 0);
   };
 
-  // Watch network status and trigger sync
+  // Watch network status and retry the queue periodically
   React.useEffect(() => {
     const handleOnline = () => {
       setIsOnline(true);
@@ -252,20 +262,26 @@ export default function App() {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    if (navigator.onLine) {
-      processSyncQueue();
-    }
+    processSyncQueue();
+    // navigator.onLine is not reliable on Windows/Electron -> retry every 20s anyway
+    const retry = setInterval(() => processSyncQueue(), 20000);
 
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
+      clearInterval(retry);
     };
-  }, [syncQueue, isSyncing]);
+  }, []);
 
   // Load all data with caching
   React.useEffect(() => {
     const loadAll = async (isInitialLoad: boolean = false) => {
+      // While offline changes are waiting to be sent, don't overwrite the local data
+      // with server data (otherwise unsynced sales would disappear from the screen).
+      if (!isInitialLoad && (syncQueueRef.current.length > 0 || isSyncingRef.current)) return;
       try {
+        // At startup with unsynced changes: show the local cache (contains the offline sales)
+        if (isInitialLoad && syncQueueRef.current.length > 0) throw new Error('Pending offline changes, using local cache');
         const [loadedUsers, loadedClients, loadedProducts, loadedInvoices, loadedMovements, loadedActivities] = await Promise.all([
           api.users.getAll(),
           api.clients.getAll(),
@@ -340,6 +356,18 @@ export default function App() {
 
       return () => clearInterval(interval);
     }, []);
+
+  // Keep the local cache up to date with offline changes so they survive an app restart
+  React.useEffect(() => {
+    if (syncQueue.length === 0) return;
+    try {
+      localStorage.setItem('cached_clients', JSON.stringify(clients));
+      localStorage.setItem('cached_products', JSON.stringify(products));
+      localStorage.setItem('cached_invoices', JSON.stringify(invoices));
+      localStorage.setItem('cached_movements', JSON.stringify(stockMovements));
+      localStorage.setItem('cached_activities', JSON.stringify(activities));
+    } catch (e) { console.error('Failed to update local cache', e); }
+  }, [syncQueue, clients, products, invoices, stockMovements, activities]);
 
   const logActivity = (
     type: 'sale' | 'product_add' | 'product_edit' | 'product_delete' | 'client_add' | 'client_edit' | 'client_delete' | 'stock_edit' | 'withdraw_add' | 'withdraw_edit' | 'withdraw_delete' | 'invoice_edit' | 'invoice_delete',

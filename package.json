@@ -16,7 +16,8 @@
     "setup-db": "node --env-file=.env server/setup-db.js",
     "backup": "powershell -ExecutionPolicy Bypass -File ./backup.ps1",
     "electron:start": "electron .",
-    "electron:build": "vite build && electron-builder"
+    "electron:build": "vite build && electron-builder",
+    "electron:release": "vite build && electron-builder --win --publish always"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
@@ -28,6 +29,7 @@
     "@vitejs/plugin-react": "^5.0.4",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
+    "electron-updater": "^6.8.11",
     "express": "^4.21.2",
     "lucide-react": "^0.546.0",
     "motion": "^12.23.24",
@@ -64,7 +66,21 @@
       "package.json"
     ],
     "win": {
-      "target": "dir"
-    }
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "runAfterFinish": true
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "ilyasmr",
+        "repo": "lambarki_boutique1",
+        "releaseType": "release"
+      }
+    ]
   }
 }
