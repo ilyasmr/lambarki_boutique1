@@ -17,7 +17,8 @@
     "backup": "powershell -ExecutionPolicy Bypass -File ./backup.ps1",
     "electron:start": "electron .",
     "electron:build": "vite build && electron-builder",
-    "electron:release": "vite build && electron-builder --win --publish always"
+    "electron:release": "vite build && electron-builder --win --publish always",
+    "android:build": "vite build && npx cap sync android && cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
